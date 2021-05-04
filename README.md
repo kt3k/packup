@@ -1,6 +1,6 @@
-# deno-parcel
+# deno_parcel v0.0.1
 
-> [Percel]-like frontend dev experience in Deno.
+> [Parcel][]-like frontend dev experience in [Deno][].
 
 # 0.1 roadmap
 
@@ -10,3 +10,6 @@
 - Stylesheets referenced from `<link />` tags are just served/copied as is.
 - Items in `static/` dir are served/copied as is. (Use this for images and other assets.)
 - supports `--public-url` option for `build` command.
+
+[Parcel]: https://parceljs.org/
+[Deno]: https://deno.land/
