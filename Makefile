@@ -7,3 +7,6 @@ cov:
 
 simple-example:
 	deno run --allow-read=. --allow-write=dist cli.ts build examples/simple/index.html
+
+fmt:
+	deno fmt *.ts *.md examples

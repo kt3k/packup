@@ -25,7 +25,7 @@ Commands:
 }
 
 function usageServe() {
-  console.log(``)
+  console.log(``);
 }
 
 function usageBuild() {
@@ -33,24 +33,24 @@ function usageBuild() {
 }
 
 type CliArgs = {
-  _: string[],
-  version: boolean,
-  help: boolean,
-  "out-dir"?: string,
-}
+  _: string[];
+  version: boolean;
+  help: boolean;
+  "out-dir"?: string;
+};
 
 export async function main(cliArgs: string[] = Deno.args): Promise<number> {
   const {
     _: args,
     version,
     help,
-    'out-dir': outDir = "dist",
+    "out-dir": outDir = "dist",
   } = parse(cliArgs, {
-    string: ['out-dir'],
-    boolean: ['help', 'version'],
+    string: ["out-dir"],
+    boolean: ["help", "version"],
     alias: {
-      h: 'help',
-      v: 'version',
+      h: "help",
+      v: "version",
     },
   }) as CliArgs;
 
@@ -123,7 +123,10 @@ async function build(path: string, outDir: string) {
   await ensureDir(outDir);
   // TODO(kt3k): Use pooledMap-like thing
   for await (const asset of generateAssets(path)) {
-    await Deno.writeFile(join(outDir, asset.name), new Uint8Array(await asset.arrayBuffer()));
+    await Deno.writeFile(
+      join(outDir, asset.name),
+      new Uint8Array(await asset.arrayBuffer()),
+    );
     // console.log(asset, outDir);
   }
   const timeEnded = Date.now();
