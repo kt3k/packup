@@ -1,6 +1,7 @@
 import { parse } from "https://deno.land/std@0.95.0/flags/mod.ts";
 import { join } from "https://deno.land/std@0.95.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.95.0/fs/ensure_dir.ts";
+import { serve as serveIterable } from "https://deno.land/x/iterable_file_server@v0.1.3/mod.ts";
 import { generateAssets } from "./generate_assets.ts";
 
 // TODO(kt3k): Rename to something nice.
@@ -37,14 +38,19 @@ type CliArgs = {
   version: boolean;
   help: boolean;
   "out-dir"?: string;
+  port: number;
 };
 
+/**
+ * The entrypoint
+ */
 export async function main(cliArgs: string[] = Deno.args): Promise<number> {
   const {
     _: args,
     version,
     help,
     "out-dir": outDir = "dist",
+    port = 1234,
   } = parse(cliArgs, {
     string: ["out-dir"],
     boolean: ["help", "version"],
@@ -100,7 +106,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageServe();
       return 1;
     }
-    await serve(entrypoint);
+    await serve(entrypoint, { port });
     return 0;
   }
 
@@ -111,12 +117,13 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     return 1;
   }
 
-  await serve(entrypoint);
+  await serve(entrypoint, { port });
   return 0;
 }
 
-type File = Blob & { name: string };
-
+/**
+ * The build command
+ */
 async function build(path: string, outDir: string) {
   const timeStarted = Date.now();
   console.log(`Writing the assets to ${outDir}`);
@@ -133,8 +140,19 @@ async function build(path: string, outDir: string) {
   console.log(`Built in ${(timeEnded - timeStarted) / 1000}s`);
 }
 
-async function serve(path: string) {
-  throw new Error("not implemented");
+type ServeOptions = {
+  port: number;
+}
+
+/**
+ * The serve command
+ */
+async function serve(path: string, { port }: ServeOptions) {
+  const { addr } = serveIterable(generateAssets(path), { port });
+  if (addr.transport === "tcp") {
+    console.log(`Server running at http://${addr.hostname}:${addr.port}`);
+  }
+  await new Promise(() => {});
 }
 
 if (import.meta.main) {

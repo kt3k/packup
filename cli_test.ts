@@ -32,7 +32,7 @@ Deno.test("cli.ts build -- returns 1", async () => {
 });
 
 Deno.test("cli.ts serve -- returns 1", async () => {
-  // build subcommand with no entrypoint
+  // serve subcommand with no entrypoint
   assertEquals(await main(["serve"]), 1);
 });
 
