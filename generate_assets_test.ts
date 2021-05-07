@@ -6,18 +6,18 @@ Deno.test("extractReferencedAssets - extracts referenced assets in the html docu
   assertEquals([...extractReferencedAssets(
     new DOMParser().parseFromString(
       `
-    <html>
-      <head>
-        <title>Test document</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="css/style.css" />
-        <script src="js/script.js"></script>
-      </head>
-      <body>
-        <h1></h1>
-      </body>
-    </html>
-  `,
+        <html>
+          <head>
+            <title>Test document</title>
+            <link rel="icon" href="/favicon.ico" />
+            <link rel="stylesheet" href="css/style.css" />
+            <script src="js/script.js"></script>
+          </head>
+          <body>
+            <h1></h1>
+          </body>
+        </html>
+      `,
       "text/html",
     )!,
   )], ["js/script.js", "css/style.css"]);
