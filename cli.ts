@@ -1,7 +1,7 @@
 import { parse } from "https://deno.land/std@0.95.0/flags/mod.ts";
 import { join } from "https://deno.land/std@0.95.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.95.0/fs/ensure_dir.ts";
-import { serve as serveIterable } from "https://deno.land/x/iterable_file_server@v0.1.3/mod.ts";
+import { serve as serveIterable } from "https://deno.land/x/iterable_file_server@v0.1.4/mod.ts";
 import { generateAssets } from "./generate_assets.ts";
 
 // TODO(kt3k): Rename to something nice.
@@ -142,7 +142,7 @@ async function build(path: string, outDir: string) {
 
 type ServeOptions = {
   port: number;
-}
+};
 
 /**
  * The serve command

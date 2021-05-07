@@ -4,6 +4,12 @@ import { main } from "./cli.ts";
 
 Deno.test("cli.ts build <entrypoint> --out-dir <path> -- builds the site into given path", async () => {
   const tempdir = await Deno.makeTempDir();
-  assertEquals(await main(["build", "examples/simple/index.html", "--out-dir", tempdir]), 0);
-  assertEquals(await Deno.readTextFile(join(tempdir, "index.html")), "<div>aaa</div>\n");
+  assertEquals(
+    await main(["build", "examples/simple/index.html", "--out-dir", tempdir]),
+    0,
+  );
+  assertEquals(
+    await Deno.readTextFile(join(tempdir, "index.html")),
+    "<div>aaa</div>\n",
+  );
 });
