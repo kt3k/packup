@@ -3,6 +3,7 @@ import { join } from "https://deno.land/std@0.95.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.95.0/fs/ensure_dir.ts";
 import { serve as serveIterable } from "https://deno.land/x/iterable_file_server@v0.1.4/mod.ts";
 import { generateAssets } from "./generate_assets.ts";
+import { red } from "https://deno.land/std@0.95.0/fmt/colors.ts";
 
 // TODO(kt3k): Rename to something nice.
 const NAME = "deno_parcel";
@@ -17,20 +18,71 @@ Options:
   -h, --help                  Output usage information
 
 Commands:
-  serve [options] [input...]  Starts a development server
-  build [options] [input...]  bundles for production
-  help [command]              display help information for a command
+  serve [options] <input...>  Starts a development server
+  build [options] <input...>  Bundles for production
+  help <command>              Displays help information for a command
 
   Run '${NAME} help <command>' for more information on specific commands
 `.trim());
 }
 
 function usageServe() {
-  console.log(``);
+  console.log(`
+Usage: parcel serve [options] <input...>
+
+Starts a development server
+
+Options:
+  TODO --public-url <url>         the path prefix for absolute urls
+  TODO --open [browser]           automatically open in specified browser, defaults to default browser
+  TODO --watch-for-stdin          exit when stdin closes
+  TODO --lazy                     Build async bundles on demand, when requested in the browser
+  TODO --no-hmr                   disable hot module replacement
+  TODO -p, --port <port>          set the port to serve on. defaults to $PORT or 1234
+  TODO --host <host>              set the host to listen on, defaults to listening on all interfaces
+  TODO --https                    serves files over HTTPS
+  TODO --cert <path>              path to certificate to use with HTTPS
+  TODO --key <path>               path to private key to use with HTTPS
+  TODO --hmr-port <port>          hot module replacement port
+  TODO --no-cache                 disable the filesystem cache
+  TODO --config <path>            specify which config to use. can be a path or a package name
+  TODO --cache-dir <path>         set the cache directory. defaults to ".parcel-cache"
+  TODO --no-source-maps           disable sourcemaps
+  TODO --target [name]            only build given target(s) (default: [])
+  TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
+  TODO --dist-dir <dir>           output directory to write to when unspecified by targets
+  TODO --no-autoinstall           disable autoinstall
+  TODO --profile                  enable build profiling
+  TODO -V, --version              output the version number
+  TODO --detailed-report [count]  print the asset timings and sizes in the build report (default: "10")
+  TODO --reporter <name>          additional reporters to run (default: [])
+  -h, --help                      display help for command`.trim());
 }
 
 function usageBuild() {
-  console.log(``);
+  console.log(`
+Usage: parcel build [options] <input...>
+
+bundles for production
+
+Options:
+  TODO --no-optimize              disable minification
+  TODO --no-scope-hoist           disable scope-hoisting
+  TODO --public-url <url>         the path prefix for absolute urls
+  TODO --no-content-hash          disable content hashing
+  TODO --no-cache                 disable the filesystem cache
+  TODO --config <path>            specify which config to use. can be a path or a package name
+  TODO --cache-dir <path>         set the cache directory. defaults to ".parcel-cache"
+  TODO --no-source-maps           disable sourcemaps
+  TODO --target [name]            only build given target(s) (default: [])
+  TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
+  TODO --dist-dir <dir>           output directory to write to when unspecified by targets
+  TODO --no-autoinstall           disable autoinstall
+  TODO --profile                  enable build profiling
+  TODO -V, --version              output the version number
+  TODO --detailed-report [count]  print the asset timings and sizes in the build report (default: "10")
+  TODO --reporter <name>          additional reporters to run (default: [])
+  -h, --help                      display help for command`.trim());
 }
 
 type CliArgs = {
@@ -79,6 +131,10 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
 
   if (command === "help") {
     const subcommand = args[1];
+    if (!subcommand) {
+      usage();
+      return 0;
+    }
     if (subcommand === "build") {
       usageBuild();
       return 0;
@@ -87,6 +143,8 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageServe();
       return 0;
     }
+    console.log(`${red("Error")}: Command '${subcommand}' not found`);
+    usage();
     return 1;
   }
 

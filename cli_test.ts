@@ -11,6 +11,11 @@ Deno.test("cli.ts -v, --version -- returns 0", async () => {
   assertEquals(await main(["-v"]), 0);
 });
 
+Deno.test("cli.ts help -- returns 0", async () => {
+  // This is error because no entrypoint is given
+  assertEquals(await main(["help"]), 0);
+});
+
 Deno.test("cli.ts help build -- returns 0", async () => {
   // This is error because no entrypoint is given
   assertEquals(await main(["help", "build"]), 0);

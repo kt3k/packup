@@ -3,7 +3,7 @@ import {
   DOMParser,
   Element,
 } from "https://deno.land/x/deno_dom@v0.1.9-alpha/deno-dom-wasm.ts";
-import { basename, join } from "https://deno.land/std@0.95.0/path/mod.ts";
+import { dirname, join } from "https://deno.land/std@0.95.0/path/mod.ts";
 import type { File } from "./types.ts";
 
 const decoder = new TextDecoder();
@@ -13,8 +13,17 @@ export async function* generateAssets(
   path: string,
 ): AsyncGenerator<File, void, void> {
   const html = decoder.decode(await Deno.readFile(path));
+  const base = dirname(path);
 
   yield Object.assign(new Blob([encoder.encode(html)]), { name: "index.html" });
+
+  const doc = new DOMParser().parseFromString(html, "text/html")!;
+
+  for (const path of extractReferencedAssets(doc)) {
+    console.log("Reading", join(base, path));
+    const data = await Deno.readFile(join(base, path));
+    yield Object.assign(new Blob([data]), { name: path });
+  }
 }
 
 export function* extractReferencedAssets(

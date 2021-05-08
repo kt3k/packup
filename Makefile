@@ -16,3 +16,6 @@ ex-build:
 
 ex-serve:
 	deno run --unstable --allow-read=. --allow-net=:1234 cli.ts serve examples/simple/index.html
+
+ex-serve1:
+	deno run --unstable --allow-read=. --allow-net=:1234 cli.ts serve examples/with-simple-assets/index.html
