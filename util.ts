@@ -1,4 +1,4 @@
-import { createHash } from "https://deno.land/std@0.95.0/hash/mod.ts";
+import { createHash, fromFileUrl } from "./deps.ts";
 
 export const decoder = new TextDecoder();
 
@@ -25,6 +25,10 @@ export async function getDependencies(path: string): Promise<string[]> {
 
 export async function getLocalDependencies(path: string): Promise<string[]> {
   return (await getDependencies(path)).filter((s) => s.startsWith("file:"));
+}
+
+export async function getLocalDependencyPaths(path: string): Promise<string[]> {
+  return (await getLocalDependencies(path)).map(fromFileUrl);
 }
 
 type Dependency = {
