@@ -1,6 +1,11 @@
+import {
+  Document,
+  Element,
+} from "https://deno.land/x/deno_dom@v0.1.9-alpha/deno-dom-wasm.ts";
 import { createHash, fromFileUrl } from "./deps.ts";
 
 export const decoder = new TextDecoder();
+export const encoder = new TextEncoder();
 
 export function md5(data: string | ArrayBuffer): string {
   const hash = createHash("md5");
@@ -51,4 +56,14 @@ type DenoInfo = {
   root: string,
   modules: Module[],
   size: number,
+}
+
+/**
+ * querySelectorAll wrapper
+ */
+export function* qs(doc: Document, query: string): Generator<Element, void, void> {
+  for (const node of doc.querySelectorAll(query)) {
+    // deno-lint-ignore no-explicit-any
+    yield node as any as Element;
+  }
 }

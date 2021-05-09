@@ -3,7 +3,7 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 import { extractReferencedAssets } from "./generate_assets.ts";
 
 Deno.test("extractReferencedAssets - extracts referenced assets in the html document", () => {
-  assertEquals([...extractReferencedAssets(
+  const assets = [...extractReferencedAssets(
     new DOMParser().parseFromString(
       `
         <html>
@@ -20,5 +20,8 @@ Deno.test("extractReferencedAssets - extracts referenced assets in the html docu
       `,
       "text/html",
     )!,
-  )], ["js/script.js", "css/style.css"]);
+  )];
+  assertEquals(assets.length, 2);
+  assertEquals(assets[0].constructor.name, "ScriptAsset");
+  assertEquals(assets[1].constructor.name, "CssAsset");
 });
