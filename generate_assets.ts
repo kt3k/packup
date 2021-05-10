@@ -3,47 +3,22 @@ import {
   DOMParser,
   Element,
 } from "https://deno.land/x/deno_dom@v0.1.9-alpha/deno-dom-wasm.ts";
-import { basename, dirname, join } from "https://deno.land/std@0.95.0/path/mod.ts";
+import {
+  basename,
+  dirname,
+  join,
+} from "https://deno.land/std@0.95.0/path/mod.ts";
 import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
 import type { File } from "./types.ts";
 
-/**
- * The class represents the entrypoint html.
- */
-class Entrypoint {
-  #path: string;
-  #dir: string;
-  doc?: Document;
+type GenerateAssetsOptions = {
+  watchPaths?: boolean;
+};
 
-  constructor(path: string) {
-    this.#path = path;
-    this.#dir = dirname(this.#path);
-  }
-
-  async readDocument() {
-    const html = decoder.decode(await Deno.readFile(this.#path));
-    this.doc = new DOMParser().parseFromString(html, "text/html")!;
-  }
-
-  async getWatchPaths() {
-    // extract href/src from html
-    // deno info entrypoint and extract local deps
-  }
-
-  async getTargetAssets() {
-  }
-
-  transformAssetReferences() {
-  }
-
-  toFile(): File {
-    return Object.assign(new Blob([encoder.encode(this.doc!.body.parentElement!.outerHTML)]), { name: "index.html" });
-  }
-}
-
-export async function* generateAssets(
+export async function generateAssets(
   path: string,
-): AsyncGenerator<File, void, void> {
+  opts: GenerateAssetsOptions = {},
+): Promise<[AsyncGenerator<File, void, void>, string[]]> {
   const html = decoder.decode(await Deno.readFile(path));
   const base = dirname(path);
   const filename = basename(path);
@@ -59,18 +34,48 @@ export async function* generateAssets(
   }
 
   const doc = new DOMParser().parseFromString(html, "text/html")!;
+  const assets = [...extractReferencedAssets(doc)];
 
-  for (const asset of extractReferencedAssets(doc)) {
-    yield await asset.createFileObject(pageName, base);
+  const generator = (async function* () {
+    for (const a of assets) {
+      yield await a.createFileObject(pageName, base);
+    }
+
+    yield Object.assign(
+      new Blob([encoder.encode(doc.body.parentElement!.outerHTML)]),
+      { name: filename },
+    );
+  })();
+
+  const watchPaths = opts.watchPaths
+    ? (await Promise.all(assets.map((a) => a.getWatchPaths(base)))).flat()
+    : [];
+
+  return [generator, watchPaths];
+}
+
+export async function* watchAndGenAssets(
+  path: string,
+): AsyncGenerator<File, void, void> {
+  let [assets, watchPaths] = await generateAssets(path, { watchPaths: true });
+
+  while (true) {
+    for await (const file of assets) {
+      yield file;
+    }
+    const watcher = Deno.watchFs(watchPaths);
+    for await (const _fsEvent of watcher) {
+      break;
+      // watcher.close();
+    }
+    [assets, watchPaths] = await generateAssets(path, { watchPaths: true });
   }
-
-  yield Object.assign(new Blob([encoder.encode(doc.body.parentElement!.outerHTML)]), { name: "index.html" });
 }
 
 type Asset = {
   getWatchPaths(base: string): Promise<string[]>;
   createFileObject(pageName: string, base: string): Promise<File>;
-}
+};
 
 class CssAsset implements Asset {
   static create(link: Element): CssAsset | null {
@@ -107,7 +112,7 @@ class ScriptAsset implements Asset {
     if (src) {
       return new ScriptAsset(src, script);
     }
-    return null
+    return null;
   }
 
   #src: string;

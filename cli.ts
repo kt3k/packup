@@ -2,7 +2,7 @@ import { parse } from "https://deno.land/std@0.95.0/flags/mod.ts";
 import { join } from "https://deno.land/std@0.95.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.95.0/fs/ensure_dir.ts";
 import { serve as serveIterable } from "https://deno.land/x/iterable_file_server@v0.1.4/mod.ts";
-import { generateAssets } from "./generate_assets.ts";
+import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
 import { red } from "https://deno.land/std@0.95.0/fmt/colors.ts";
 
 // TODO(kt3k): Rename to something nice.
@@ -186,13 +186,13 @@ async function build(path: string, outDir: string) {
   const timeStarted = Date.now();
   console.log(`Writing the assets to ${outDir}`);
   await ensureDir(outDir);
+  const [generator] = await generateAssets(path);
   // TODO(kt3k): Use pooledMap-like thing
-  for await (const asset of generateAssets(path)) {
+  for await (const asset of generator) {
     await Deno.writeFile(
       join(outDir, asset.name),
       new Uint8Array(await asset.arrayBuffer()),
     );
-    // console.log(asset, outDir);
   }
   const timeEnded = Date.now();
   console.log(`Built in ${(timeEnded - timeStarted) / 1000}s`);
@@ -206,7 +206,8 @@ type ServeOptions = {
  * The serve command
  */
 async function serve(path: string, { port }: ServeOptions) {
-  const { addr } = serveIterable(generateAssets(path), { port });
+  const generator = await watchAndGenAssets(path);
+  const { addr } = serveIterable(generator, { port });
   if (addr.transport === "tcp") {
     console.log(`Server running at http://${addr.hostname}:${addr.port}`);
   }

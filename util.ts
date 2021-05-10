@@ -19,7 +19,11 @@ export async function getDependencies(path: string): Promise<string[]> {
     stdout: "piped",
     stderr: "piped",
   });
-  const [status, output, stderrOutput] = await Promise.all([p.status(), p.output(), p.stderrOutput()]);
+  const [status, output, stderrOutput] = await Promise.all([
+    p.status(),
+    p.output(),
+    p.stderrOutput(),
+  ]);
   if (status.code !== 0) {
     throw new Error(decoder.decode(stderrOutput));
   }
@@ -50,18 +54,21 @@ type Module = {
   local: string;
   checksum: string;
   emit: string;
-}
+};
 
 type DenoInfo = {
-  root: string,
-  modules: Module[],
-  size: number,
-}
+  root: string;
+  modules: Module[];
+  size: number;
+};
 
 /**
  * querySelectorAll wrapper
  */
-export function* qs(doc: Document, query: string): Generator<Element, void, void> {
+export function* qs(
+  doc: Document,
+  query: string,
+): Generator<Element, void, void> {
   for (const node of doc.querySelectorAll(query)) {
     // deno-lint-ignore no-explicit-any
     yield node as any as Element;

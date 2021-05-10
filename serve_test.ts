@@ -18,6 +18,9 @@ Deno.test("cli.ts serve <entrypoint> --port <port> -- serves the site at the giv
   });
   await new Promise((resolve) => setTimeout(resolve, 2000));
   const res = await fetch("http://localhost:4567/index.html");
-  assertEquals(await res.text(), "<html><head></head><body><div>aaa</div>\n</body></html>");
+  assertEquals(
+    await res.text(),
+    "<html><head></head><body><div>aaa</div>\n</body></html>",
+  );
   p.close();
 });
