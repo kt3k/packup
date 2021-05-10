@@ -4,7 +4,6 @@
 
 # 0.1 roadmap
 
-- [ ] Bundle javascript using swc
 - [ ] Bundle javascript using esbuild
 - [ ] Assets in `static/` dir are served/copied as is. (Use this for images and
   other assets.)
@@ -13,6 +12,7 @@
 
 ## Done items
 
+- [x] Bundle javascript using swc
 - [x] `deno run cli.ts [serve] index.html` starts server at localhost port 1234,
   watch all dependencies, rebuild all assets when changed.
 - [x] `deno run cli.ts build index.html` builds static assets to 'dist'

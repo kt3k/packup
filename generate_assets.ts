@@ -15,6 +15,10 @@ type GenerateAssetsOptions = {
   watchPaths?: boolean;
 };
 
+/**
+ * Generates assets from the given entrypoint path (html).
+ * Also returns watch paths when `watchPaths` option is true.
+ */
 export async function generateAssets(
   path: string,
   opts: GenerateAssetsOptions = {},
@@ -67,10 +71,12 @@ export async function* watchAndGenAssets(
       yield file;
     }
     const watcher = Deno.watchFs(watchPaths);
-    for await (const _fsEvent of watcher) {
+    for await (const e of watcher) {
+      console.log("Changed: " + e.paths.join(""));
       break;
       // watcher.close();
     }
+    console.log("Rebuilding");
     [assets, watchPaths] = await generateAssets(path, { watchPaths: true });
   }
 }
@@ -132,8 +138,11 @@ class ScriptAsset implements Asset {
   }
 
   async createFileObject(pageName: string, base: string): Promise<File> {
-    // TODO(kt3k): Bundle!
-    const data = await Deno.readFile(join(base, this.#src));
+    const res = await Deno.emit(join(base, this.#src), {
+      bundle: "classic",
+      check: false,
+    });
+    const data = res.files["deno:///bundle.js"];
     // TODO(kt3k): Maybe align this asset naming to parcel.
     // Note: parcel uses a shorter name.
     this.#dest = `${pageName}.${md5(data)}.js`;
