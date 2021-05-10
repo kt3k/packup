@@ -1,5 +1,5 @@
 test:
-	deno test --unstable --allow-read --allow-write --allow-run=$(shell which deno) --allow-net=:4567 --coverage=coverage
+	deno test --unstable --allow-read --allow-write --allow-run=$(shell which deno) --allow-net=:4567,unpkg.com --coverage=coverage
 
 cov:
 	deno coverage coverage --lcov > coverage/lcov.info
