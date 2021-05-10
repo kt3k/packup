@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/kt3k/packup/main/sketch/logo.png" width="400" />
+
 # packup v0.0.1
 
 > Zero-config web application packager in [Deno][Deno].
