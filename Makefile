@@ -18,7 +18,10 @@ ex-serve:
 	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/simple/index.html
 
 ex-serve1:
-	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/with-simple-assets/index.html
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234,unpkg.com --allow-run=$(shell which deno) cli.ts serve examples/with-simple-assets/index.html
 
-ex-serve2:
-	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html
+ex2:
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234,unpkg.com --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html
+
+ex2-swc:
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234,unpkg.com --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html --bundler swc

@@ -7,10 +7,12 @@ import {
   join,
 } from "./deps.ts";
 import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
+import { bundleByEsbuild, bundleBySwc } from "./bundle_util.ts";
 import type { File } from "./types.ts";
 
 type GenerateAssetsOptions = {
   watchPaths?: boolean;
+  bundler?: "swc" | "esbuild";
 };
 
 /**
@@ -41,7 +43,7 @@ export async function generateAssets(
 
   const generator = (async function* () {
     for (const a of assets) {
-      yield await a.createFileObject(pageName, base);
+      yield await a.createFileObject(pageName, base, { bundler: opts.bundler });
     }
 
     yield Object.assign(
@@ -61,8 +63,12 @@ export async function generateAssets(
 
 export async function* watchAndGenAssets(
   path: string,
+  opts: GenerateAssetsOptions = {},
 ): AsyncGenerator<File, void, void> {
-  let [assets, watchPaths] = await generateAssets(path, { watchPaths: true });
+  let [assets, watchPaths] = await generateAssets(path, {
+    watchPaths: true,
+    ...opts,
+  });
 
   while (true) {
     for await (const file of assets) {
@@ -75,13 +81,21 @@ export async function* watchAndGenAssets(
       // watcher.close();
     }
     console.log("Rebuilding");
-    [assets, watchPaths] = await generateAssets(path, { watchPaths: true });
+    [assets, watchPaths] = await generateAssets(path, { watchPaths: true, ...opts });
   }
 }
 
+type CreateFileObjectOptions = {
+  bundler?: "swc" | "esbuild";
+};
+
 type Asset = {
   getWatchPaths(base: string): Promise<string[]>;
-  createFileObject(pageName: string, base: string): Promise<File>;
+  createFileObject(
+    pageName: string,
+    base: string,
+    opts: CreateFileObjectOptions,
+  ): Promise<File>;
 };
 
 class CssAsset implements Asset {
@@ -135,12 +149,15 @@ class ScriptAsset implements Asset {
     return await getLocalDependencyPaths(join(base, this.#src));
   }
 
-  async createFileObject(pageName: string, base: string): Promise<File> {
-    const res = await Deno.emit(join(base, this.#src), {
-      bundle: "classic",
-      check: false,
-    });
-    const data = res.files["deno:///bundle.js"];
+  async createFileObject(
+    pageName: string,
+    base: string,
+    { bundler }: CreateFileObjectOptions,
+  ): Promise<File> {
+    const path = join(base, this.#src);
+    const data = bundler === "swc"
+      ? await bundleBySwc(path)
+      : await bundleByEsbuild(path);
     // TODO(kt3k): Maybe align this asset naming to parcel.
     // Note: parcel uses a shorter name.
     this.#dest = `${pageName}.${md5(data)}.js`;

@@ -29,6 +29,7 @@ Usage: parcel serve [options] <input...>
 Starts a development server
 
 Options:
+  --bundler                       The internal bundler to use. "esbuild" | "swc". Default is "esbuild".
   TODO --public-url <url>         the path prefix for absolute urls
   TODO --open [browser]           automatically open in specified browser, defaults to default browser
   TODO --watch-for-stdin          exit when stdin closes
@@ -62,6 +63,7 @@ Usage: parcel build [options] <input...>
 bundles for production
 
 Options:
+  --bundler                       The internal bundler to use. "esbuild" | "swc". Default is "esbuild".
   TODO --no-optimize              disable minification
   TODO --no-scope-hoist           disable scope-hoisting
   TODO --public-url <url>         the path prefix for absolute urls
@@ -85,8 +87,9 @@ type CliArgs = {
   _: string[];
   version: boolean;
   help: boolean;
-  "out-dir"?: string;
+  "out-dir": string;
   port: number;
+  bundler: "swc" | "esbuild";
 };
 
 /**
@@ -99,8 +102,9 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     help,
     "out-dir": outDir = "dist",
     port = 1234,
+    bundler = "esbuild",
   } = parseFlags(cliArgs, {
-    string: ["out-dir"],
+    string: ["out-dir", "bundler"],
     boolean: ["help", "version"],
     alias: {
       h: "help",
@@ -150,7 +154,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageBuild();
       return 1;
     }
-    await build(entrypoint, outDir);
+    await build(entrypoint, { outDir, bundler });
     return 0;
   }
 
@@ -160,7 +164,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageServe();
       return 1;
     }
-    await serve(entrypoint, { port });
+    await serve(entrypoint, { port, bundler });
     return 0;
   }
 
@@ -171,17 +175,28 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     return 1;
   }
 
-  await serve(entrypoint, { port });
+  await serve(entrypoint, { port, bundler });
   return 0;
 }
+
+type BuildAndServeCommonOptions = {
+  bundler: "swc" | "esbuild";
+};
+
+type BuildOptions = {
+  outDir: string;
+};
 
 /**
  * The build command
  */
-async function build(path: string, outDir: string) {
+async function build(
+  path: string,
+  { bundler, outDir }: BuildOptions & BuildAndServeCommonOptions,
+) {
   console.log(`Writing the assets to ${outDir}`);
   await ensureDir(outDir);
-  const [generator] = await generateAssets(path);
+  const [generator] = await generateAssets(path, { bundler });
   // TODO(kt3k): Use pooledMap-like thing
   for await (const asset of generator) {
     await Deno.writeFile(
@@ -198,9 +213,11 @@ type ServeOptions = {
 /**
  * The serve command
  */
-async function serve(path: string, { port }: ServeOptions) {
-  const generator = await watchAndGenAssets(path);
-  const { addr } = serveIterable(generator, { port });
+async function serve(
+  path: string,
+  { port, bundler }: ServeOptions & BuildAndServeCommonOptions,
+) {
+  const { addr } = serveIterable(watchAndGenAssets(path, { bundler }), { port });
   if (addr.transport === "tcp") {
     console.log(`Server running at http://${addr.hostname}:${addr.port}`);
   }
