@@ -1,8 +1,7 @@
 import { ensureDir, join, parseFlags, red, serveIterable } from "./deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
 
-// TODO(kt3k): Rename to something nice.
-const NAME = "deno_parcel";
+const NAME = "packup";
 const VERSION = "v0.0.1";
 
 function usage() {
@@ -24,7 +23,7 @@ Commands:
 
 function usageServe() {
   console.log(`
-Usage: parcel serve [options] <input...>
+Usage: ${NAME} serve [options] <input...>
 
 Starts a development server
 
@@ -43,7 +42,6 @@ Options:
   TODO --hmr-port <port>          hot module replacement port
   TODO --no-cache                 disable the filesystem cache
   TODO --config <path>            specify which config to use. can be a path or a package name
-  TODO --cache-dir <path>         set the cache directory. defaults to ".parcel-cache"
   TODO --no-source-maps           disable sourcemaps
   TODO --target [name]            only build given target(s) (default: [])
   TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
@@ -58,7 +56,7 @@ Options:
 
 function usageBuild() {
   console.log(`
-Usage: parcel build [options] <input...>
+Usage: ${NAME} build [options] <input...>
 
 bundles for production
 
@@ -70,7 +68,6 @@ Options:
   TODO --no-content-hash          disable content hashing
   TODO --no-cache                 disable the filesystem cache
   TODO --config <path>            specify which config to use. can be a path or a package name
-  TODO --cache-dir <path>         set the cache directory. defaults to ".parcel-cache"
   TODO --no-source-maps           disable sourcemaps
   TODO --target [name]            only build given target(s) (default: [])
   TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
