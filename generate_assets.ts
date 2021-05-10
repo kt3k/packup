@@ -19,6 +19,7 @@ export async function generateAssets(
   path: string,
   opts: GenerateAssetsOptions = {},
 ): Promise<[AsyncGenerator<File, void, void>, string[]]> {
+  const timeStarted = Date.now();
   const html = decoder.decode(await Deno.readFile(path));
   const base = dirname(path);
   const filename = basename(path);
@@ -45,13 +46,15 @@ export async function generateAssets(
       new Blob([encoder.encode(doc.body.parentElement!.outerHTML)]),
       { name: filename },
     );
+    const timeEnded = Date.now();
+    console.log(`Built in ${timeEnded - timeStarted}ms`);
   })();
 
   const watchPaths = opts.watchPaths
     ? (await Promise.all(assets.map((a) => a.getWatchPaths(base)))).flat()
     : [];
 
-  return [generator, watchPaths];
+  return [generator, [path, ...watchPaths]];
 }
 
 export async function* watchAndGenAssets(

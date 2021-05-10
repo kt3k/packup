@@ -183,7 +183,6 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
  * The build command
  */
 async function build(path: string, outDir: string) {
-  const timeStarted = Date.now();
   console.log(`Writing the assets to ${outDir}`);
   await ensureDir(outDir);
   const [generator] = await generateAssets(path);
@@ -194,8 +193,6 @@ async function build(path: string, outDir: string) {
       new Uint8Array(await asset.arrayBuffer()),
     );
   }
-  const timeEnded = Date.now();
-  console.log(`Built in ${(timeEnded - timeStarted) / 1000}s`);
 }
 
 type ServeOptions = {
