@@ -2,6 +2,8 @@
 
 # packup v0.0.1
 
+[![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
+
 > Zero-config web application packager in [Deno][Deno].
 
 # 0.1 roadmap
