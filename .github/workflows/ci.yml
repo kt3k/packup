@@ -9,7 +9,6 @@ jobs:
     strategy:
       matrix:
         deno:
-          - v1.x
           - canary
     runs-on: ubuntu-latest
     steps:
