@@ -1,5 +1,5 @@
-import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.9-alpha/deno-dom-wasm.ts";
-import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { DOMParser } from "./deps.ts";
+import { assertEquals } from "./test_deps.ts";
 import { extractReferencedAssets } from "./generate_assets.ts";
 
 Deno.test("extractReferencedAssets - extracts referenced assets in the html document", () => {

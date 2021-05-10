@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { assertEquals } from "./test_deps.ts";
 
 Deno.test("cli.ts serve <entrypoint> --port <port> -- serves the site at the given port", async () => {
   const p = Deno.run({

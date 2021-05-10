@@ -1,13 +1,11 @@
 import {
+  basename,
+  dirname,
   Document,
   DOMParser,
   Element,
-} from "https://deno.land/x/deno_dom@v0.1.9-alpha/deno-dom-wasm.ts";
-import {
-  basename,
-  dirname,
   join,
-} from "https://deno.land/std@0.95.0/path/mod.ts";
+} from "./deps.ts";
 import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
 import type { File } from "./types.ts";
 

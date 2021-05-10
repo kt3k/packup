@@ -1,8 +1,4 @@
-import {
-  Document,
-  Element,
-} from "https://deno.land/x/deno_dom@v0.1.9-alpha/deno-dom-wasm.ts";
-import { createHash, fromFileUrl } from "./deps.ts";
+import { createHash, Document, Element, fromFileUrl } from "./deps.ts";
 
 export const decoder = new TextDecoder();
 export const encoder = new TextEncoder();
