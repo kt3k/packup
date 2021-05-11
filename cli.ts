@@ -196,10 +196,10 @@ async function build(
   const [generator] = await generateAssets(path, { bundler });
   // TODO(kt3k): Use pooledMap-like thing
   for await (const asset of generator) {
-    await Deno.writeFile(
-      join(outDir, asset.name),
-      new Uint8Array(await asset.arrayBuffer()),
-    );
+    const filename = join(outDir, asset.name);
+    const bytes = new Uint8Array(await asset.arrayBuffer());
+    console.log("Writing", filename, `${bytes.byteLength}B`);
+    await Deno.writeFile(filename, bytes);
   }
 }
 

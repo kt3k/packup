@@ -23,5 +23,8 @@ ex-serve1:
 ex2:
 	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234,unpkg.com --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html
 
+ex2-build:
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-write=dist --allow-net=:1234,unpkg.com --allow-run=$(shell which deno) cli.ts build examples/with-imports/index.html
+
 ex2-swc:
 	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234,unpkg.com --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html --bundler swc

@@ -13,6 +13,13 @@
 - [ ] supports `--public-url` option for `build` command.
 - [ ] Runs parcels original examples (with Deno specific stuff modification).
 - [ ] List asset sizes
+- [ ] hot reload
+
+# 1.0 roadmap
+
+- [ ] scss support
+- [ ] css import support
+- [ ] image import support
 
 ## Done items
 
