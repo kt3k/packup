@@ -21,16 +21,16 @@ ex-build:
 	deno run --unstable --allow-read=.,$(shell which deno) --allow-write=dist --allow-run=$(shell which deno) cli.ts build examples/simple/index.html
 
 ex-serve:
-	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/simple/index.html
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-net --allow-run=$(shell which deno) cli.ts serve examples/simple/index.html
 
 ex-serve1:
-	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/with-simple-assets/index.html
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-net --allow-run=$(shell which deno) cli.ts serve examples/with-simple-assets/index.html
 
 ex2:
-	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-net --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html
 
 ex2-build:
-	deno run --unstable --allow-read=.,$(shell which deno) --allow-write=dist --allow-net=:1234 --allow-run=$(shell which deno) cli.ts build examples/with-imports/index.html
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-write=dist --allow-net --allow-run=$(shell which deno) cli.ts build examples/with-imports/index.html
 
 ex2-swc:
-	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html --bundler swc
+	deno run --unstable --allow-read=.,$(shell which deno) --allow-net --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html --bundler swc

@@ -7,9 +7,15 @@ function ensureEsbuildInialized() {
     return esbuildReady;
   }
   console.log("Using esbuild bundler");
+  console.log("Initializing esbuild");
+  const timeStarted = Date.now();
   return esbuildReady = esbuild.initialize({
-    wasmURL: esbuildWasm,
+    //wasmURL: esbuildWasm,
+    wasmURL: "https://unpkg.com/esbuild-wasm@0.11.19/esbuild.wasm",
     worker: false,
+  }).then(() => {
+    const timeEnded = Date.now();
+    console.log(`Esbuild Initialized ${timeEnded - timeStarted}ms`);
   });
 }
 
