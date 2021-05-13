@@ -28,29 +28,14 @@ Usage: ${NAME} serve [options] <input...>
 Starts a development server
 
 Options:
-  --bundler                       The internal bundler to use. "esbuild" | "swc". Default is "esbuild".
+  --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   TODO --public-url <url>         the path prefix for absolute urls
   TODO --open [browser]           automatically open in specified browser, defaults to default browser
-  TODO --watch-for-stdin          exit when stdin closes
-  TODO --lazy                     Build async bundles on demand, when requested in the browser
-  TODO --no-hmr                   disable hot module replacement
   TODO -p, --port <port>          set the port to serve on. defaults to $PORT or 1234
-  TODO --host <host>              set the host to listen on, defaults to listening on all interfaces
   TODO --https                    serves files over HTTPS
   TODO --cert <path>              path to certificate to use with HTTPS
   TODO --key <path>               path to private key to use with HTTPS
-  TODO --hmr-port <port>          hot module replacement port
-  TODO --no-cache                 disable the filesystem cache
-  TODO --config <path>            specify which config to use. can be a path or a package name
-  TODO --no-source-maps           disable sourcemaps
-  TODO --target [name]            only build given target(s) (default: [])
   TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
-  TODO --dist-dir <dir>           output directory to write to when unspecified by targets
-  TODO --no-autoinstall           disable autoinstall
-  TODO --profile                  enable build profiling
-  TODO -V, --version              output the version number
-  TODO --detailed-report [count]  print the asset timings and sizes in the build report (default: "10")
-  TODO --reporter <name>          additional reporters to run (default: [])
   -h, --help                      display help for command`.trim());
 }
 
@@ -61,22 +46,10 @@ Usage: ${NAME} build [options] <input...>
 bundles for production
 
 Options:
-  --bundler                       The internal bundler to use. "esbuild" | "swc". Default is "esbuild".
-  TODO --no-optimize              disable minification
-  TODO --no-scope-hoist           disable scope-hoisting
+  --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   TODO --public-url <url>         the path prefix for absolute urls
-  TODO --no-content-hash          disable content hashing
-  TODO --no-cache                 disable the filesystem cache
-  TODO --config <path>            specify which config to use. can be a path or a package name
-  TODO --no-source-maps           disable sourcemaps
-  TODO --target [name]            only build given target(s) (default: [])
   TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
   TODO --dist-dir <dir>           output directory to write to when unspecified by targets
-  TODO --no-autoinstall           disable autoinstall
-  TODO --profile                  enable build profiling
-  TODO -V, --version              output the version number
-  TODO --detailed-report [count]  print the asset timings and sizes in the build report (default: "10")
-  TODO --reporter <name>          additional reporters to run (default: [])
   -h, --help                      display help for command`.trim());
 }
 

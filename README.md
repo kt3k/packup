@@ -10,19 +10,29 @@
 
 - [ ] Assets in `static/` dir are served/copied as is. (Use this for images and
   other assets.)
-- [ ] supports `--public-url` option for `build` command.
-- [ ] Runs parcels original examples (with Deno specific stuff modification).
-- [ ] List asset sizes
+  - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
 - [ ] hot reload
+- [ ] --port support (serve)
+- [ ] --dist-dir support (build)
 
-# 1.0 roadmap
+# 0.2.0 roadmap
 
-- [ ] scss support
+- [ ] --public-url
+- [ ] --open option
+- [ ] optimize (minify) option
 - [ ] css import support
 - [ ] image import support
 
+# 1.0 roadmap
+
+- [ ] sourcemap support
+- [ ] scss support
+
 ## Done items
 
+- [ ] Runs parcels original examples (with Deno specific stuff modification).
+  - Doesn't work because it includes commonjs references which I don't want to support.
+- [x] List asset sizes
 - [x] Bundle javascript using esbuild
 - [x] Bundle javascript using swc
 - [x] `deno run cli.ts [serve] index.html` starts server at localhost port 1234,
