@@ -13,7 +13,7 @@
 Install via deno.land/x:
 
 ```shell
-deno install --unstable --allow-read --allow-write=. --allow-run -fq https://deno.land/x/packup@v0.0.2/cli.ts
+deno install --unstable --allow-read --allow-write=. --allow-run --allow-net -fq https://deno.land/x/packup@v0.0.2/cli.ts
 ```
 
 Write HTML and JavaScript:
