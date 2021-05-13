@@ -29,6 +29,7 @@ Starts a development server
 
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
+  TODO --static <dir path>        The directory for static files. The files here are served as is.
   TODO --public-url <url>         the path prefix for absolute urls
   TODO --open [browser]           automatically open in specified browser, defaults to default browser
   TODO -p, --port <port>          set the port to serve on. defaults to $PORT or 1234
@@ -47,6 +48,7 @@ bundles for production
 
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
+  TODO --static <dir path>        The directory for static files. The files here are copied to dist as is.
   TODO --public-url <url>         the path prefix for absolute urls
   TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
   TODO --dist-dir <dir>           output directory to write to when unspecified by targets

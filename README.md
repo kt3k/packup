@@ -51,6 +51,8 @@ Then open http://localhost:1234/ in your browser.
 - [ ] --dist-dir support (build)
 - [ ] doc web site in packup
 - [ ] optimize esbuild loading
+- [ ] give the example way of properly typing the typescripts
+  - Maybe use lib: ["dom"] ?
 
 # 0.2.0 roadmap
 
