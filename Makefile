@@ -11,6 +11,12 @@ fmt:
 lint:
 	deno lint
 
+esbuild.wasm:
+	wget https://unpkg.com/esbuild-wasm@0.11.19/esbuild.wasm
+
+esbuild_wasm.js: esbuild.wasm
+	deno run -A make_esbuild_wasm.js
+
 ex-build:
 	deno run --unstable --allow-read=.,$(shell which deno) --allow-write=dist --allow-run=$(shell which deno) cli.ts build examples/simple/index.html
 

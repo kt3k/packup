@@ -1,4 +1,5 @@
 import { denoPlugin, esbuild, resolve } from "./deps.ts";
+import esbuildWasm from "./esbuild_wasm.js";
 
 let esbuildReady: null | Promise<void> = null;
 function ensureEsbuildInialized() {
@@ -7,7 +8,7 @@ function ensureEsbuildInialized() {
   }
   console.log("Using esbuild bundler");
   return esbuildReady = esbuild.initialize({
-    wasmURL: "https://unpkg.com/esbuild-wasm@0.11.19/esbuild.wasm",
+    wasmURL: esbuildWasm,
     worker: false,
   });
 }
