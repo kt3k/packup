@@ -6,6 +6,41 @@
 
 > Zero-config web application packager in [Deno][Deno].
 
+⚠️ This tool is still in its early development stage.
+
+# Usage
+
+Install via deno.land/x:
+
+```shell
+deno install --unstable --allow-read --allow-write=. --allow-run -fq https://deno.land/x/packup@v0.0.1/cli.ts
+```
+
+Write HTML and JavaScript:
+
+index.html
+```html
+<html>
+<body>
+  <script src="./index.js"></script>
+  <h1>Hi from packup!</h1>
+</body>
+</html>
+```
+
+index.js
+```js
+console.log("hello world");
+```
+
+`packup` has the development server builtin. Run the following command to start the server.
+
+```
+packup index.html
+```
+
+Then open http://localhost:1234/ in your browser.
+
 # 0.1 roadmap
 
 - [ ] Assets in `static/` dir are served/copied as is. (Use this for images and
@@ -14,6 +49,8 @@
 - [ ] hot reload
 - [ ] --port support (serve)
 - [ ] --dist-dir support (build)
+- [ ] doc web site in packup
+- [ ] optimize esbuild loading
 
 # 0.2.0 roadmap
 
