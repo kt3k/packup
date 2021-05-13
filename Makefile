@@ -1,3 +1,4 @@
+OPTS=--unstable --allow-read=.,$(shell which deno) --allow-write --allow-net=:1234,registry.npmjs.org --allow-env --allow-run
 test:
 	deno test --unstable --allow-read --allow-write --allow-run=$(shell which deno) --allow-net=:4567 --coverage=coverage
 
@@ -30,7 +31,7 @@ ex2:
 	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html
 
 ex2-build:
-	deno run --unstable --allow-read=.,$(shell which deno) --allow-write=dist --allow-net=:1234 --allow-run=$(shell which deno) cli.ts build examples/with-imports/index.html
+	deno run $(OPTS) cli.ts build examples/with-imports/index.html
 
 ex2-swc:
 	deno run --unstable --allow-read=.,$(shell which deno) --allow-net=:1234 --allow-run=$(shell which deno) cli.ts serve examples/with-imports/index.html --bundler swc
