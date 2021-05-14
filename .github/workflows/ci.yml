@@ -16,4 +16,6 @@ jobs:
       - uses: denoland/setup-deno@main
         with:
           deno-version: ${{ matrix.deno }}
+      - run: mkdir -p ~/.deno/packup
+      - run: cp esbuild.wasm ~/.deno/packup/
       - run: make test
