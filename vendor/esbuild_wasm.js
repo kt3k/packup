@@ -1,3 +1,17 @@
+// Copyright (c) 2020 Evan Wallace. All rights reserved. MIT license.
+//
+// Copied from:
+// https://gist.githubusercontent.com/lucacasonato/358c6b7e8198bfb2cf3d220e49fdcf5f/raw/3714cb0f59606eefc29ed0fea36d4cd93549938b/esbuild-wasm.js
+// Which is probably copied from:
+// https://cdn.skypack.dev/-/esbuild-wasm@v0.11.19-WYbNhFd49mqUgQtuKVBW/dist=es2020,mode=imports/optimized/esbuild-wasm.js
+// Which is transformed from:
+// https://www.npmjs.com/package/esbuild-wasm
+
+// startRunningService function is modified to load esbuild.wasm from wasm cache directory
+
+import { wasmCacheDir } from "../install_util.ts";
+import { join } from "../deps.ts";
+
 var global$1 = typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};
 var lookup = [];
 var revLookup = [];
@@ -3180,11 +3194,14 @@ ${file}:${line}:${column}: error: ${pluginText}${e.text}`;
       return initializePromise;
     };
     var startRunningService = (wasmURL, useWorker) => __async(void 0, null, function* () {
+      /*
       let res = yield fetch(wasmURL);
       if (!res.ok)
         throw new Error(`Failed to download ${JSON.stringify(wasmURL)}`);
-      let wasm = yield res.arrayBuffer();
-      let fn = (postMessage) => { 
+      */
+      // let wasm = yield res.arrayBuffer();
+      let wasm = yield Deno.readFile(join(wasmCacheDir(), "esbuild.wasm"));
+      let fn = (postMessage) => {
         {let global={};for(let o=self;o;o=Object.getPrototypeOf(o))for(let k of Object.getOwnPropertyNames(o))if(!(k in global))Object.defineProperty(global,k,{get:()=>self[k]});// Copyright 2018 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -3217,7 +3234,7 @@ ${file}:${line}:${column}: error: ${pluginText}${e.text}`;
 	if (!global.fs && global.require) {
 		const fs = require("fs");
 		if (typeof fs === "object" && fs !== null && Object.keys(fs).length !== 0) {
-			
+
     global.fs = Object.assign({}, fs, {
       // Hack around a Unicode bug in node: https://github.com/nodejs/node/issues/24550
       write(fd, buf, offset, length, position, callback) {
@@ -3242,7 +3259,7 @@ ${file}:${line}:${column}: error: ${pluginText}${e.text}`;
         fs.write(fd, buf, offset, length, position, callback);
       },
     });
-  
+
 		}
 	}
 

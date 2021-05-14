@@ -1,4 +1,5 @@
-import { NAME, VERSION, ensureDir, join, parseFlags, red, serveIterable } from "./deps.ts";
+import { NAME, VERSION, ensureDir, join, parseFlags, red } from "./deps.ts";
+import { serveIterable } from "./unstable_deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
 
 function usage() {

@@ -1,13 +1,11 @@
 import { denoPlugin, esbuild, resolve } from "./deps.ts";
-import esbuildWasm from "./esbuild_wasm.js";
 
 let esbuildReady: null | Promise<void> = null;
 function ensureEsbuildInialized() {
   if (esbuildReady) {
     return esbuildReady;
   }
-  console.log("Using esbuild bundler");
-  console.log("Initializing esbuild");
+  console.log('Using esbuild bundler');
   const timeStarted = Date.now();
   return esbuildReady = esbuild.initialize({
     //wasmURL: esbuildWasm,
@@ -15,7 +13,7 @@ function ensureEsbuildInialized() {
     worker: false,
   }).then(() => {
     const timeEnded = Date.now();
-    console.log(`Esbuild Initialized ${timeEnded - timeStarted}ms`);
+    console.log(`Esbuild initialized in ${timeEnded - timeStarted}ms`);
   });
 }
 

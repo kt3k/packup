@@ -1,12 +1,12 @@
 import { join, NAME } from "./deps.ts";
 
-function denoRoot(os = Deno.build.os): string {
+function homedir(os: typeof Deno.build.os): string {
   if (os === "windows") {
-    return join(Deno.env.get("USERPROFILE")!, ".deno");
+    return Deno.env.get("USERPROFILE")!;
   }
-  return join(Deno.env.get("HOME")!, ".deno");
+  return Deno.env.get("HOME")!;
 }
 
-export function wasmCacheDir(os = Deno.build.os): string {
-  return join(denoRoot(os), `${NAME}-cache`);
+export function wasmCacheDir(os = Deno.build.os, getHomeDir = homedir): string {
+  return join(getHomeDir(os), '.deno', `${NAME}-cache`);
 }

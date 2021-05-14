@@ -5,3 +5,4 @@ files:
   README.md:
   - packup v%.%.%
   - packup@v%.%.%
+  deps.ts: 'const VERSION = "v%.%.%";'
