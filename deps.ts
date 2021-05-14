@@ -23,3 +23,6 @@ export { esbuild };
 export { denoPlugin } from "https://raw.githubusercontent.com/lucacasonato/esbuild_deno_loader/fa2219c3df9494da6c33e3e4dffb1a33b5cc0345/mod.ts";
 
 export { serve as serveIterable } from "https://deno.land/x/iterable_file_server@v0.1.4/mod.ts";
+
+export const NAME = "packup";
+export const VERSION = "v0.0.1";

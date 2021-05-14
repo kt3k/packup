@@ -1,8 +1,5 @@
-import { ensureDir, join, parseFlags, red, serveIterable } from "./deps.ts";
+import { NAME, VERSION, ensureDir, join, parseFlags, red, serveIterable } from "./deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
-
-const NAME = "packup";
-const VERSION = "v0.0.1";
 
 function usage() {
   console.log(`
