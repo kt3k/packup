@@ -17,5 +17,5 @@ jobs:
         with:
           deno-version: ${{ matrix.deno }}
       - run: mkdir -p ~/.deno/packup
-      - run: cp esbuild.wasm ~/.deno/packup/
+      - run: cp esbuild.wasm ~/.deno/packup-cache/
       - run: make test
