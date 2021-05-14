@@ -9,8 +9,7 @@
 
 // startRunningService function is modified to load esbuild.wasm from wasm cache directory
 
-import { wasmCacheDir } from "../install_util.ts";
-import { join } from "../deps.ts";
+import { wasmPath } from "../install_util.ts";
 
 var global$1 = typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};
 var lookup = [];
@@ -3200,7 +3199,7 @@ ${file}:${line}:${column}: error: ${pluginText}${e.text}`;
         throw new Error(`Failed to download ${JSON.stringify(wasmURL)}`);
       */
       // let wasm = yield res.arrayBuffer();
-      let wasm = yield Deno.readFile(join(wasmCacheDir(), "esbuild.wasm"));
+      let wasm = yield Deno.readFile(wasmPath());
       let fn = (postMessage) => {
         {let global={};for(let o=self;o;o=Object.getPrototypeOf(o))for(let k of Object.getOwnPropertyNames(o))if(!(k in global))Object.defineProperty(global,k,{get:()=>self[k]});// Copyright 2018 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style

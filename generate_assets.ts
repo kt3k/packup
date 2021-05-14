@@ -81,7 +81,10 @@ export async function* watchAndGenAssets(
       // watcher.close();
     }
     console.log("Rebuilding");
-    [assets, watchPaths] = await generateAssets(path, { watchPaths: true, ...opts });
+    [assets, watchPaths] = await generateAssets(path, {
+      watchPaths: true,
+      ...opts,
+    });
   }
 }
 

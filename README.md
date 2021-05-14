@@ -19,6 +19,7 @@ deno run -A https://deno.land/x/packup@v0.0.5/install.ts
 Write HTML and JavaScript:
 
 index.html
+
 ```html
 <html>
 <body>
@@ -29,11 +30,13 @@ index.html
 ```
 
 index.js
+
 ```js
 console.log("hello world");
 ```
 
-`packup` has the development server builtin. Run the following command to start the server.
+`packup` has the development server builtin. Run the following command to start
+the server.
 
 ```
 packup index.html
@@ -56,6 +59,7 @@ Then open http://localhost:1234/ in your browser.
 
 # 0.2.0 roadmap
 
+- [ ] Make esbuild.wasm path configurable
 - [ ] --public-url
 - [ ] --open option
 - [ ] optimize (minify) option
@@ -70,7 +74,8 @@ Then open http://localhost:1234/ in your browser.
 ## Done items
 
 - [ ] Runs parcels original examples (with Deno specific stuff modification).
-  - Doesn't work because it includes commonjs references which I don't want to support.
+  - Doesn't work because it includes commonjs references which I don't want to
+    support.
 - [x] List asset sizes
 - [x] Bundle javascript using esbuild
 - [x] Bundle javascript using swc
@@ -83,8 +88,8 @@ Then open http://localhost:1234/ in your browser.
 
 ## Prior art
 
-- [Parcel][]
-- [Hammer][]
+- [Parcel][Parcel]
+- [Hammer][Hammer]
 
 # License
 

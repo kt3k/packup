@@ -8,5 +8,9 @@ function homedir(os: typeof Deno.build.os): string {
 }
 
 export function wasmCacheDir(os = Deno.build.os, getHomeDir = homedir): string {
-  return join(getHomeDir(os), '.deno', `${NAME}-cache`);
+  return join(getHomeDir(os), ".deno", NAME);
+}
+
+export function wasmPath(): string {
+  return join(wasmCacheDir(), "esbuild.wasm");
 }

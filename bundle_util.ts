@@ -5,7 +5,7 @@ function ensureEsbuildInialized() {
   if (esbuildReady) {
     return esbuildReady;
   }
-  console.log('Using esbuild bundler');
+  console.log("Using esbuild bundler");
   const timeStarted = Date.now();
   return esbuildReady = esbuild.initialize({
     //wasmURL: esbuildWasm,

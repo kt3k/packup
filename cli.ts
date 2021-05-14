@@ -1,4 +1,4 @@
-import { NAME, VERSION, ensureDir, join, parseFlags, red } from "./deps.ts";
+import { ensureDir, join, NAME, parseFlags, red, VERSION } from "./deps.ts";
 import { serveIterable } from "./unstable_deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
 
@@ -187,7 +187,9 @@ async function serve(
   path: string,
   { port, bundler }: ServeOptions & BuildAndServeCommonOptions,
 ) {
-  const { addr } = serveIterable(watchAndGenAssets(path, { bundler }), { port });
+  const { addr } = serveIterable(watchAndGenAssets(path, { bundler }), {
+    port,
+  });
   if (addr.transport === "tcp") {
     console.log(`Server running at http://${addr.hostname}:${addr.port}`);
   }

@@ -1,4 +1,5 @@
 test:
+	deno run -A before_testing.ts
 	deno test --unstable -A --coverage=coverage
 
 cov:
