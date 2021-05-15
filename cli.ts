@@ -28,14 +28,15 @@ Starts a development server
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   TODO --static <dir path>        The directory for static files. The files here are served as is.
-  TODO --public-url <url>         the path prefix for absolute urls
-  TODO --open [browser]           automatically open in specified browser, defaults to default browser
-  TODO -p, --port <port>          set the port to serve on. defaults to $PORT or 1234
-  TODO --https                    serves files over HTTPS
-  TODO --cert <path>              path to certificate to use with HTTPS
-  TODO --key <path>               path to private key to use with HTTPS
-  TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
-  -h, --help                      display help for command`.trim());
+  TODO --public-url <url>         The path prefix for absolute urls
+  TODO --open [browser]           Automatically open in specified browser, defaults to default browser
+  TODO -p, --port <port>          Set the port to serve on. defaults to $PORT or 1234
+  TODO --https                    Serves files over HTTPS
+  TODO --cert <path>              The path to certificate to use with HTTPS
+  TODO --key <path>               The path to private key to use with HTTPS
+  TODO --log-level <level>        Set the log level (choices: "none", "error", "warn", "info", "verbose")
+  -h, --help                      Display help for command
+`.trim());
 }
 
 function usageBuild() {
@@ -47,10 +48,11 @@ bundles for production
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   TODO --static <dir path>        The directory for static files. The files here are copied to dist as is.
-  TODO --public-url <url>         the path prefix for absolute urls
-  TODO --log-level <level>        set the log level (choices: "none", "error", "warn", "info", "verbose")
-  TODO --dist-dir <dir>           output directory to write to when unspecified by targets
-  -h, --help                      display help for command`.trim());
+  TODO --public-url <url>         The path prefix for absolute urls
+  TODO -L, --log-level <level>    Set the log level (choices: "none", "error", "warn", "info", "verbose")
+  TODO --dist-dir <dir>           Output directory to write to when unspecified by targets
+  -h, --help                      Display help for command
+`.trim());
 }
 
 type CliArgs = {
@@ -82,17 +84,31 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     },
   }) as CliArgs;
 
-  if (help) {
-    usage();
-    return 0;
-  }
-
   if (version) {
     console.log(NAME, VERSION);
     return 0;
   }
 
   const command = args[0];
+
+  if (help) {
+    if (command) {
+      switch (command) {
+        case "build":
+          usageBuild();
+          return 0;
+        case "serve":
+          usageServe();
+          return 0;
+        default:
+          console.error("Error: Command not found:", command);
+          usage();
+          return 1;
+      }
+    }
+    usage();
+    return 0;
+  }
 
   if (!command) {
     usage();
