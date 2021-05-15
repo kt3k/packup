@@ -48,10 +48,10 @@ bundles for production
 
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
-  TODO --static-path <dir path>   The directory for static files. The files here are copied to dist as is.
+  --dist-dir <dir>                Output directory to write to when unspecified by targets
+  TODO --static-path <dir>        The directory for static files. The files here are copied to dist as is.
   TODO --public-url <url>         The path prefix for absolute urls
   TODO -L, --log-level <level>    Set the log level (choices: "none", "error", "warn", "info", "verbose")
-  TODO --dist-dir <dir>           Output directory to write to when unspecified by targets
   -h, --help                      Display help for command
 `.trim());
 }
@@ -60,7 +60,7 @@ type CliArgs = {
   _: string[];
   version: boolean;
   help: boolean;
-  "out-dir": string;
+  "dist-dir": string;
   port: number;
   bundler: "swc" | "esbuild";
 };
@@ -73,7 +73,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     _: args,
     version,
     help,
-    "out-dir": outDir = "dist",
+    "dist-dir": distDir = "dist",
     port = 1234,
     bundler = "esbuild",
   } = parseFlags(cliArgs, {
@@ -141,7 +141,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageBuild();
       return 1;
     }
-    await build(entrypoint, { outDir, bundler });
+    await build(entrypoint, { distDir, bundler });
     return 0;
   }
 
@@ -171,7 +171,7 @@ type BuildAndServeCommonOptions = {
 };
 
 type BuildOptions = {
-  outDir: string;
+  distDir: string;
 };
 
 /**
@@ -179,14 +179,14 @@ type BuildOptions = {
  */
 async function build(
   path: string,
-  { bundler, outDir }: BuildOptions & BuildAndServeCommonOptions,
+  { bundler, distDir }: BuildOptions & BuildAndServeCommonOptions,
 ) {
-  console.log(`Writing the assets to ${outDir}`);
-  await ensureDir(outDir);
+  console.log(`Writing the assets to ${distDir}`);
+  await ensureDir(distDir);
   const [generator] = await generateAssets(path, { bundler });
   // TODO(kt3k): Use pooledMap-like thing
   for await (const asset of generator) {
-    const filename = join(outDir, asset.name);
+    const filename = join(distDir, asset.name);
     const bytes = new Uint8Array(await asset.arrayBuffer());
     console.log("Writing", filename, byteSize(bytes.byteLength));
     await Deno.writeFile(filename, bytes);
