@@ -28,15 +28,15 @@ Starts a development server
 
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
+  -p, --port <port>               Sets the port to serve on. Default is 1234.
   TODO --static-path <dir path>   The directory for static files. The files here are served as is.
-  TODO --public-url <url>         The path prefix for absolute urls
-  TODO --open [browser]           Automatically open in specified browser, defaults to default browser
-  TODO -p, --port <port>          Set the port to serve on. defaults to $PORT or 1234
-  TODO --https                    Serves files over HTTPS
-  TODO --cert <path>              The path to certificate to use with HTTPS
-  TODO --key <path>               The path to private key to use with HTTPS
-  TODO --log-level <level>        Set the log level (choices: "none", "error", "warn", "info", "verbose")
-  -h, --help                      Display help for command
+  TODO --public-url <url>         The path prefix for absolute urls.
+  TODO --open [browser]           Automatically opens in specified browser. Default is the default browser.
+  TODO --https                    Serves files over HTTPS.
+  TODO --cert <path>              The path to certificate to use with HTTPS.
+  TODO --key <path>               The path to private key to use with HTTPS.
+  TODO --log-level <level>        Sets the log level (choices: "none", "error", "warn", "info", "verbose")
+  -h, --help                      Displays help for command.
 `.trim());
 }
 

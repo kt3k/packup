@@ -57,7 +57,6 @@ Then open http://localhost:1234/ in your browser.
   other assets.)
   - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
 - [ ] hot reload
-- [ ] --port support (serve)
 - [ ] doc web site in packup
 - [ ] optimize esbuild loading
 - [ ] give the example way of properly typing the typescripts
@@ -79,6 +78,7 @@ Then open http://localhost:1234/ in your browser.
 
 ## Done items
 
+- [x] --port support (serve)
 - [x] --dist-dir support (build)
 - [ ] Runs parcels original examples (with Deno specific stuff modification).
   - Doesn't work because it includes commonjs references which I don't want to
