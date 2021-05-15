@@ -70,3 +70,21 @@ export function* qs(
     yield node as any as Element;
   }
 }
+
+const KB = 2 ** 10;
+const MB = 2 ** 20;
+/**
+ * Returns human readable byte size expression.
+ *
+ * e.g.
+ *   1700 bytes -> 1.66KB
+ *   1300000 bytes -> 1.24MB
+ */
+export function byteSize(n: number) {
+  if (n > MB) {
+    return `${(n / MB).toFixed(2)}MB`;
+  } else if (n > KB) {
+    return `${(n / KB).toFixed(2)}KB`;
+  }
+  return `${n}B`;
+}

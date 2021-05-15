@@ -5,6 +5,7 @@ import {
   getLocalDependencies,
   getLocalDependencyPaths,
   md5,
+  byteSize,
 } from "./util.ts";
 
 Deno.test("md5 - returns md5 of the given data", () => {
@@ -49,4 +50,10 @@ Deno.test("getLocalDependencyPaths - returns local dependency paths", async () =
     join(cwd, "testdata/baz.js"),
     join(cwd, "testdata/foo.js"),
   ]);
+});
+
+Deno.test("byteSize", () => {
+  assertEquals(byteSize(345), `345B`);
+  assertEquals(byteSize(1700), `1.66KB`);
+  assertEquals(byteSize(1300000), `1.24MB`);
 });

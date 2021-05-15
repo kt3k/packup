@@ -1,6 +1,7 @@
 import { ensureDir, join, NAME, parseFlags, red, VERSION } from "./deps.ts";
 import { serveIterable } from "./unstable_deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
+import { byteSize } from "./util.ts";
 
 function usage() {
   console.log(`
@@ -27,7 +28,7 @@ Starts a development server
 
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
-  TODO --static <dir path>        The directory for static files. The files here are served as is.
+  TODO --static-path <dir path>   The directory for static files. The files here are served as is.
   TODO --public-url <url>         The path prefix for absolute urls
   TODO --open [browser]           Automatically open in specified browser, defaults to default browser
   TODO -p, --port <port>          Set the port to serve on. defaults to $PORT or 1234
@@ -47,7 +48,7 @@ bundles for production
 
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
-  TODO --static <dir path>        The directory for static files. The files here are copied to dist as is.
+  TODO --static-path <dir path>   The directory for static files. The files here are copied to dist as is.
   TODO --public-url <url>         The path prefix for absolute urls
   TODO -L, --log-level <level>    Set the log level (choices: "none", "error", "warn", "info", "verbose")
   TODO --dist-dir <dir>           Output directory to write to when unspecified by targets
@@ -187,7 +188,7 @@ async function build(
   for await (const asset of generator) {
     const filename = join(outDir, asset.name);
     const bytes = new Uint8Array(await asset.arrayBuffer());
-    console.log("Writing", filename, `${bytes.byteLength}B`);
+    console.log("Writing", filename, byteSize(bytes.byteLength));
     await Deno.writeFile(filename, bytes);
   }
 }
