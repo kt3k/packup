@@ -8,6 +8,13 @@
 
 ⚠️ This tool is still in its early development stage.
 
+# Features
+
+- 📦 Bundle web application like [Parcel][Parcel].
+- ✨ Support TypeScript out of the box.
+- 🦕 Deno-compatible ES Modules resolution.
+- 💨 Fast build with [Esbuild][Esbuild]-wasm bundler.
+
 # Usage
 
 Install via deno.land/x:
@@ -23,13 +30,13 @@ index.html
 ```html
 <html>
 <body>
-  <script src="./index.js"></script>
+  <script src="./main.ts"></script>
   <h1>Hi from packup!</h1>
 </body>
 </html>
 ```
 
-index.js
+main.ts
 
 ```js
 console.log("hello world");
@@ -96,5 +103,6 @@ Then open http://localhost:1234/ in your browser.
 MIT
 
 [Parcel]: https://parceljs.org/
+[Esbuild]: https://esbuild.github.io/
 [Deno]: https://deno.land/
 [Hammer]: https://github.com/sinclairzx81/hammer
