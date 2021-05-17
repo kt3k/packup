@@ -10,65 +10,83 @@ import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
 import { bundleByEsbuild, bundleBySwc } from "./bundle_util.ts";
 import type { File } from "./types.ts";
 
+/**
+ * Options for asset generation.
+ *
+ * @property watchPaths true when the system is watching the paths i.e. packup serve
+ * @property bundler Which bundler to use. Maybe we drop swc later.
+ * @property onBuild The hook which is called when the build is finished. Used when `packup serve`
+ */
 type GenerateAssetsOptions = {
   watchPaths?: boolean;
   bundler?: "swc" | "esbuild";
+  onBuild?: () => void;
+  insertLivereloadScript?: boolean;
+  livereloadPort?: number;
 };
 
 /**
  * Generates assets from the given entrypoint path (html).
  * Also returns watch paths when `watchPaths` option is true.
+ *
+ * Used both in `packup build` and `packup serve`.
  */
 export async function generateAssets(
   path: string,
   opts: GenerateAssetsOptions = {},
 ): Promise<[AsyncGenerator<File, void, void>, string[]]> {
-  const timeStarted = Date.now();
-  const html = decoder.decode(await Deno.readFile(path));
-  const base = dirname(path);
-  const filename = basename(path);
+  const buildStarted = Date.now();
+  const htmlAsset = await HtmlAsset.create(path);
 
-  if (!filename.endsWith(".html")) {
-    throw new Error(`Entrypoint needs to be an html file: ${path}`);
+  const assets = [...htmlAsset.extractReferencedAssets()];
+
+  if (opts.insertLivereloadScript) {
+    htmlAsset.insertScriptTag("/__livereload__.js");
   }
-
-  const pageName = filename.replace(/\.html$/, "");
-
-  if (!pageName) {
-    throw new Error(`Bad entrypoint name: ${path}`);
-  }
-
-  const doc = new DOMParser().parseFromString(html, "text/html")!;
-  const assets = [...extractReferencedAssets(doc)];
 
   const generator = (async function* () {
     for (const a of assets) {
-      yield await a.createFileObject(pageName, base, { bundler: opts.bundler });
+      // TODO(kt3k): These can be concurrent
+      yield await a.createFileObject(htmlAsset.pageName, htmlAsset.base, { bundler: opts.bundler });
+    }
+    if (opts.insertLivereloadScript) {
+      yield await Object.assign(new Blob([`
+        window.onload = () => {
+          new WebSocket("ws://localhost:${opts.livereloadPort!}/livereload").onmessage = () => location.reload();
+        };
+      `]), { name: "__livereload__.js" });
     }
 
-    yield Object.assign(
-      new Blob([encoder.encode(doc.body.parentElement!.outerHTML)]),
-      { name: filename },
-    );
-    const timeEnded = Date.now();
-    console.log(`Built in ${timeEnded - timeStarted}ms`);
+    // This needs to be the last.
+    yield htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base, { bundler: opts.bundler });
+    console.log(`Built in ${Date.now() - buildStarted}ms`);
+
+    // If build hook is set, call it. Used for live reloading.
+    opts.onBuild?.();
   })();
 
   const watchPaths = opts.watchPaths
-    ? (await Promise.all(assets.map((a) => a.getWatchPaths(base)))).flat()
+    ? (await Promise.all(assets.map((a) => a.getWatchPaths(htmlAsset.base)))).flat()
     : [];
 
   return [generator, [path, ...watchPaths]];
 }
 
+/**
+ * Builds the entrypoint and watches the all files referenced from the entrypoint.
+ * If any change is happend in any of the watched paths, then builds again and update
+ * the watching paths. Used in `packup serve`.
+ */
 export async function* watchAndGenAssets(
   path: string,
   opts: GenerateAssetsOptions = {},
 ): AsyncGenerator<File, void, void> {
-  let [assets, watchPaths] = await generateAssets(path, {
-    watchPaths: true,
+  opts = {
     ...opts,
-  });
+    watchPaths: true,
+    insertLivereloadScript: true,
+  };
+  let [assets, watchPaths] = await generateAssets(path, opts);
 
   while (true) {
     for await (const file of assets) {
@@ -81,10 +99,7 @@ export async function* watchAndGenAssets(
       // watcher.close();
     }
     console.log("Rebuilding");
-    [assets, watchPaths] = await generateAssets(path, {
-      watchPaths: true,
-      ...opts,
-    });
+    [assets, watchPaths] = await generateAssets(path, opts);
   }
 }
 
@@ -100,6 +115,58 @@ type Asset = {
     opts: CreateFileObjectOptions,
   ): Promise<File>;
 };
+
+/**
+ * Build asset which represents the entrypoint html file.
+ */
+class HtmlAsset implements Asset {
+  static async create(path: string): Promise<HtmlAsset> {
+    const html = decoder.decode(await Deno.readFile(path));
+    return new HtmlAsset(html, path);
+  }
+
+  #doc: Document;
+  #path: string;
+  base: string;
+  #filename: string;
+  pageName: string;
+  constructor(html: string, path: string) {
+    this.#doc = new DOMParser().parseFromString(html, "text/html")!;
+    this.#path = path;
+    this.base = dirname(path);
+    this.#filename = basename(path);
+    if (!this.#filename.endsWith(".html")) {
+      throw new Error(`Entrypoint needs to be an html file: ${path}`);
+    }
+
+    this.pageName = this.#filename.replace(/\.html$/, "");
+
+    if (!this.pageName) {
+      throw new Error(`Bad entrypoint name: ${path}`);
+    }
+  }
+
+  extractReferencedAssets() {
+    return extractReferencedAssets(this.#doc);
+  }
+
+  createFileObject(_pageName: string, _base: string, _opts: CreateFileObjectOptions) {
+    return Promise.resolve(Object.assign(
+      new Blob([encoder.encode(this.#doc.body.parentElement!.outerHTML)]),
+      { name: this.#filename },
+    ));
+  }
+
+  getWatchPaths() {
+    return Promise.resolve([this.#path]);
+  }
+
+  insertScriptTag(path: string) {
+    const script = this.#doc.createElement("script");
+    script.setAttribute("src", path);
+    this.#doc.body.insertBefore(script, null);
+  }
+}
 
 class CssAsset implements Asset {
   static create(link: Element): CssAsset | null {

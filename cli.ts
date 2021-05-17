@@ -204,7 +204,7 @@ async function serve(
   path: string,
   { port, bundler }: ServeOptions & BuildAndServeCommonOptions,
 ) {
-  const { addr } = serveIterable(watchAndGenAssets(path, { bundler }), {
+  const { addr } = serveIterable(watchAndGenAssets(path, { bundler, livereloadPort: port }), {
     port,
   });
   if (addr.transport === "tcp") {
