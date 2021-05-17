@@ -18,7 +18,7 @@ Deno.test("cli.ts serve <entrypoint> --port <port> -- serves the site at the giv
   const res = await fetch("http://localhost:4567/index.html");
   assertEquals(
     await res.text(),
-    "<html><head></head><body><div>aaa</div>\n</body></html>",
+    `<html><head></head><body><div>aaa</div>\n<script src="/__livereload__.js"></script></body></html>`,
   );
   p.close();
 });
