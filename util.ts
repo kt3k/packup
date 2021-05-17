@@ -1,4 +1,10 @@
-import { createHash, Document, Element, fromFileUrl } from "./deps.ts";
+import {
+  createHash,
+  Document,
+  Element,
+  fromFileUrl,
+  MuxAsyncIterator,
+} from "./deps.ts";
 
 export const decoder = new TextDecoder();
 export const encoder = new TextEncoder();
@@ -87,4 +93,22 @@ export function byteSize(n: number) {
     return `${(n / KB).toFixed(2)}KB`;
   }
   return `${n}B`;
+}
+
+// TODO(kt3k): Remove this util when https://github.com/denoland/deno_std/pull/923 is merged.
+function asyncIterableToAsyncIterableIterator<T>(iterable: AsyncIterable<T>): AsyncIterableIterator<T> {
+  const iterator = iterable[Symbol.asyncIterator]();
+  const iterableIterator = Object.assign(iterator, {
+    [Symbol.asyncIterator]() {
+      return iterableIterator;
+    }
+  });
+  return iterableIterator;
+}
+
+export function mux<T>(iters: AsyncIterable<T>[]): AsyncIterable<T> {
+  return iters.reduce((mux: MuxAsyncIterator<T>, iter) => {
+    mux.add(asyncIterableToAsyncIterableIterator(iter));
+    return mux;
+  }, new MuxAsyncIterator<T>());
 }

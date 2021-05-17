@@ -53,10 +53,10 @@ Then open http://localhost:1234/ in your browser.
 
 # 0.1 roadmap
 
+- [ ] livereload
 - [ ] Assets in `static/` dir are served/copied as is. (Use this for images and
   other assets.)
   - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
-- [ ] hot reload
 - [ ] doc web site in packup
 - [ ] give the example way of properly typing the typescripts
   - Maybe use lib: ["dom"] ?

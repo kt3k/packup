@@ -9,6 +9,7 @@ export {
 export { ensureDir } from "https://deno.land/std@0.95.0/fs/ensure_dir.ts";
 export { parse as parseFlags } from "https://deno.land/std@0.95.0/flags/mod.ts";
 export { red } from "https://deno.land/std@0.95.0/fmt/colors.ts";
+export { MuxAsyncIterator } from "https://deno.land/std@0.95.0/async/mux_async_iterator.ts";
 
 export {
   Document,
