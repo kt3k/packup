@@ -1,6 +1,7 @@
 import { ensureDir, join, NAME, parseFlags, red, VERSION } from "./deps.ts";
 import { serveIterable } from "./unstable_deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
+import { livereloadServer } from "./livereload_server.ts";
 import { byteSize } from "./util.ts";
 
 function usage() {
@@ -204,9 +205,22 @@ async function serve(
   path: string,
   { port, bundler }: ServeOptions & BuildAndServeCommonOptions,
 ) {
-  const { addr } = serveIterable(watchAndGenAssets(path, { bundler, livereloadPort: port }), {
-    port,
-  });
+  const livereloadPort = 35729;
+  const buildEventHub = new EventTarget();
+  livereloadServer(livereloadPort, buildEventHub);
+  const { addr } = serveIterable(
+    watchAndGenAssets(
+      path,
+      {
+        bundler,
+        livereloadPort,
+        onBuild: () => {
+          console.log('onBuild');
+          buildEventHub.dispatchEvent(new CustomEvent("reload"))
+        },
+      }
+    ),
+    { port });
   if (addr.transport === "tcp") {
     console.log(`Server running at http://${addr.hostname}:${addr.port}`);
   }

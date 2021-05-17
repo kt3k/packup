@@ -99,6 +99,7 @@ export async function* watchAndGenAssets(
       // watcher.close();
     }
     console.log("Rebuilding");
+    await new Promise<void>((resolve) => setTimeout(() => resolve(), 100));
     [assets, watchPaths] = await generateAssets(path, opts);
   }
 }
@@ -121,6 +122,7 @@ type Asset = {
  */
 class HtmlAsset implements Asset {
   static async create(path: string): Promise<HtmlAsset> {
+    console.log('Reading', path);
     const html = decoder.decode(await Deno.readFile(path));
     return new HtmlAsset(html, path);
   }
