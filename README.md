@@ -53,6 +53,7 @@ Then open http://localhost:1234/ in your browser.
 
 # 0.1 roadmap
 
+- [ ] implement --log-level
 - [ ] Assets in `static/` dir are served/copied as is. (Use this for images and
   other assets.)
   - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
