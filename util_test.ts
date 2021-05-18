@@ -1,11 +1,11 @@
 import { assertEquals } from "./test_deps.ts";
 import { join } from "./deps.ts";
 import {
+  byteSize,
   getDependencies,
   getLocalDependencies,
   getLocalDependencyPaths,
   md5,
-  byteSize,
 } from "./util.ts";
 
 Deno.test("md5 - returns md5 of the given data", () => {

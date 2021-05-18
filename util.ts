@@ -96,12 +96,14 @@ export function byteSize(n: number) {
 }
 
 // TODO(kt3k): Remove this util when https://github.com/denoland/deno_std/pull/923 is merged.
-function asyncIterableToAsyncIterableIterator<T>(iterable: AsyncIterable<T>): AsyncIterableIterator<T> {
+function asyncIterableToAsyncIterableIterator<T>(
+  iterable: AsyncIterable<T>,
+): AsyncIterableIterator<T> {
   const iterator = iterable[Symbol.asyncIterator]();
   const iterableIterator = Object.assign(iterator, {
     [Symbol.asyncIterator]() {
       return iterableIterator;
-    }
+    },
   });
   return iterableIterator;
 }

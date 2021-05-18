@@ -8,6 +8,7 @@ import {
 } from "./deps.ts";
 import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
 import { bundleByEsbuild, bundleBySwc } from "./bundle_util.ts";
+import { logger } from "./logger_util.ts";
 import type { File } from "./types.ts";
 
 /**
@@ -41,32 +42,32 @@ export async function generateAssets(
   const assets = [...htmlAsset.extractReferencedAssets()];
 
   if (opts.insertLivereloadScript) {
-    htmlAsset.insertScriptTag("/__livereload__.js");
+    htmlAsset.insertScriptTag(
+      `http://localhost:${opts.livereloadPort!}/livereload.js`,
+    );
   }
 
   const generator = (async function* () {
     for (const a of assets) {
       // TODO(kt3k): These can be concurrent
-      yield await a.createFileObject(htmlAsset.pageName, htmlAsset.base, { bundler: opts.bundler });
-    }
-    if (opts.insertLivereloadScript) {
-      yield await Object.assign(new Blob([`
-        window.onload = () => {
-          new WebSocket("ws://localhost:${opts.livereloadPort!}/livereload").onmessage = () => location.reload();
-        };
-      `]), { name: "__livereload__.js" });
+      yield await a.createFileObject(htmlAsset.pageName, htmlAsset.base, {
+        bundler: opts.bundler,
+      });
     }
 
     // This needs to be the last.
-    yield htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base, { bundler: opts.bundler });
-    console.log(`Built in ${Date.now() - buildStarted}ms`);
+    yield htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base, {
+      bundler: opts.bundler,
+    });
+    logger.log(`Built in ${Date.now() - buildStarted}ms`);
 
     // If build hook is set, call it. Used for live reloading.
     opts.onBuild?.();
   })();
 
   const watchPaths = opts.watchPaths
-    ? (await Promise.all(assets.map((a) => a.getWatchPaths(htmlAsset.base)))).flat()
+    ? (await Promise.all(assets.map((a) => a.getWatchPaths(htmlAsset.base))))
+      .flat()
     : [];
 
   return [generator, [path, ...watchPaths]];
@@ -94,11 +95,11 @@ export async function* watchAndGenAssets(
     }
     const watcher = Deno.watchFs(watchPaths);
     for await (const e of watcher) {
-      console.log("Changed: " + e.paths.join(""));
+      logger.log("Changed: " + e.paths.join(""));
       break;
       // watcher.close();
     }
-    console.log("Rebuilding");
+    logger.log("Rebuilding");
     await new Promise<void>((resolve) => setTimeout(() => resolve(), 100));
     [assets, watchPaths] = await generateAssets(path, opts);
   }
@@ -122,7 +123,7 @@ type Asset = {
  */
 class HtmlAsset implements Asset {
   static async create(path: string): Promise<HtmlAsset> {
-    console.log('Reading', path);
+    logger.debug("Reading", path);
     const html = decoder.decode(await Deno.readFile(path));
     return new HtmlAsset(html, path);
   }
@@ -152,7 +153,11 @@ class HtmlAsset implements Asset {
     return extractReferencedAssets(this.#doc);
   }
 
-  createFileObject(_pageName: string, _base: string, _opts: CreateFileObjectOptions) {
+  createFileObject(
+    _pageName: string,
+    _base: string,
+    _opts: CreateFileObjectOptions,
+  ) {
     return Promise.resolve(Object.assign(
       new Blob([encoder.encode(this.#doc.body.parentElement!.outerHTML)]),
       { name: this.#filename },

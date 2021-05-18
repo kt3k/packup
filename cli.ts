@@ -3,9 +3,10 @@ import { serveIterable } from "./unstable_deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
 import { livereloadServer } from "./livereload_server.ts";
 import { byteSize } from "./util.ts";
+import { logger, setLogLevel } from "./logger_util.ts";
 
 function usage() {
-  console.log(`
+  logger.log(`
 Usage: ${NAME} <command> [options]
 
 Options:
@@ -22,7 +23,7 @@ Commands:
 }
 
 function usageServe() {
-  console.log(`
+  logger.log(`
 Usage: ${NAME} serve [options] <input...>
 
 Starts a development server
@@ -30,19 +31,19 @@ Starts a development server
 Options:
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   -p, --port <port>               Sets the port to serve on. Default is 1234.
+  --log-level <level>             Sets the log level. "error", "warn", "info", "debug" or "trace". Default is "info".
   TODO --static-path <dir path>   The directory for static files. The files here are served as is.
   TODO --public-url <url>         The path prefix for absolute urls.
   TODO --open [browser]           Automatically opens in specified browser. Default is the default browser.
   TODO --https                    Serves files over HTTPS.
   TODO --cert <path>              The path to certificate to use with HTTPS.
   TODO --key <path>               The path to private key to use with HTTPS.
-  TODO --log-level <level>        Sets the log level (choices: "none", "error", "warn", "info", "verbose")
   -h, --help                      Displays help for command.
 `.trim());
 }
 
 function usageBuild() {
-  console.log(`
+  logger.log(`
 Usage: ${NAME} build [options] <input...>
 
 bundles for production
@@ -62,6 +63,7 @@ type CliArgs = {
   version: boolean;
   help: boolean;
   "dist-dir": string;
+  "log-level": "error" | "warn" | "info" | "debug" | "trace";
   port: number;
   bundler: "swc" | "esbuild";
 };
@@ -75,10 +77,11 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     version,
     help,
     "dist-dir": distDir = "dist",
-    port = 1234,
+    "log-level": logLevel = "info",
+    port = "1234",
     bundler = "esbuild",
   } = parseFlags(cliArgs, {
-    string: ["out-dir", "bundler"],
+    string: ["out-dir", "log-level", "bundler", "port"],
     boolean: ["help", "version"],
     alias: {
       h: "help",
@@ -86,8 +89,10 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     },
   }) as CliArgs;
 
+  setLogLevel(logLevel);
+
   if (version) {
-    console.log(NAME, VERSION);
+    logger.log(NAME, VERSION);
     return 0;
   }
 
@@ -103,7 +108,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
           usageServe();
           return 0;
         default:
-          console.error("Error: Command not found:", command);
+          logger.error("Error: Command not found:", command);
           usage();
           return 1;
       }
@@ -131,7 +136,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageServe();
       return 0;
     }
-    console.log(`${red("Error")}: Command '${subcommand}' not found`);
+    logger.error(`${red("Error")}: Command '${subcommand}' not found`);
     usage();
     return 1;
   }
@@ -152,7 +157,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageServe();
       return 1;
     }
-    await serve(entrypoint, { port, bundler });
+    await serve(entrypoint, { port: +port, bundler });
     return 0;
   }
 
@@ -163,7 +168,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     return 1;
   }
 
-  await serve(entrypoint, { port, bundler });
+  await serve(entrypoint, { port: +port, bundler });
   return 0;
 }
 
@@ -182,14 +187,15 @@ async function build(
   path: string,
   { bundler, distDir }: BuildOptions & BuildAndServeCommonOptions,
 ) {
-  console.log(`Writing the assets to ${distDir}`);
+  logger.log(`Writing the assets to ${distDir}`);
   await ensureDir(distDir);
   const [generator] = await generateAssets(path, { bundler });
   // TODO(kt3k): Use pooledMap-like thing
   for await (const asset of generator) {
     const filename = join(distDir, asset.name);
     const bytes = new Uint8Array(await asset.arrayBuffer());
-    console.log("Writing", filename, byteSize(bytes.byteLength));
+    // TODO(kt3k): Print more structured report
+    logger.log("Writing", filename, byteSize(bytes.byteLength));
     await Deno.writeFile(filename, bytes);
   }
 }
@@ -215,14 +221,15 @@ async function serve(
         bundler,
         livereloadPort,
         onBuild: () => {
-          console.log('onBuild');
-          buildEventHub.dispatchEvent(new CustomEvent("reload"))
+          logger.debug("onBuild");
+          buildEventHub.dispatchEvent(new CustomEvent("reload"));
         },
-      }
+      },
     ),
-    { port });
+    { port },
+  );
   if (addr.transport === "tcp") {
-    console.log(`Server running at http://${addr.hostname}:${addr.port}`);
+    logger.log(`Server running at http://${addr.hostname}:${addr.port}`);
   }
   await new Promise(() => {});
 }
