@@ -29,15 +29,16 @@ Usage: ${NAME} serve [options] <input...>
 Starts a development server
 
 Options:
-  --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   -p, --port <port>               Sets the port to serve on. Default is 1234.
+  --livereload-port               Sets the port for live reloading. Default is 35729.
   --log-level <level>             Sets the log level. "error", "warn", "info", "debug" or "trace". Default is "info".
-  TODO --static-path <dir path>   The directory for static files. The files here are served as is.
-  TODO --public-url <url>         The path prefix for absolute urls.
   TODO --open [browser]           Automatically opens in specified browser. Default is the default browser.
+  TODO --public-url <url>         The path prefix for absolute urls.
+  TODO --static-path <dir path>   The directory for static files. The files here are served as is.
   TODO --https                    Serves files over HTTPS.
   TODO --cert <path>              The path to certificate to use with HTTPS.
   TODO --key <path>               The path to private key to use with HTTPS.
+  --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   -h, --help                      Displays help for command.
 `.trim());
 }
@@ -49,11 +50,11 @@ Usage: ${NAME} build [options] <input...>
 bundles for production
 
 Options:
-  --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   --dist-dir <dir>                Output directory to write to when unspecified by targets
   TODO --static-path <dir>        The directory for static files. The files here are copied to dist as is.
   TODO --public-url <url>         The path prefix for absolute urls
   TODO -L, --log-level <level>    Set the log level (choices: "none", "error", "warn", "info", "verbose")
+  --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   -h, --help                      Display help for command
 `.trim());
 }
@@ -64,7 +65,8 @@ type CliArgs = {
   help: boolean;
   "dist-dir": string;
   "log-level": "error" | "warn" | "info" | "debug" | "trace";
-  port: number;
+  "livereload-port": string;
+  port: string;
   bundler: "swc" | "esbuild";
 };
 
@@ -79,6 +81,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     "dist-dir": distDir = "dist",
     "log-level": logLevel = "info",
     port = "1234",
+    "livereload-port": livereloadPort = 35729,
     bundler = "esbuild",
   } = parseFlags(cliArgs, {
     string: ["out-dir", "log-level", "bundler", "port"],
@@ -151,24 +154,22 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     return 0;
   }
 
+  let entrypoint: string;
   if (command === "serve") {
-    const entrypoint = args[1];
-    if (!entrypoint) {
-      usageServe();
-      return 1;
-    }
-    await serve(entrypoint, { port: +port, bundler });
-    return 0;
+    // packup serve <entrypoint>
+    entrypoint = args[1];
+  } else {
+    // Suppose command is implicitly 'serve' and args[0] is the entrypoint
+    // packup <entrypoint>
+    entrypoint = args[0];
   }
 
-  // Suppose command is implicitly 'serve' and args[0] is the entrypoint
-  const entrypoint = args[0];
   if (!entrypoint) {
     usageServe();
     return 1;
   }
 
-  await serve(entrypoint, { port: +port, bundler });
+  await serve(entrypoint, { port: +port, livereloadPort: +livereloadPort, bundler });
   return 0;
 }
 
@@ -202,6 +203,7 @@ async function build(
 
 type ServeOptions = {
   port: number;
+  livereloadPort: number;
 };
 
 /**
@@ -209,9 +211,8 @@ type ServeOptions = {
  */
 async function serve(
   path: string,
-  { port, bundler }: ServeOptions & BuildAndServeCommonOptions,
+  { port, livereloadPort, bundler }: ServeOptions & BuildAndServeCommonOptions,
 ) {
-  const livereloadPort = 35729;
   const buildEventHub = new EventTarget();
   livereloadServer(livereloadPort, buildEventHub);
   const { addr } = serveIterable(

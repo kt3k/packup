@@ -59,6 +59,7 @@ Then open http://localhost:1234/ in your browser.
 - [ ] doc web site in packup
 - [ ] give the example way of properly typing the typescripts
   - Maybe use lib: ["dom"] ?
+- [ ] --open support
 
 # 0.2.0 roadmap
 
