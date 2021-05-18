@@ -53,7 +53,6 @@ Then open http://localhost:1234/ in your browser.
 
 # 0.1 roadmap
 
-- [ ] implement --log-level
 - [ ] Assets in `static/` dir are served/copied as is. (Use this for images and
   other assets.)
   - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
@@ -63,6 +62,7 @@ Then open http://localhost:1234/ in your browser.
 
 # 0.2.0 roadmap
 
+- [ ] implement --log-level
 - [ ] Make esbuild.wasm path configurable
 - [ ] --public-url
 - [ ] --open option
