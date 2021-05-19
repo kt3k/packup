@@ -15,9 +15,9 @@ async function handleWs(sock: WebSocket, eventtarget: EventTarget) {
       await sock.send(JSON.stringify({ type: "reload" }));
       sock.close(1000).catch(logger.error);
     }
-    eventtarget.removeEventListener("reload", handler);
+    eventtarget.removeEventListener("built", handler);
   };
-  eventtarget.addEventListener("reload", handler);
+  eventtarget.addEventListener("built", handler);
   try {
     for await (const ev of sock) {
       if (typeof ev === "string") {

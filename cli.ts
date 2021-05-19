@@ -1,8 +1,7 @@
-import { ensureDir, join, NAME, parseFlags, red, VERSION } from "./deps.ts";
+import { ensureDir, join, NAME, opn, parseFlags, red, VERSION } from "./deps.ts";
 import { serveIterable } from "./unstable_deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
 import {
-  checkStaticDir,
   generateStaticAssets,
   watchAndGenStaticAssets,
 } from "./generate_static_assets.ts";
@@ -37,7 +36,7 @@ Options:
   -p, --port <port>               Sets the port to serve on. Default is 1234.
   --livereload-port               Sets the port for live reloading. Default is 35729.
   -s, --static-dir <dir>          The directory for static files. The files here are served as is.
-  TODO --open [browser]           Automatically opens in specified browser. Default is the default browser.
+  -o, --open                      Automatically opens in specified browser.
   TODO --public-url <url>         The path prefix for absolute urls.
   TODO --https                    Serves files over HTTPS.
   TODO --cert <path>              The path to certificate to use with HTTPS.
@@ -71,6 +70,7 @@ type CliArgs = {
   "dist-dir": string;
   "log-level": "error" | "warn" | "info" | "debug" | "trace";
   "livereload-port": string;
+  open: boolean;
   port: string;
   "static-dir": string;
   bundler: "swc" | "esbuild";
@@ -87,15 +87,17 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     "dist-dir": distDir = "dist",
     "static-dir": staticDir = "static",
     "log-level": logLevel = "info",
+    open = false,
     port = "1234",
     "livereload-port": livereloadPort = 35729,
     bundler = "esbuild",
   } = parseFlags(cliArgs, {
     string: ["bundler", "log-level", "out-dir", "port", "static-dir"],
-    boolean: ["help", "version"],
+    boolean: ["help", "version", "open"],
     alias: {
       h: "help",
       v: "version",
+      o: "open",
       s: "static-dir",
       L: "log-level",
     },
@@ -179,6 +181,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
   }
 
   await serve(entrypoint, {
+    open,
     port: +port,
     livereloadPort: +livereloadPort,
     bundler,
@@ -220,6 +223,7 @@ async function build(
 }
 
 type ServeOptions = {
+  open: boolean;
   port: number;
   livereloadPort: number;
 };
@@ -229,14 +233,21 @@ type ServeOptions = {
  */
 async function serve(
   path: string,
-  { port, livereloadPort, bundler, staticDir }:
+  { open, port, livereloadPort, bundler, staticDir }:
     & ServeOptions
     & BuildAndServeCommonOptions,
 ) {
   // This is used for propagating onBuild event to livereload server.
   const buildEventHub = new EventTarget();
   livereloadServer(livereloadPort, buildEventHub);
-  const onBuild = () => buildEventHub.dispatchEvent(new CustomEvent("reload"));
+  if (open) {
+    const handler = () => {
+      opn(`http://localhost:${port}`);
+      buildEventHub.removeEventListener("built", handler);
+    }
+    buildEventHub.addEventListener("built", handler);
+  }
+  const onBuild = () => buildEventHub.dispatchEvent(new CustomEvent("built"));
 
   const assets = watchAndGenAssets(path, { bundler, livereloadPort, onBuild });
   const staticAssets = watchAndGenStaticAssets(staticDir);

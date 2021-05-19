@@ -30,6 +30,9 @@ ex-serve1:
 ex2:
 	deno run --unstable -A cli.ts serve --static-dir examples/static-dir/static examples/with-imports/index.html
 
+ex2-o:
+	deno run --unstable -A cli.ts serve -o --static-dir examples/static-dir/static examples/with-imports/index.html
+
 ex2-debug:
 	deno run --unstable -A cli.ts serve --log-level=debug --static-dir examples/static-dir/static examples/with-imports/index.html
 

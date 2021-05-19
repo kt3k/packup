@@ -24,5 +24,7 @@ import * as esbuild from "./vendor/esbuild_wasm.js";
 export { esbuild };
 export { denoPlugin } from "https://raw.githubusercontent.com/lucacasonato/esbuild_deno_loader/fa2219c3df9494da6c33e3e4dffb1a33b5cc0345/mod.ts";
 
+export { opn } from "https://raw.githubusercontent.com/hashrock/deno-opn/b358e4c7df5d1c6d5e634d2730ca491ba6062782/opn.ts";
+
 export const NAME = "packup";
 export const VERSION = "v0.0.9";

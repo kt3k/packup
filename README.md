@@ -53,20 +53,23 @@ Then open http://localhost:1234/ in your browser.
 
 # 0.1 roadmap
 
-- [ ] doc web site in packup
+- [ ] react example
+- [ ] react router example
+- [ ] tailwind example
+- [ ] twind example
+- [ ] dom manipulation example
 - [ ] give the example way of properly typing the typescripts
   - Maybe use lib: ["dom"] ?
-- [ ] --open support
 
 # 0.2.0 roadmap
 
 - [ ] implement --log-level
 - [ ] Make esbuild.wasm path configurable
 - [ ] --public-url
-- [ ] --open option
 - [ ] optimize (minify) option
 - [ ] css import support
 - [ ] image import support
+- [ ] doc web site in packup
 
 # 1.0 roadmap
 
@@ -75,6 +78,7 @@ Then open http://localhost:1234/ in your browser.
 
 ## Done items
 
+- [x] --open support
 - [x] Assets in `static/` dir are served/copied as is. (Use this for images and
   other assets.)
   - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
