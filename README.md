@@ -51,10 +51,10 @@ packup index.html
 
 Then open http://localhost:1234/ in your browser.
 
+See `packup serve -h` and `packup build -h` for more usages.
+
 # 0.1 roadmap
 
-- [ ] react example
-- [ ] react router example
 - [ ] tailwind example
 - [ ] twind example
 - [ ] dom manipulation example
@@ -73,11 +73,14 @@ Then open http://localhost:1234/ in your browser.
 
 # 1.0 roadmap
 
+- [ ] import map support
 - [ ] sourcemap support
 - [ ] scss support
 
 ## Done items
 
+- [x] react router example
+- [x] react example
 - [x] --open support
 - [x] Assets in `static/` dir are served/copied as is. (Use this for images and
   other assets.)

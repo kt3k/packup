@@ -37,4 +37,7 @@ ex2-build-debug:
 	deno run --unstable -A cli.ts build --log-level=debug --static-dir examples/static-dir/static examples/with-imports/index.html
 
 ex-react:
-	deno run --unstable -A cli.ts serve examples/react/index.html
+	deno run --unstable -A cli.ts serve examples/react-simple/index.html
+
+ex-rr:
+	deno run --unstable -A cli.ts serve examples/react-router/index.html
