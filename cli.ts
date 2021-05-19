@@ -1,4 +1,12 @@
-import { ensureDir, join, NAME, opn, parseFlags, red, VERSION } from "./deps.ts";
+import {
+  ensureDir,
+  join,
+  NAME,
+  opn,
+  parseFlags,
+  red,
+  VERSION,
+} from "./deps.ts";
 import { serveIterable } from "./unstable_deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
 import {

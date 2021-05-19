@@ -12,20 +12,14 @@ fmt:
 lint:
 	deno lint
 
-esbuild.wasm:
-	wget https://unpkg.com/esbuild-wasm@0.11.19/esbuild.wasm
-
-esbuild_wasm.js: esbuild.wasm
-	deno run -A make_esbuild_wasm.js
+vendor/esbuild.wasm:
+	wget https://unpkg.com/esbuild-wasm@0.11.19/esbuild.wasm -Ovendor/esbuild.wasm
 
 ex-build:
 	deno run --unstable -A cli.ts build examples/simple/index.html
 
 ex-serve:
 	deno run --unstable -A cli.ts serve examples/simple/index.html
-
-ex-serve1:
-	deno run --unstable -A cli.ts serve examples/with-simple-assets/index.html
 
 ex2:
 	deno run --unstable -A cli.ts serve --static-dir examples/static-dir/static examples/with-imports/index.html
@@ -42,5 +36,5 @@ ex2-build:
 ex2-build-debug:
 	deno run --unstable -A cli.ts build --log-level=debug --static-dir examples/static-dir/static examples/with-imports/index.html
 
-ex2-swc:
-	deno run --unstable -A cli.ts serve examples/with-imports/index.html --bundler swc
+ex-react:
+	deno run --unstable -A cli.ts serve examples/react/index.html
