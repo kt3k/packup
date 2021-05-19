@@ -53,9 +53,6 @@ Then open http://localhost:1234/ in your browser.
 
 # 0.1 roadmap
 
-- [ ] Assets in `static/` dir are served/copied as is. (Use this for images and
-  other assets.)
-  - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
 - [ ] doc web site in packup
 - [ ] give the example way of properly typing the typescripts
   - Maybe use lib: ["dom"] ?
@@ -78,6 +75,9 @@ Then open http://localhost:1234/ in your browser.
 
 ## Done items
 
+- [x] Assets in `static/` dir are served/copied as is. (Use this for images and
+  other assets.)
+  - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
 - [x] livereload
 - [x] optimize esbuild loading
 - [x] --port support (serve)

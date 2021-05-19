@@ -63,6 +63,7 @@ export async function generateAssets(
 
     // If build hook is set, call it. Used for live reloading.
     opts.onBuild?.();
+    logger.debug("onBuild");
   })();
 
   const watchPaths = opts.watchPaths

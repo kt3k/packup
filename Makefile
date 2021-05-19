@@ -28,10 +28,16 @@ ex-serve1:
 	deno run --unstable -A cli.ts serve examples/with-simple-assets/index.html
 
 ex2:
-	deno run --unstable -A cli.ts serve --log-level=debug examples/with-imports/index.html
+	deno run --unstable -A cli.ts serve --static-dir examples/static-dir/static examples/with-imports/index.html
+
+ex2-debug:
+	deno run --unstable -A cli.ts serve --log-level=debug --static-dir examples/static-dir/static examples/with-imports/index.html
 
 ex2-build:
-	deno run --unstable -A cli.ts build examples/with-imports/index.html
+	deno run --unstable -A cli.ts build --static-dir examples/static-dir/static examples/with-imports/index.html
+
+ex2-build-debug:
+	deno run --unstable -A cli.ts build --log-level=debug --static-dir examples/static-dir/static examples/with-imports/index.html
 
 ex2-swc:
 	deno run --unstable -A cli.ts serve examples/with-imports/index.html --bundler swc

@@ -108,7 +108,7 @@ function asyncIterableToAsyncIterableIterator<T>(
   return iterableIterator;
 }
 
-export function mux<T>(iters: AsyncIterable<T>[]): AsyncIterable<T> {
+export function mux<T>(...iters: AsyncIterable<T>[]): AsyncIterable<T> {
   return iters.reduce((mux: MuxAsyncIterator<T>, iter) => {
     mux.add(asyncIterableToAsyncIterableIterator(iter));
     return mux;
