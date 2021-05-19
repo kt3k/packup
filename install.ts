@@ -3,7 +3,7 @@ import { wasmCacheDir, wasmPath } from "./install_util.ts";
 
 await ensureDir(wasmCacheDir());
 
-const wasmUrl = `https://deno.land/x/${NAME}@${VERSION}/esbuild.wasm`;
+const wasmUrl = `https://deno.land/x/${NAME}@${VERSION}/vendor/esbuild.wasm`;
 
 console.log(`Downloading esbuild wasm from ${wasmUrl}`);
 
