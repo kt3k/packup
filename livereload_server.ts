@@ -9,15 +9,13 @@ import { logger } from "./logger_util.ts";
 
 async function handleWs(sock: WebSocket, eventtarget: EventTarget) {
   logger.debug("socket connected!");
-  const handler = async () => {
+  eventtarget.addEventListener("built", async () => {
     logger.debug("got reload event!");
     if (!sock.isClosed) {
       await sock.send(JSON.stringify({ type: "reload" }));
       sock.close(1000).catch(logger.error);
     }
-    eventtarget.removeEventListener("built", handler);
-  };
-  eventtarget.addEventListener("built", handler);
+  }, { once: true });
   try {
     for await (const ev of sock) {
       if (typeof ev === "string") {

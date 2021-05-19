@@ -241,11 +241,10 @@ async function serve(
   const buildEventHub = new EventTarget();
   livereloadServer(livereloadPort, buildEventHub);
   if (open) {
-    const handler = () => {
+    // Opens browser at the end of the first build
+    buildEventHub.addEventListener("built", () => {
       opn(`http://localhost:${port}`);
-      buildEventHub.removeEventListener("built", handler);
-    }
-    buildEventHub.addEventListener("built", handler);
+    }, { once: true });
   }
   const onBuild = () => buildEventHub.dispatchEvent(new CustomEvent("built"));
 
