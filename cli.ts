@@ -256,7 +256,12 @@ async function serve(
   }
   const onBuild = () => buildEventHub.dispatchEvent(new CustomEvent("built"));
 
-  const assets = watchAndGenAssets(path, { bundler, livereloadPort, onBuild });
+  const assets = watchAndGenAssets(path, {
+    bundler,
+    livereloadPort,
+    onBuild,
+    mainAs404: true,
+  });
   const staticAssets = watchAndGenStaticAssets(staticDir);
 
   const { addr } = serveIterable(mux(assets, staticAssets), { port });

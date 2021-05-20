@@ -17,7 +17,15 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
     ],
   });
   await new Promise((resolve) => setTimeout(resolve, 3000));
-  const res = await fetch("http://localhost:4567/index.html");
+  let res = await fetch("http://localhost:4567/index.html");
+  assertEquals(
+    await res.text(),
+    `<html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
+  );
+
+  // Non existent path returns the same response as the main html.
+  // This is useful for apps which use client side routing.
+  res = await fetch("http://localhost:4567/asdf");
   assertEquals(
     await res.text(),
     `<html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,

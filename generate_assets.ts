@@ -24,6 +24,7 @@ type GenerateAssetsOptions = {
   onBuild?: () => void;
   insertLivereloadScript?: boolean;
   livereloadPort?: number;
+  mainAs404?: boolean;
 };
 
 /**
@@ -59,6 +60,14 @@ export async function generateAssets(
     yield htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base, {
       bundler: opts.bundler,
     });
+    if (opts.mainAs404) {
+      yield Object.assign(
+        await htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base, {
+          bundler: opts.bundler,
+        }),
+        { name: "404" },
+      );
+    }
     logger.log(`Built in ${Date.now() - buildStarted}ms`);
 
     // If build hook is set, call it. Used for live reloading.
