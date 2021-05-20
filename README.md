@@ -55,7 +55,6 @@ See `packup serve -h` and `packup build -h` for more usages.
 
 # 0.1 roadmap
 
-- [ ] tailwind example
 - [ ] twind example
 - [ ] dom manipulation example
 - [ ] give the example way of properly typing the typescripts
@@ -63,7 +62,6 @@ See `packup serve -h` and `packup build -h` for more usages.
 
 # 0.2.0 roadmap
 
-- [ ] implement --log-level
 - [ ] Make esbuild.wasm path configurable
 - [ ] --public-url
 - [ ] optimize (minify) option
@@ -79,6 +77,7 @@ See `packup serve -h` and `packup build -h` for more usages.
 
 ## Done items
 
+- [x] styled-components example
 - [x] react router example
 - [x] react example
 - [x] --open support
