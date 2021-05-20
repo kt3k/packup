@@ -2,10 +2,10 @@ import React from "https://esm.sh/react@17.0.2";
 import ReactDOM from "https://esm.sh/react-dom@17.0.2";
 import {
   BrowserRouter as Router,
-  Switch,
+  Link,
   Route,
-  Link
-} from "https://esm.sh/react-router-dom@5.2.0"
+  Switch,
+} from "https://esm.sh/react-router-dom@5.2.0";
 
 function App() {
   return (
@@ -25,8 +25,10 @@ function App() {
           </ul>
         </nav>
 
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
+        {
+          /* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */
+        }
         <Switch>
           <Route path="/about">
             <About />

@@ -2,18 +2,20 @@ import React from "https://esm.sh/react@17.0.2";
 import ReactDOM from "https://esm.sh/react-dom@17.0.2";
 import {
   BrowserRouter as Router,
-  Switch,
+  Link,
   Route,
-  Link
-} from "https://esm.sh/react-router-dom@5.2.0"
-import styled, { createGlobalStyle } from "https://esm.sh/styled-components@5.3.0";
+  Switch,
+} from "https://esm.sh/react-router-dom@5.2.0";
+import styled, {
+  createGlobalStyle,
+} from "https://esm.sh/styled-components@5.3.0";
 import { css } from "https://esm.sh/@emotion/css@11.1.3";
 
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
   }
-`
+`;
 
 function App() {
   return (
@@ -34,8 +36,10 @@ function App() {
           </List>
         </Nav>
 
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
+        {
+          /* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */
+        }
         <Switch>
           <Route path="/about">
             <About />
@@ -60,7 +64,7 @@ const List = styled.ul`
     list-style-type: none;
     margin-right: 8px;
   }
-`
+`;
 
 const Nav = styled.nav`
   width: 100%;
@@ -68,21 +72,27 @@ const Nav = styled.nav`
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: #eee;
-`
+`;
 
 const Main = styled.main`
   padding: 15px;
-`
+`;
 
 function Home() {
   return (
     <Main>
       <Heading>Home</Heading>
       <p className={textStyle}>
-        This text is styled by <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">@emotion/css@11.1.3</a>
+        This text is styled by{" "}
+        <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">
+          @emotion/css@11.1.3
+        </a>
       </p>
       <p className={textStyle}>
-        The heading is styled by <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">styled-components@5.3.0</a>
+        The heading is styled by{" "}
+        <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">
+          styled-components@5.3.0
+        </a>
       </p>
     </Main>
   );
@@ -93,10 +103,16 @@ function About() {
     <Main>
       <Heading>About</Heading>
       <p className={textStyle}>
-        This text is styled by <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">@emotion/css@11.1.3</a>
+        This text is styled by{" "}
+        <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">
+          @emotion/css@11.1.3
+        </a>
       </p>
       <p className={textStyle}>
-        The heading is styled by <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">styled-components@5.3.0</a>
+        The heading is styled by{" "}
+        <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">
+          styled-components@5.3.0
+        </a>
       </p>
     </Main>
   );
@@ -107,10 +123,16 @@ function Users() {
     <Main>
       <Heading>Users</Heading>
       <p className={textStyle}>
-        This text is styled by <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">@emotion/css@11.1.3</a>
+        This text is styled by{" "}
+        <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">
+          @emotion/css@11.1.3
+        </a>
       </p>
       <p className={textStyle}>
-        The heading is styled by <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">styled-components@5.3.0</a>
+        The heading is styled by{" "}
+        <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">
+          styled-components@5.3.0
+        </a>
       </p>
     </Main>
   );
