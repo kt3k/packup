@@ -21,4 +21,5 @@ jobs:
       - run: deno run -A before_testing.ts
       - run: ls ~/.deno/
       - run: ls -R ~/.deno/
+      - run: mkdir coverage
       - run: make test
