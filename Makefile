@@ -10,7 +10,7 @@ fmt:
 	deno fmt *.ts *.md examples
 
 lint:
-	deno lint
+	deno lint *.ts
 
 vendor/esbuild.wasm:
 	wget https://unpkg.com/esbuild-wasm@0.11.19/esbuild.wasm -Ovendor/esbuild.wasm

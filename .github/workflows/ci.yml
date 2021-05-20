@@ -16,4 +16,5 @@ jobs:
       - uses: denoland/setup-deno@main
         with:
           deno-version: ${{ matrix.deno }}
+      - run: make lint
       - run: make test
