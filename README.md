@@ -13,7 +13,7 @@
 - 📦 Bundle web application like [Parcel][Parcel].
 - ✨ Support TypeScript out of the box.
 - 🦕 Deno-compatible ES Modules resolution.
-- 💨 Fast build with [Esbuild][Esbuild]-wasm bundler.
+- 💨 Fast build with [esbuild][esbuild]-wasm bundler.
 
 # Usage
 
@@ -53,15 +53,47 @@ Then open http://localhost:1234/ in your browser.
 
 See `packup serve -h` and `packup build -h` for more usages.
 
+# Typings
+
+You can type check the script with [Deno][Deno].
+
+You need the following `tsconfig.json` for your frontend scripts correctly type checked.
+
+```json
+{
+  "compilerOptions": {
+    "lib": ["esnext", "dom"]
+  }
+}
+```
+
+If you use vscode you need to set 'deno.config' property in `.vscode/settings.json` file to point the tsconfig.json:
+
+```json
+{
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.unstable": true,
+  "deno.config": "./tsconfig.json"
+}
+```
+
+If you'd prefer to use CLI directly to type check your script, you can use the following command for it:
+
+```sh
+deno cache --config tsconfig.json <script>
+```
+
+See [the example repository](https://github.com/kt3k/packup_example) for more details.
+
 # 0.1 roadmap
 
 - [ ] twind example
 - [ ] dom manipulation example
-- [ ] give the example way of properly typing the typescripts
-  - Maybe use lib: ["dom"] ?
 
 # 0.2.0 roadmap
 
+- [ ] windows CI
 - [ ] Make esbuild.wasm path configurable
 - [ ] --public-url
 - [ ] optimize (minify) option
@@ -77,6 +109,7 @@ See `packup serve -h` and `packup build -h` for more usages.
 
 ## Done items
 
+- [x] give the example of typings of the react + react-router + styled-components example
 - [x] styled-components example
 - [x] react router example
 - [x] react example
