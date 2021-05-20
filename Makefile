@@ -9,6 +9,9 @@ cov:
 fmt:
 	deno fmt *.ts *.md examples
 
+fmt-check:
+	deno fmt --check *.ts *.md examples
+
 lint:
 	deno lint *.ts
 

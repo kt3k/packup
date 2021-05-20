@@ -16,5 +16,6 @@ jobs:
       - uses: denoland/setup-deno@main
         with:
           deno-version: ${{ matrix.deno }}
+      - run: make fmt-check
       - run: make lint
       - run: make test
