@@ -18,4 +18,5 @@ jobs:
           deno-version: ${{ matrix.deno }}
       - run: make fmt-check
       - run: make lint
+      - run: mkdir coverage # TODO(kt3k): remove this line when --coverage path issue fixed
       - run: make test
