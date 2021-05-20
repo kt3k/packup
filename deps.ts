@@ -27,4 +27,4 @@ export { denoPlugin } from "https://raw.githubusercontent.com/lucacasonato/esbui
 export { opn } from "https://raw.githubusercontent.com/hashrock/deno-opn/b358e4c7df5d1c6d5e634d2730ca491ba6062782/opn.ts";
 
 export const NAME = "packup";
-export const VERSION = "v0.0.9";
+export const VERSION = "v0.0.10";
