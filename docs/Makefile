@@ -14,7 +14,7 @@ style-w:
 	$(TWD) _includes/layout.njk -o styles.css -w
 
 deploy.js:
-	$(DEPLOY_DIR) _site -o deploy.js -y
+	$(DEPLOY_DIR) _site -o deploy.js -y --js
 	ls -lh deploy.js
 
 .PHONY: build clean deploy.js
