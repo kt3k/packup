@@ -15,9 +15,6 @@ fmt-check:
 lint:
 	deno lint *.ts
 
-vendor/esbuild.wasm:
-	wget https://unpkg.com/esbuild-wasm@0.11.19/esbuild.wasm -Ovendor/esbuild.wasm
-
 ex-build:
 	deno run --unstable -A cli.ts build examples/simple/index.html
 
