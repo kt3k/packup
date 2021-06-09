@@ -1,5 +1,6 @@
 coverage
 dist
+/.vscode
 
 # parcel
 .parcel-cache
