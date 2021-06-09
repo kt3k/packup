@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: denoland/setup-deno@1.0.0
+      - uses: denoland/setup-deno@v1.0.0
         with:
           deno-version: ${{ matrix.deno }}
       - run: make fmt-check
