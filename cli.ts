@@ -65,7 +65,7 @@ Options:
   --dist-dir <dir>                Output directory to write to when unspecified by targets
   -s, --static-dir <dir>          The directory for static files. The files here are copied to dist as is.
   TODO --public-url <url>         The path prefix for absolute urls
-  -L, --log-level <level>    Set the log level (choices: "none", "error", "warn", "info", "verbose")
+  -L, --log-level <level>         Set the log level (choices: "none", "error", "warn", "info", "verbose")
   --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   -h, --help                      Display help for command
 `.trim());
