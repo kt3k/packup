@@ -1,5 +1,5 @@
 import { ensureDir, NAME, VERSION } from "./deps.ts";
-import { wasmCacheDir, installWasm } from "./install_util.ts";
+import { installWasm, wasmCacheDir } from "./install_util.ts";
 
 await ensureDir(wasmCacheDir());
 

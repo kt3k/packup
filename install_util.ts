@@ -16,7 +16,8 @@ export function wasmPath(): string {
 }
 
 export async function installWasm() {
-  const wasmUrl = `https://deno.land/x/esbuild_loader@v0.12.8/vendor/esbuild.wasm`;
+  const wasmUrl =
+    `https://deno.land/x/esbuild_loader@v0.12.8/vendor/esbuild.wasm`;
 
   console.log(`Downloading esbuild wasm from ${wasmUrl}`);
 
