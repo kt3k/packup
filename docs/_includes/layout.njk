@@ -1,0 +1,61 @@
+---
+menu:
+  - folder: getting-started
+    order: weight
+  - folder: features
+    order: weight
+  - folder: examples
+    order: weight
+---
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://dev.jspm.io/npm:highlight.js@10.1.2/styles/default.css">
+    <link rel="stylesheet" href="{{ '/styles.css' | url }}">
+    <link rel="stylesheet" href="{{ '/markdown.css' | url }}">
+    <link href="{{ 'favicon-32x32.png' | url }}" rel="icon" type="image/png" sizes="32x32">
+    <meta name="description" content="{{ description }}">
+    <script src="{{ '/script.js' | url }}" type="module"></script>
+  </head>
+
+  <body class="grid grid-cols-1 sm:grid-cols-6 bg-blue-50">
+    <nav class="col-span-1 p-4 border border-r sm:min-h-screen">
+      <a href="{{ '/' | url }}">
+        <img src="{{ 'logo.png' | url }}" width="160" height="40" alt="Packup">
+      </a>
+
+      <p class="mt-2">
+        <a href="https://deno.land/x/packup@0.0.11" class="hover:underline">Lastest version <strong>0.0.11</strong></a>
+      </p>
+
+      <ul class="mt-6">
+        {% for section in menu %}
+        <li class="mt-4">
+          <strong class="font-thin">{{ search.data(section.folder).title }}</strong>
+          <ul>
+          {% for page in search.pages(section.folder, section.order) %}
+            <li>
+              {% if page.data.url == url %}
+              <a href="{{ page.data.url | url }}" aria-current="page" title="{{ page.data.description }}">{{ page.data.title }}</a>
+              {% else %}
+              <a href="{{ page.data.url | url }}" title="{{ page.data.description }}">{{ page.data.title }}</a>
+              {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <main class="col-span-5 py-12 px-20">
+      <div class="markdown-body">
+        {{ content | safe }}
+      </div>
+    </main>
+  </body>
+</html>
