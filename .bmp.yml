@@ -1,5 +1,4 @@
----
-version: 0.0.11
+version: 0.0.12
 commit: 'chore: bump to %.%.%'
 files:
   README.md:
@@ -7,8 +6,8 @@ files:
     - packup@v%.%.%
   deps.ts: const VERSION = "v%.%.%";
   docs/_includes/layout.njk:
-    - https://deno.land/x/packup@v%.%.%
+    - 'https://deno.land/x/packup@v%.%.%'
     - <strong>v%.%.%</strong>
   docs/getting-started/getting-started.md:
-    - https://deno.land/x/packup@v%.%.%/install.ts
+    - 'https://deno.land/x/packup@v%.%.%/install.ts'
     - packup v%.%.%
