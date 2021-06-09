@@ -1,6 +1,6 @@
 test:
 	deno run -A before_testing.ts
-	deno test --unstable -A --coverage=coverage
+	deno test --unstable -A --coverage=coverage *_test.ts
 
 cov:
 	deno coverage coverage --lcov > coverage/lcov.info
