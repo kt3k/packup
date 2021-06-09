@@ -19,11 +19,6 @@ export {
   Element,
 } from "https://deno.land/x/deno_dom@v0.1.9-alpha/deno-dom-wasm.ts";
 
-// @deno-types="https://unpkg.com/esbuild-wasm@0.11.19/esm/browser.d.ts"
-import * as esbuild from "./vendor/esbuild_wasm.js";
-export { esbuild };
-export { denoPlugin } from "https://raw.githubusercontent.com/lucacasonato/esbuild_deno_loader/fa2219c3df9494da6c33e3e4dffb1a33b5cc0345/mod.ts";
-
 export { opn } from "https://raw.githubusercontent.com/hashrock/deno-opn/b358e4c7df5d1c6d5e634d2730ca491ba6062782/opn.ts";
 
 export const NAME = "packup";

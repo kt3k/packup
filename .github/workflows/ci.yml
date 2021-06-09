@@ -13,10 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: denoland/setup-deno@main
+      - uses: denoland/setup-deno@1.0.0
         with:
           deno-version: ${{ matrix.deno }}
       - run: make fmt-check
       - run: make lint
-      - run: mkdir coverage # TODO(kt3k): remove this line when --coverage path issue fixed
       - run: make test

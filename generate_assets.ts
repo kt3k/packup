@@ -7,6 +7,7 @@ import {
   join,
 } from "./deps.ts";
 import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
+import { wasmPath } from "./install_util.ts";
 import { bundleByEsbuild, bundleBySwc } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
 import type { File } from "./types.ts";
@@ -244,7 +245,7 @@ class ScriptAsset implements Asset {
     const path = join(base, this.#src);
     const data = bundler === "swc"
       ? await bundleBySwc(path)
-      : await bundleByEsbuild(path);
+      : await bundleByEsbuild(path, wasmPath());
     // TODO(kt3k): Maybe align this asset naming to parcel.
     // Note: parcel uses a shorter name.
     this.#dest = `${pageName}.${md5(data)}.js`;

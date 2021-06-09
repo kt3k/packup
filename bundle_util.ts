@@ -1,28 +1,12 @@
-import { denoPlugin, esbuild, resolve } from "./deps.ts";
+import { resolve } from "./deps.ts";
 import { logger } from "./logger_util.ts";
+import { load } from "https://deno.land/x/esbuild_loader@v0.12.8/mod.ts";
+import { denoPlugin } from "https://raw.githubusercontent.com/lucacasonato/esbuild_deno_loader/fa2219c3df9494da6c33e3e4dffb1a33b5cc0345/mod.ts";
 
-let esbuildReady: null | Promise<void> = null;
-function ensureEsbuildInialized() {
-  if (esbuildReady) {
-    return esbuildReady;
-  }
-  logger.debug("Using esbuild bundler");
-  const timeStarted = Date.now();
-  return esbuildReady = esbuild.initialize({
-    // Note: this is dummy url
-    // See vendor/esbuild_build.js for details
-    wasmURL: "https://unpkg.com/esbuild-wasm@0.11.19/esbuild.wasm",
-    worker: false,
-  }).then(() => {
-    const timeEnded = Date.now();
-    logger.debug(`Esbuild initialized in ${timeEnded - timeStarted}ms`);
-  });
-}
+export async function bundleByEsbuild(path: string, wasmPath: string): Promise<string> {
+  const { build } = await load(wasmPath);
 
-export async function bundleByEsbuild(path: string): Promise<string> {
-  await ensureEsbuildInialized();
-
-  const bundle = await esbuild.build({
+  const bundle = await build({
     entryPoints: [resolve(path)],
     plugins: [denoPlugin()],
     bundle: true,

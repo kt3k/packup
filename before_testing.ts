@@ -1,5 +1,15 @@
 import { ensureDir } from "./deps.ts";
-import { wasmCacheDir, wasmPath } from "./install_util.ts";
+import { installWasm, wasmCacheDir, wasmPath } from "./install_util.ts";
+
+const path = wasmPath();
 
 await ensureDir(wasmCacheDir());
-Deno.writeFile(wasmPath(), await Deno.readFile("vendor/esbuild.wasm"));
+try {
+  await Deno.lstat(path);
+} catch (e) {
+  if (e.name === "NotFound") {
+    await installWasm();
+    Deno.exit(0);
+  }
+  throw e;
+}
