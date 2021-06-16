@@ -19,7 +19,7 @@ deno run -A https://deno.land/x/packup@v0.0.12/install.ts
 
 Then you'll have `packup` installed.
 
-```shellsession
+```sh
 $ packup -v
 packup v0.0.12
 ```
@@ -58,7 +58,7 @@ This starts the development server at http://localhost:1234, and you'll see the 
 
 When finished editing of the web site, you hit the command:
 
-```
+```sh
 packup build index.html
 ```
 

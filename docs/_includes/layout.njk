@@ -74,7 +74,7 @@ menu:
       </div>
     </main>
     <script>
-    document.querySelectorAll(".markdown-body pre code").forEach((el) => {
+    document.querySelectorAll(".markdown-body pre code").forEach(async (el) => {
       let mimeType = '';
       const cl = el.classList;
       if (cl.contains('language-ts')) {
@@ -85,8 +85,13 @@ menu:
         mimeType = 'text/html';
       } else if (cl.contains('language-css')) {
         mimeType = 'text/css';
+      } else if (cl.contains('language-sh')) {
+        mimeType = 'text/shell';
       }
-      monaco.editor.colorizeElement(el, { mimeType });
+      await monaco.editor.colorizeElement(el, { mimeType });
+      if (el.lastChild.tagName === "BR") {
+        el.removeChild(el.lastChild);
+      }
     });
     </script>
   </body>
