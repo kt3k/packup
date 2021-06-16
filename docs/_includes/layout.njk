@@ -2,7 +2,7 @@
 menu:
   - folder: getting-started
     order: weight
-  - folder: features
+  - folder: guides
     order: weight
   - folder: examples
     order: weight
@@ -33,21 +33,21 @@ menu:
         <img src="{{ 'logo.png' | url }}" width="160" height="40" alt="Packup">
       </a>
 
-      <p class="mt-2">
+      <p class="mt-2 text-gray-800">
         <a href="https://deno.land/x/packup@v0.0.12" class="hover:underline" target="_blank">Lastest version <strong>v0.0.12</strong></a>
       </p>
 
-      <ul class="mt-6">
+      <ul class="mt-6 text-gray-800">
         {% for section in menu %}
         <li class="mt-4">
           <strong class="font-thin">{{ search.data(section.folder).title }}</strong>
           <ul>
           {% for page in search.pages(section.folder, section.order) %}
-            <li class="mt-1">
+            <li class="mt-2">
               {% if page.data.url == url %}
-              <a class="px-2 py-1 text-blue-600 rounded bg-blue-100 hover:underline" href="{{ page.data.url | url }}" aria-current="page" title="{{ page.data.description }}">{{ page.data.title }}</a>
+              <a class="px-2 py-1 text-blue-700 rounded bg-blue-100 hover:underline" href="{{ page.data.url | url }}" aria-current="page" title="{{ page.data.description }}">{{ page.data.title }}</a>
               {% else %}
-              <a class="px-2 py-1 text-blue-600 hover:underline" href="{{ page.data.url | url }}" title="{{ page.data.description }}">{{ page.data.title }}</a>
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="{{ page.data.url | url }}" title="{{ page.data.description }}">{{ page.data.title }}</a>
               {% endif %}
             </li>
           {% endfor %}
@@ -58,10 +58,10 @@ menu:
           <strong class="font-thin">LINKS</strong>
           <ul>
             <li class="mt-1">
-              <a class="px-2 py-1 text-blue-600 hover:underline" href="https://github.com/kt3k/packup" target="_blank">GitHub 🔗</a>
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="https://github.com/kt3k/packup" target="_blank">GitHub 🔗</a>
             </li>
             <li class="mt-1">
-              <a class="px-2 py-1 text-blue-600 hover:underline" href="https://deno.land/x/packup" target="_blank">/x/packup 🔗</a>
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="https://deno.land/x/packup" target="_blank">/x/packup 🔗</a>
             </li>
           </ul>
         <li>
@@ -81,6 +81,8 @@ menu:
         mimeType = 'text/typescript';
       } else if (cl.contains('language-js')) {
         mimeType = 'text/javascript';
+      } else if (cl.contains('language-json')) {
+        mimeType = 'application/json';
       } else if (cl.contains('language-html')) {
         mimeType = 'text/html';
       } else if (cl.contains('language-css')) {

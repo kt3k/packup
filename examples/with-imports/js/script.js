@@ -1,2 +1,5 @@
 import { foo } from "./foo.js";
-foo();
+
+window.addEventListener("DOMContentLoaded", () => {
+  foo();
+});

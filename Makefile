@@ -44,3 +44,6 @@ ex-rr:
 
 ex-sc:
 	deno run --unstable -A cli.ts serve examples/styled-components/index.html
+
+d:
+	$(MAKE) -C docs d

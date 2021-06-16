@@ -1,11 +1,34 @@
 ---
 title: React Example
-weight: 0
+weight: 1
 ---
 
-# React example
+# React Example
 
-```js
+This example shows how to use [React](https://reactjs.org/) with [React Router](https://reactrouter.com/) in packup.
+
+We recommend [esm.sh](https://esm.sh/) for loading React and related modules.
+
+You need to use `.tsx` (or `.jsx`) file extension for React scripts as they include JSX syntax.
+
+`index.html`
+
+```html
+<html>
+  <head>
+    <title>with-simple-assets document</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/script.tsx"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+  </body>
+</html>
+```
+
+`js/script.tsx`
+
+```ts
 import React from "https://esm.sh/react@17.0.2";
 import ReactDOM from "https://esm.sh/react-dom@17.0.2";
 import {
@@ -14,24 +37,13 @@ import {
   Route,
   Switch,
 } from "https://esm.sh/react-router-dom@5.2.0";
-import styled, {
-  createGlobalStyle,
-} from "https://esm.sh/styled-components@5.3.0";
-import { css } from "https://esm.sh/@emotion/css@11.1.3";
-
-const GlobalStyle = createGlobalStyle`
-  body {
-    margin: 0;
-  }
-`;
 
 function App() {
   return (
     <Router>
-      <GlobalStyle />
       <div>
-        <Nav>
-          <List>
+        <nav>
+          <ul>
             <li>
               <Link to="/">Home</Link>
             </li>
@@ -41,8 +53,8 @@ function App() {
             <li>
               <Link to="/users">Users</Link>
             </li>
-          </List>
-        </Nav>
+          </ul>
+        </nav>
 
         {
           /* A <Switch> looks through its children <Route>s and
@@ -64,104 +76,35 @@ function App() {
   );
 }
 
-const List = styled.ul`
-  display: flex;
-  padding-inline-start: 0;
-
-  li {
-    list-style-type: none;
-    margin-right: 8px;
-  }
-`;
-
-const Nav = styled.nav`
-  width: 100%;
-  padding: 15px;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-bottom-color: #eee;
-`;
-
-const Main = styled.main`
-  padding: 15px;
-`;
-
 function Home() {
-  return (
-    <Main>
-      <Heading>Home</Heading>
-      <p className={textStyle}>
-        This text is styled by{" "}
-        <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">
-          @emotion/css@11.1.3
-        </a>
-      </p>
-      <p className={textStyle}>
-        The heading is styled by{" "}
-        <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">
-          styled-components@5.3.0
-        </a>
-      </p>
-    </Main>
-  );
+  return <h2>Home</h2>;
 }
 
 function About() {
-  return (
-    <Main>
-      <Heading>About</Heading>
-      <p className={textStyle}>
-        This text is styled by{" "}
-        <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">
-          @emotion/css@11.1.3
-        </a>
-      </p>
-      <p className={textStyle}>
-        The heading is styled by{" "}
-        <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">
-          styled-components@5.3.0
-        </a>
-      </p>
-    </Main>
-  );
+  return <h2>About</h2>;
 }
 
 function Users() {
-  return (
-    <Main>
-      <Heading>Users</Heading>
-      <p className={textStyle}>
-        This text is styled by{" "}
-        <a href="https://www.npmjs.com/package/@emotion/css/v/11.1.3">
-          @emotion/css@11.1.3
-        </a>
-      </p>
-      <p className={textStyle}>
-        The heading is styled by{" "}
-        <a href="https://www.npmjs.com/package/styled-components/v/5.3.0">
-          styled-components@5.3.0
-        </a>
-      </p>
-    </Main>
-  );
+  return <h2>Users</h2>;
 }
 
-const Heading = styled.h2`
-  font-size: 24px;
-  font-weight: 900;
-  color: #500;
-`;
-
-const textStyle = css`
-  font-size: 12px;
-  color: #050;
-`;
-
 function main() {
-  ReactDOM.render(<App />, document.querySelector("#main"));
+  ReactDOM.render(React.createElement(App), document.querySelector("#main"));
 }
 
 addEventListener("DOMContentLoaded", () => {
   main();
 });
+```
+
+`tsconfig.json` is not absolutely required for bundling frontend assets, and actually packup doesn't use it internally, but it's recommend for better development experience with editors.
+
+`tsconfig.json`
+
+```json
+{
+  "compilerOptions": {
+    "lib": ["esnext", "dom"]
+  }
+}
 ```
