@@ -38,7 +38,6 @@ Skypack is very similar to esm.sh. It automatically converts npm modules into ES
 ```ts
 import React from "https://cdn.skypack.dev/react";
 import ReactDOM from "https://cdn.skypack.dev/react-dom";
-import { BrowserRouter, Link, Route } from "https://cdn.skypack.dev/react-router";
 import styled from "https://cdn.skypack.dev/styled-components";
 import { tw } from "https://cdn.skypack.dev/twind";
 ```

@@ -5,7 +5,7 @@ weight: 1
 
 # CLI Command
 
-`packup` provides 2 subcommands `packup serve` and `packup build`. This section describe the usage of these commands.
+`packup` provides 2 subcommands `packup serve` and `packup build`. This section describes the usage of these commands.
 
 ## `packup serve`
 

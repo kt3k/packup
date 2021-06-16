@@ -68,10 +68,15 @@ menu:
       </ul>
     </nav>
 
-    <main class="col-span-5 py-12 px-20">
+    <main class="col-span-5 py-12 px-4 sm:px-20">
       <div class="markdown-body">
         {{ content | safe }}
       </div>
+      <hr class="mt-5" />
+      <div class="mt-10 text-blue-700">
+        <a href="https://github.com/kt3k/packup/edit/main/docs{{ sourceFile }}">Edit this page in GitHub</a>
+      </div>
+      <div>{{ filename }}</div>
     </main>
     <script>
     document.querySelectorAll(".markdown-body pre code").forEach(async (el) => {
