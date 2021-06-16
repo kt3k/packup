@@ -17,9 +17,14 @@ menu:
     <link rel="stylesheet" href="{{ '/default.css' | url }}">
     <link rel="stylesheet" href="{{ '/styles.css' | url }}">
     <link rel="stylesheet" href="{{ '/markdown.css' | url }}">
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="/monaco-editor/min/vs/editor/editor.main.css" />
     <link href="{{ 'favicon-32x32.png' | url }}" rel="icon" type="image/png" sizes="32x32">
     <meta name="description" content="{{ description }}">
     <script src="{{ '/script.js' | url }}" type="module"></script>
+    <script>var require = { paths: { vs: '/monaco-editor/min/vs' } };</script>
+    <script src="/monaco-editor/min/vs/loader.js"></script>
+    <script src="/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+    <script src="/monaco-editor/min/vs/editor/editor.main.js"></script>
   </head>
 
   <body class="grid grid-cols-1 sm:grid-cols-6">
@@ -68,5 +73,21 @@ menu:
         {{ content | safe }}
       </div>
     </main>
+    <script>
+    document.querySelectorAll(".markdown-body pre code").forEach((el) => {
+      let mimeType = '';
+      const cl = el.classList;
+      if (cl.contains('language-ts')) {
+        mimeType = 'text/typescript';
+      } else if (cl.contains('language-js')) {
+        mimeType = 'text/javascript';
+      } else if (cl.contains('language-html')) {
+        mimeType = 'text/html';
+      } else if (cl.contains('language-css')) {
+        mimeType = 'text/css';
+      }
+      monaco.editor.colorizeElement(el, { mimeType });
+    });
+    </script>
   </body>
 </html>
