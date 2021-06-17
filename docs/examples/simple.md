@@ -26,7 +26,7 @@ This example shows the basic usage of including CSS file and JavaScript file in 
 
 `css/style.css`
 
-```
+```css
 * {
   margin: 0;
   padding: 0;
