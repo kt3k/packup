@@ -4,7 +4,6 @@ const site = lume();
 
 site.copy("logo-v2.svg");
 site.copy("styles.css");
-site.copy("default.css");
 site.copy("markdown.css");
 site.copy("monaco-editor");
 
