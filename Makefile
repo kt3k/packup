@@ -47,3 +47,8 @@ ex-sc:
 
 d:
 	$(MAKE) -C docs d
+
+deploy:
+	$(MAKE) -C docs d
+	git add docs/deploy.js
+	git commit -m "chore: update deploy.js"
