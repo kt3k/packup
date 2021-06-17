@@ -5,15 +5,15 @@ weight: 0
 
 # Registries and CDNs
 
-One of the unique features of `packup` is that it resolves the module in the same way as [Deno](https://deno.land/). That means you can use `http(s) import` like the below.
+One of the unique features of `packup` is that it resolves the modules in the same way as [Deno](https://deno.land/). That means you can use `http(s) import` like the below.
 
 ```ts
 import React from "https://esm.sh/react";
 ```
 
-On the other hand, it also means you can't use `npm` modules as it is. Instead you need to use these modules via special registries or CDNs which transforms the npm module into [ES Module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
+On the other hand, it also means you can't use `npm` modules as it is. Instead you need to use these modules via special registries or CDNs which transform the npm modules into [ES Module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
 
-This section shows the list of registries and CDNs which can be used with packup.
+This section lists and describes the registries and CDNs which you can use with packup.
 
 ## `esm.sh`
 
