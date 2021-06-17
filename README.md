@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo.png" width="400" />
+<img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo-v2.svg" width="400" />
 
 # packup v0.0.12
 
