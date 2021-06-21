@@ -1,4 +1,4 @@
-import { resolve } from "./deps.ts";
+import { resolve, toFileUrl } from "./deps.ts";
 import { logger } from "./logger_util.ts";
 import { load } from "https://deno.land/x/esbuild_loader@v0.12.8/mod.ts";
 import { denoPlugin } from "https://raw.githubusercontent.com/lucacasonato/esbuild_deno_loader/fa2219c3df9494da6c33e3e4dffb1a33b5cc0345/mod.ts";
@@ -10,7 +10,7 @@ export async function bundleByEsbuild(
   const { build } = await load(wasmPath);
 
   const bundle = await build({
-    entryPoints: [resolve(path)],
+    entryPoints: [toFileUrl(resolve(path)).href],
     plugins: [denoPlugin()],
     bundle: true,
   });

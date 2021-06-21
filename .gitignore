@@ -1,6 +1,7 @@
 coverage
 dist
 /.vscode
+/.vim
 
 # parcel
 .parcel-cache
