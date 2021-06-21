@@ -144,6 +144,10 @@ details.
 - [Parcel][Parcel]
 - [Hammer][Hammer]
 
+# History
+
+- 2021-06-21 v0.0.13 Fix for windows https://github.com/kt3k/packup/pull/5.
+
 # License
 
 MIT
