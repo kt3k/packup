@@ -10,12 +10,17 @@ jobs:
       matrix:
         deno:
           - canary
-    runs-on: ubuntu-latest
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - uses: denoland/setup-deno@v1.0.0
         with:
           deno-version: ${{ matrix.deno }}
       - run: make fmt-check
+        if: matrix.os == 'ubuntu-latest'
       - run: make lint
+        if: matrix.os == 'ubuntu-latest'
       - run: make test
