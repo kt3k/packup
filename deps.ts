@@ -6,6 +6,7 @@ export {
   join,
   relative,
   resolve,
+  toFileUrl,
 } from "https://deno.land/std@0.95.0/path/mod.ts";
 export { ensureDir } from "https://deno.land/std@0.95.0/fs/ensure_dir.ts";
 export { parse as parseFlags } from "https://deno.land/std@0.95.0/flags/mod.ts";
