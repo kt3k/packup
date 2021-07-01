@@ -146,6 +146,7 @@ details.
 
 # History
 
+- 2021-07-01 v0.0.14 Fix @import-maps/resolve dependency https://github.com/kt3k/packup/commit/4c502652315d5d15755be340318263dbd75fb12f . Remove --bundler options https://github.com/kt3k/packup/commit/e66c76695e0415c9aeb97e8c1b477a828daf5c52
 - 2021-06-21 v0.0.13 Fix for windows https://github.com/kt3k/packup/pull/5.
 
 # License
