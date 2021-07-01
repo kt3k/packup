@@ -46,7 +46,7 @@ ex-rr:
 	deno run --unstable -A cli.ts serve examples/react-router/index.html
 
 ex-sc:
-	deno run --unstable -A cli.ts serve examples/styled-components/index.html
+	deno run --unstable -A cli.ts serve -L debug examples/styled-components/index.html
 
 d:
 	$(MAKE) -C docs d
