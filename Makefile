@@ -3,7 +3,7 @@ test:
 	deno test --unstable -A --coverage=coverage *_test.ts
 
 test-esbuild-deno-loader:
-	$(MAKE) -C esbuild_deno_loader test
+	$(MAKE) -C vendor/esbuild_deno_loader test
 
 cov:
 	deno coverage coverage --lcov > coverage/lcov.info
