@@ -50,7 +50,6 @@ Options:
   TODO --cert <path>              The path to certificate to use with HTTPS.
   TODO --key <path>               The path to private key to use with HTTPS.
   --log-level <level>             Sets the log level. "error", "warn", "info", "debug" or "trace". Default is "info".
-  --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   -h, --help                      Displays help for command.
 `.trim());
 }
@@ -66,7 +65,6 @@ Options:
   -s, --static-dir <dir>          The directory for static files. The files here are copied to dist as is.
   TODO --public-url <url>         The path prefix for absolute urls
   -L, --log-level <level>         Set the log level (choices: "none", "error", "warn", "info", "verbose")
-  --bundler                       The internal bundler to use. "esbuild" or "swc". Default is "esbuild".
   -h, --help                      Display help for command
 `.trim());
 }
@@ -81,7 +79,6 @@ type CliArgs = {
   open: boolean;
   port: string;
   "static-dir": string;
-  bundler: "swc" | "esbuild";
 };
 
 /**
@@ -98,9 +95,8 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     open = false,
     port = "1234",
     "livereload-port": livereloadPort = 35729,
-    bundler = "esbuild",
   } = parseFlags(cliArgs, {
-    string: ["bundler", "log-level", "out-dir", "port", "static-dir"],
+    string: ["log-level", "out-dir", "port", "static-dir"],
     boolean: ["help", "version", "open"],
     alias: {
       h: "help",
@@ -169,7 +165,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageBuild();
       return 1;
     }
-    await build(entrypoint, { distDir, bundler, staticDir });
+    await build(entrypoint, { distDir, staticDir });
     return 0;
   }
 
@@ -192,14 +188,12 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     open,
     port: +port,
     livereloadPort: +livereloadPort,
-    bundler,
     staticDir,
   });
   return 0;
 }
 
 type BuildAndServeCommonOptions = {
-  bundler: "swc" | "esbuild";
   staticDir: string;
 };
 
@@ -212,13 +206,13 @@ type BuildOptions = {
  */
 async function build(
   path: string,
-  { bundler, distDir, staticDir }: BuildOptions & BuildAndServeCommonOptions,
+  { distDir, staticDir }: BuildOptions & BuildAndServeCommonOptions,
 ) {
   logger.log(`Writing the assets to ${distDir}`);
   await ensureDir(distDir);
 
   const staticAssets = generateStaticAssets(staticDir);
-  const [assets] = await generateAssets(path, { bundler });
+  const [assets] = await generateAssets(path, {});
 
   // TODO(kt3k): Use pooledMap-like thing
   for await (const asset of mux(staticAssets, assets)) {
@@ -241,7 +235,7 @@ type ServeOptions = {
  */
 async function serve(
   path: string,
-  { open, port, livereloadPort, bundler, staticDir }:
+  { open, port, livereloadPort, staticDir }:
     & ServeOptions
     & BuildAndServeCommonOptions,
 ) {
@@ -257,7 +251,6 @@ async function serve(
   const onBuild = () => buildEventHub.dispatchEvent(new CustomEvent("built"));
 
   const assets = watchAndGenAssets(path, {
-    bundler,
     livereloadPort,
     onBuild,
     mainAs404: true,

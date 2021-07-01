@@ -8,7 +8,7 @@ import {
 } from "./deps.ts";
 import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
 import { wasmPath } from "./install_util.ts";
-import { bundleByEsbuild, bundleBySwc } from "./bundle_util.ts";
+import { bundleByEsbuild } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
 import type { File } from "./types.ts";
 
@@ -16,12 +16,10 @@ import type { File } from "./types.ts";
  * Options for asset generation.
  *
  * @property watchPaths true when the system is watching the paths i.e. packup serve
- * @property bundler Which bundler to use. Maybe we drop swc later.
  * @property onBuild The hook which is called when the build is finished. Used when `packup serve`
  */
 type GenerateAssetsOptions = {
   watchPaths?: boolean;
-  bundler?: "swc" | "esbuild";
   onBuild?: () => void;
   insertLivereloadScript?: boolean;
   livereloadPort?: number;
@@ -52,20 +50,14 @@ export async function generateAssets(
   const generator = (async function* () {
     for (const a of assets) {
       // TODO(kt3k): These can be concurrent
-      yield await a.createFileObject(htmlAsset.pageName, htmlAsset.base, {
-        bundler: opts.bundler,
-      });
+      yield await a.createFileObject(htmlAsset.pageName, htmlAsset.base);
     }
 
     // This needs to be the last.
-    yield htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base, {
-      bundler: opts.bundler,
-    });
+    yield htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base);
     if (opts.mainAs404) {
       yield Object.assign(
-        await htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base, {
-          bundler: opts.bundler,
-        }),
+        await htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base),
         { name: "404" },
       );
     }
@@ -116,16 +108,11 @@ export async function* watchAndGenAssets(
   }
 }
 
-type CreateFileObjectOptions = {
-  bundler?: "swc" | "esbuild";
-};
-
 type Asset = {
   getWatchPaths(base: string): Promise<string[]>;
   createFileObject(
     pageName: string,
     base: string,
-    opts: CreateFileObjectOptions,
   ): Promise<File>;
 };
 
@@ -167,7 +154,6 @@ class HtmlAsset implements Asset {
   createFileObject(
     _pageName: string,
     _base: string,
-    _opts: CreateFileObjectOptions,
   ) {
     return Promise.resolve(Object.assign(
       new Blob([encoder.encode(this.#doc.body.parentElement!.outerHTML)]),
@@ -240,12 +226,9 @@ class ScriptAsset implements Asset {
   async createFileObject(
     pageName: string,
     base: string,
-    { bundler }: CreateFileObjectOptions,
   ): Promise<File> {
     const path = join(base, this.#src);
-    const data = bundler === "swc"
-      ? await bundleBySwc(path)
-      : await bundleByEsbuild(path, wasmPath());
+    const data = await bundleByEsbuild(path, wasmPath());
     // TODO(kt3k): Maybe align this asset naming to parcel.
     // Note: parcel uses a shorter name.
     this.#dest = `${pageName}.${md5(data)}.js`;

@@ -29,16 +29,3 @@ export async function bundleByEsbuild(
 
   return bundle.outputFiles![0].text;
 }
-
-let usingSwcLogged = false;
-export async function bundleBySwc(path: string): Promise<string> {
-  if (!usingSwcLogged) {
-    logger.debug("Using swc bundler");
-    usingSwcLogged = true;
-  }
-  const res = await Deno.emit(path, {
-    bundle: "classic",
-    check: false,
-  });
-  return res.files["deno:///bundle.js"];
-}
