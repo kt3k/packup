@@ -1,9 +1,9 @@
 import { resolve, toFileUrl } from "./deps.ts";
 import { logger } from "./logger_util.ts";
-import { load, build } from "https://deno.land/x/esbuild_loader@v0.12.8/mod.ts";
+import { build, load } from "https://deno.land/x/esbuild_loader@v0.12.8/mod.ts";
 import { denoPlugin } from "./esbuild_deno_loader/mod.ts";
 
-type Builder = typeof build
+type Builder = typeof build;
 let b: Builder | null = null;
 async function loadBuilder(wasmPath: string): Promise<Builder> {
   if (b) {
@@ -11,7 +11,7 @@ async function loadBuilder(wasmPath: string): Promise<Builder> {
   }
   const start = Date.now();
   const { build } = await load(wasmPath);
-  logger.debug(`Esbuild loaded in ${Date.now() - start}ms`)
+  logger.debug(`Esbuild loaded in ${Date.now() - start}ms`);
   b = build;
   return b;
 }
