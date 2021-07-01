@@ -23,4 +23,4 @@ export {
 export { opn } from "https://raw.githubusercontent.com/hashrock/deno-opn/b358e4c7df5d1c6d5e634d2730ca491ba6062782/opn.ts";
 
 export const NAME = "packup";
-export const VERSION = "v0.0.13";
+export const VERSION = "v0.0.14";
