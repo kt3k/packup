@@ -2,6 +2,9 @@ test:
 	deno run -A before_testing.ts
 	deno test --unstable -A --coverage=coverage *_test.ts
 
+test-esbuild-deno-loader:
+	$(MAKE) -C esbuild_deno_loader test
+
 cov:
 	deno coverage coverage --lcov > coverage/lcov.info
 	genhtml -o coverage/html coverage/lcov.info
@@ -52,3 +55,5 @@ deploy:
 	$(MAKE) -C docs d
 	git add docs/deploy.js
 	git commit -m "chore: update deploy.js"
+
+.PHONY: test test-esbuild-deno-loader
