@@ -97,7 +97,6 @@ details.
 
 # 0.2.0 roadmap
 
-- [ ] windows CI
 - [ ] Make esbuild.wasm path configurable
 - [ ] --public-url
 - [ ] optimize (minify) option
@@ -113,6 +112,7 @@ details.
 
 ## Done items
 
+- [x] windows CI
 - [x] give the example of typings of the react + react-router +
   styled-components example
 - [x] styled-components example
