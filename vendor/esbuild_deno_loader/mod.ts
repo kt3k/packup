@@ -1,6 +1,7 @@
 import { esbuild, importmap, resolve, toFileUrl } from "./deps.ts";
 import { load } from "./src/loader.ts";
-import { ModuleEntry } from "./src/deno.ts";
+import { ScriptSet } from "https://deno.land/x/deps_info@v0.2.0/mod.ts";
+export { esbuild };
 
 interface DenoPluginOptions {
   /**
@@ -14,7 +15,7 @@ export function denoPlugin(options: DenoPluginOptions = {}): esbuild.Plugin {
   return {
     name: "deno",
     setup(build) {
-      const infoCache = new Map<string, ModuleEntry>();
+      const scriptSet = new ScriptSet();
       let importMap: importmap.ParsedImportMap | null = null;
       build.onStart(async function onStart() {
         if (options.importMapFile !== undefined) {
@@ -49,7 +50,7 @@ export function denoPlugin(options: DenoPluginOptions = {}): esbuild.Plugin {
         args: esbuild.OnLoadArgs,
       ): Promise<esbuild.OnLoadResult | null> {
         const url = new URL(args.path);
-        return load(infoCache, url, options);
+        return load(scriptSet, url, options);
       });
     },
   };

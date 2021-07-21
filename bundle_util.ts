@@ -1,7 +1,7 @@
 import { resolve, toFileUrl } from "./deps.ts";
 import { logger } from "./logger_util.ts";
 import { build, load } from "https://deno.land/x/esbuild_loader@v0.12.8/mod.ts";
-import { denoPlugin } from "./vendor/esbuild_deno_loader/mod.ts";
+import { denoPlugin, esbuild } from "./vendor/esbuild_deno_loader/mod.ts";
 
 type Builder = typeof build;
 let b: Builder | null = null;
@@ -18,14 +18,16 @@ async function loadBuilder(wasmPath: string): Promise<Builder> {
 export async function bundleByEsbuild(
   path: string,
   wasmPath: string,
-): Promise<string> {
+): Promise<esbuild.OutputFile[] | undefined> {
   const build = await loadBuilder(wasmPath);
 
   const bundle = await build({
     entryPoints: [toFileUrl(resolve(path)).href],
     plugins: [denoPlugin()],
+    outdir: "out",
     bundle: true,
   });
 
-  return bundle.outputFiles![0].text;
+  return bundle.outputFiles;
+  //return bundle.outputFiles![0].text;
 }

@@ -1,12 +1,19 @@
 import { esbuild, fromFileUrl } from "../deps.ts";
-import * as deno from "./deno.ts";
+import { ScriptSet } from "https://deno.land/x/deps_info@v0.2.0/mod.ts"
+import {
+  isJavaScript,
+  isTypeScript,
+  isJsx,
+  isTsx,
+  isCss,
+} from "https://deno.land/x/deps_info@v0.2.0/file_type_util.ts";
 
 export interface LoadOptions {
   importMapFile?: string;
 }
 
 export async function load(
-  infoCache: Map<string, deno.ModuleEntry>,
+  scriptSet: ScriptSet,
   url: URL,
   options: LoadOptions,
 ): Promise<esbuild.OnLoadResult | null> {
@@ -14,9 +21,9 @@ export async function load(
     case "http:":
     case "https:":
     case "data:":
-      return await loadFromCLI(infoCache, url, options);
+      return await loadFromCLI(scriptSet, url, options);
     case "file:": {
-      const res = await loadFromCLI(infoCache, url, options);
+      const res = await loadFromCLI(scriptSet, url, options);
       res.watchFiles = [fromFileUrl(url.href)];
       return res;
     }
@@ -25,43 +32,30 @@ export async function load(
 }
 
 async function loadFromCLI(
-  infoCache: Map<string, deno.ModuleEntry>,
+  scriptSet: ScriptSet,
   specifier: URL,
-  options: LoadOptions,
+  _options: LoadOptions,
 ): Promise<esbuild.OnLoadResult> {
   const specifierRaw = specifier.href;
-  if (!infoCache.has(specifierRaw)) {
-    const { modules } = await deno.info(specifier, {
-      importMap: options.importMapFile,
-    });
-    for (const module of modules) {
-      infoCache.set(module.specifier, module);
-    }
+  if (!scriptSet.has(specifierRaw)) {
+    // TODO(kt3k): support import maps
+    await scriptSet.loadDeps(specifierRaw);
   }
-  const module = infoCache.get(specifierRaw);
+  const module = scriptSet.get(specifierRaw);
   if (!module) {
     throw new TypeError("Unreachable.");
   }
 
-  if (module.error) throw new Error(module.error);
-  if (!module.local) throw new Error("Module not downloaded yet.");
-  let loader: esbuild.Loader;
-  switch (module.mediaType) {
-    case "JavaScript":
-      loader = "js";
-      break;
-    case "JSX":
-      loader = "jsx";
-      break;
-    case "TypeScript":
-      loader = "ts";
-      break;
-    case "TSX":
-      loader = "tsx";
-      break;
-    default:
-      throw new Error(`Unhandled media type ${module.mediaType}.`);
+  if (isJavaScript(module.contentType, module.url)) {
+    return { contents: module.source, loader: "js" };
+  } else if (isTypeScript(module.contentType, module.url)) {
+    return { contents: module.source, loader: "ts" };
+  } else if (isJsx(module.contentType, module.url)) {
+    return { contents: module.source, loader: "jsx" };
+  } else if (isTsx(module.contentType, module.url)) {
+    return { contents: module.source, loader: "tsx" };
+  } else if (isCss(module.contentType, module.url)) {
+    return { contents: module.source, loader: "css" };
   }
-  const contents = await Deno.readFile(module.local);
-  return { contents, loader };
+  throw new Error(`Unhandled content type ${module.contentType}.`);
 }

@@ -5,4 +5,5 @@ export {
   resolve,
   toFileUrl,
 } from "https://deno.land/std@0.95.0/path/mod.ts";
-export * as importmap from "https://jspm.dev/@import-maps/resolve@1.0.1";
+export * as importmap from "https://esm.sh/@import-maps/resolve@1.0.1";
+

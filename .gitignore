@@ -2,6 +2,7 @@ coverage
 dist
 /.vscode
 /.vim
+.deps_info_cache
 
 # parcel
 .parcel-cache
