@@ -1,6 +1,6 @@
 ---
 title: Styled Components
-weight: 2
+weight: 3
 ---
 
 # Styled Components Example

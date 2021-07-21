@@ -1,6 +1,6 @@
 ---
 title: Preact Example
-weight: 1
+weight: 2
 ---
 
 # Preact Example
