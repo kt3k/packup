@@ -35,11 +35,11 @@ import { html } from 'https://esm.sh/htm@3.1.0/preact'
 function App() {
     return html`
         <nav>
-            <li> <${Link} activeClassName=active href="/">Home<//> </li>
-            <li> <${Link} activeClassName=active href="/about">About<//> </li> 
-            <li> <${Link} activeClassName=active href="/users">Users<//> </li>
+            <${Link} activeClassName=active href="/">Home<//>${" "}
+            <${Link} activeClassName=active href="/about">About<//>${" "}
+            <${Link} activeClassName=active href="/users">Users<//>
         </nav>
-            
+
         <${Router}>
             <${Home} default />
             <${About} path="/about" />
