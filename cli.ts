@@ -259,7 +259,7 @@ async function serve(
 
   const { addr } = serveIterable(mux(assets, staticAssets), { port });
   if (addr.transport === "tcp") {
-    logger.log(`Server running at http://${addr.hostname}:${addr.port}`);
+    logger.log(`Server running at http://localhost:${addr.port}`);
   }
   await new Promise(() => {});
 }
