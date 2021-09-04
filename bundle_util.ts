@@ -25,7 +25,7 @@ export async function bundleByEsbuild(
     entryPoints: [toFileUrl(resolve(path)).href],
     plugins: [denoPlugin()],
     bundle: true,
-    minfiy: true,
+    minify: true,
   });
 
   return bundle.outputFiles![0].text;
