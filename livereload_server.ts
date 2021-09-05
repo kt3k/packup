@@ -56,7 +56,6 @@ async function serve(
       );
       break;
     case "/livereload": {
-      logger.error(request.headers);
       const { response, socket } = Deno.upgradeWebSocket(request);
       handleWs(socket, eventtarget);
       respondWith(response);
