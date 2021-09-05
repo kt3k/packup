@@ -16,6 +16,7 @@ import {
 import { livereloadServer } from "./livereload_server.ts";
 import { byteSize, mux } from "./util.ts";
 import { logger, setLogLevel } from "./logger_util.ts";
+import { File } from "./types.ts";
 
 function usage() {
   logger.log(`
@@ -160,31 +161,31 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
   }
 
   if (command === "build") {
-    const entrypoint = args[1];
-    if (!entrypoint) {
+    const entrypoints = args.slice(1);
+    if (!entrypoints || entrypoints.length === 0) {
       usageBuild();
       return 1;
     }
-    await build(entrypoint, { distDir, staticDir });
+    await build(entrypoints, { distDir, staticDir });
     return 0;
   }
 
-  let entrypoint: string;
+  let entrypoints: string[];
   if (command === "serve") {
-    // packup serve <entrypoint>
-    entrypoint = args[1];
+    // packup serve <entrypoints...>
+    entrypoints = args.slice(1);
   } else {
-    // Suppose command is implicitly 'serve' and args[0] is the entrypoint
-    // packup <entrypoint>
-    entrypoint = args[0];
+    // Suppose command is implicitly 'serve' and args are the entrypoints
+    // packup <entrypoints...>
+    entrypoints = args;
   }
 
-  if (!entrypoint) {
+  if (!entrypoints || entrypoints.length === 0) {
     usageServe();
     return 1;
   }
 
-  await serve(entrypoint, {
+  await serve(entrypoints, {
     open,
     port: +port,
     livereloadPort: +livereloadPort,
@@ -205,17 +206,21 @@ type BuildOptions = {
  * The build command
  */
 async function build(
-  path: string,
+  paths: string[],
   { distDir, staticDir }: BuildOptions & BuildAndServeCommonOptions,
 ) {
   logger.log(`Writing the assets to ${distDir}`);
   await ensureDir(distDir);
 
   const staticAssets = generateStaticAssets(staticDir);
-  const [assets] = await generateAssets(path, {});
+  const allAssets: AsyncGenerator<File, void, void>[] = [];
+  for (const path of paths) {
+    const [assets] = await generateAssets(path, {});
+    allAssets.push(assets);
+  }
 
   // TODO(kt3k): Use pooledMap-like thing
-  for await (const asset of mux(staticAssets, assets)) {
+  for await (const asset of mux(staticAssets, ...allAssets)) {
     const filename = join(distDir, asset.name);
     const bytes = new Uint8Array(await asset.arrayBuffer());
     // TODO(kt3k): Print more structured report
@@ -234,7 +239,7 @@ type ServeOptions = {
  * The serve command
  */
 async function serve(
-  path: string,
+  paths: string[],
   { open, port, livereloadPort, staticDir }:
     & ServeOptions
     & BuildAndServeCommonOptions,
@@ -250,14 +255,18 @@ async function serve(
   }
   const onBuild = () => buildEventHub.dispatchEvent(new CustomEvent("built"));
 
-  const assets = watchAndGenAssets(path, {
-    livereloadPort,
-    onBuild,
-    mainAs404: true,
-  });
+  const allAssets: AsyncGenerator<File, void, void>[] = [];
+  for (const path of paths) {
+    const assets = watchAndGenAssets(path, {
+      livereloadPort,
+      onBuild,
+      mainAs404: true,
+    });
+    allAssets.push(assets);
+  }
   const staticAssets = watchAndGenStaticAssets(staticDir);
 
-  const { addr } = serveIterable(mux(assets, staticAssets), { port });
+  const { addr } = serveIterable(mux(...allAssets, staticAssets), { port });
   if (addr.transport === "tcp") {
     logger.log(`Server running at http://localhost:${addr.port}`);
   }

@@ -61,7 +61,7 @@ export async function generateAssets(
         { name: "404" },
       );
     }
-    logger.log(`Built in ${Date.now() - buildStarted}ms`);
+    logger.log(`${path} bundled in ${Date.now() - buildStarted}ms`);
 
     // If build hook is set, call it. Used for live reloading.
     opts.onBuild?.();
