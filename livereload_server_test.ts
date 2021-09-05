@@ -18,11 +18,11 @@ Deno.test("livereloadServer", async () => {
     const text = await res.text();
     assertStringIncludes(text, `new WebSocket("${wsURL}/livereload")`);
 
-    // Livereload server should accept websocket request
+    // Livereload server should accept websocket requests
     const done = deferred<void>();
     let receivedMessage: string | undefined;
     const ws = new WebSocket(`${wsURL}/livereload`);
-    // Livereload server automatically closes itself when 'built' event is dispatched
+    // Livereload server automatically closes a websocket connection when 'built' event is dispatched
     ws.onclose = () => done.resolve();
     ws.onopen = () => eventtarget.dispatchEvent(new Event("built"));
     ws.onmessage = (ev: MessageEvent<string>) => {
