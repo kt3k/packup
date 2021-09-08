@@ -256,11 +256,11 @@ async function serve(
   const onBuild = () => buildEventHub.dispatchEvent(new CustomEvent("built"));
 
   const allAssets: AsyncGenerator<File, void, void>[] = [];
-  for (const path of paths) {
+  for (const [index, path] of paths.entries()) {
     const assets = watchAndGenAssets(path, {
       livereloadPort,
       onBuild,
-      mainAs404: true,
+      mainAs404: index === 0,
     });
     allAssets.push(assets);
   }
