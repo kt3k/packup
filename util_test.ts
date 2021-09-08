@@ -1,7 +1,8 @@
-import { assertEquals } from "./test_deps.ts";
+import { assertEquals, assertThrows } from "./test_deps.ts";
 import { join } from "./deps.ts";
 import {
   byteSize,
+  checkUniqueEntrypoints,
   getDependencies,
   getLocalDependencies,
   getLocalDependencyPaths,
@@ -67,4 +68,14 @@ Deno.test("byteSize", () => {
   assertEquals(byteSize(345), `345B`);
   assertEquals(byteSize(1700), `1.66KB`);
   assertEquals(byteSize(1300000), `1.24MB`);
+});
+
+Deno.test("checkUniqueEntrypoints", () => {
+  assertThrows(() => {
+    checkUniqueEntrypoints(["index.html", "bar/index.html"]);
+  });
+  assertThrows(() => {
+    checkUniqueEntrypoints(["foo/index.html", "bar/index.html"]);
+  });
+  checkUniqueEntrypoints(["index.html", "foo.html", "bar.html"]); // doesn't throw
 });

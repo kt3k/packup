@@ -1,5 +1,4 @@
 import {
-  basename,
   ensureDir,
   join,
   NAME,
@@ -15,7 +14,7 @@ import {
   watchAndGenStaticAssets,
 } from "./generate_static_assets.ts";
 import { livereloadServer } from "./livereload_server.ts";
-import { byteSize, mux } from "./util.ts";
+import { byteSize, checkUniqueEntrypoints, mux } from "./util.ts";
 import { logger, setLogLevel } from "./logger_util.ts";
 import { File } from "./types.ts";
 
@@ -276,14 +275,6 @@ async function serve(
     logger.log(`Server running at http://localhost:${addr.port}`);
   }
   await new Promise(() => {});
-}
-
-function checkUniqueEntrypoints(paths: string[]): void {
-  // Throw if there are any duplicate basenames
-  const uniqueBasenames = new Set(paths.map((p) => basename(p)));
-  if (uniqueBasenames.size !== paths.length) {
-    throw new Error("Duplicate basenames");
-  }
 }
 
 if (import.meta.main) {
