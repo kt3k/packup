@@ -1,4 +1,5 @@
 import {
+  basename,
   createHash,
   Document,
   Element,
@@ -113,4 +114,12 @@ export function mux<T>(...iters: AsyncIterable<T>[]): AsyncIterable<T> {
     mux.add(asyncIterableToAsyncIterableIterator(iter));
     return mux;
   }, new MuxAsyncIterator<T>());
+}
+
+export function checkUniqueEntrypoints(paths: string[]): void {
+  // Throw if there are any duplicate basenames
+  const uniqueBasenames = new Set(paths.map((p) => basename(p)));
+  if (uniqueBasenames.size !== paths.length) {
+    throw new Error("Duplicate basenames");
+  }
 }
