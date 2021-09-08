@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo-v2.svg" width="400" />
 
-# packup v0.0.16
+# packup v0.0.17
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
 
@@ -20,7 +20,7 @@
 Install via deno.land/x:
 
 ```shell
-deno run -A https://deno.land/x/packup@v0.0.16/install.ts
+deno run -A https://deno.land/x/packup@v0.0.17/install.ts
 ```
 
 Write HTML and JavaScript:
@@ -145,6 +145,7 @@ details.
 
 # History
 
+- 2021-09-08 v0.0.17 Supports multiple entrypoints #14
 - 2021-09-01 v0.0.16 Fix the message when the server starts #11
 - 2021-07-31 v0.0.15 Update `iterable_file_server`
 - 2021-07-01 v0.0.14 Fix @import-maps/resolve dependency
