@@ -1,4 +1,5 @@
 import {
+  basename,
   ensureDir,
   join,
   NAME,
@@ -209,6 +210,8 @@ async function build(
   paths: string[],
   { distDir, staticDir }: BuildOptions & BuildAndServeCommonOptions,
 ) {
+  checkUniqueEntrypoints(paths);
+
   logger.log(`Writing the assets to ${distDir}`);
   await ensureDir(distDir);
 
@@ -244,6 +247,8 @@ async function serve(
     & ServeOptions
     & BuildAndServeCommonOptions,
 ) {
+  checkUniqueEntrypoints(paths);
+
   // This is used for propagating onBuild event to livereload server.
   const buildEventHub = new EventTarget();
   livereloadServer(livereloadPort, buildEventHub);
@@ -271,6 +276,14 @@ async function serve(
     logger.log(`Server running at http://localhost:${addr.port}`);
   }
   await new Promise(() => {});
+}
+
+function checkUniqueEntrypoints(paths: string[]): void {
+  // Throw if there are any duplicate basenames
+  const uniqueBasenames = new Set(paths.map((p) => basename(p)));
+  if (uniqueBasenames.size !== paths.length) {
+    throw new Error("Duplicate basenames");
+  }
 }
 
 if (import.meta.main) {
