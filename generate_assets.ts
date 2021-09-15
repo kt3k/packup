@@ -1,3 +1,13 @@
+/**
+ * This file contains the functions which create assets from the given paths.
+ * An asset is the unit of build target.
+ *
+ * There are 4 types of assets
+ * - HtmlAsset
+ * - CssAsset
+ * - ScssAsset
+ * - ScriptAsset - represents javascript or typescript
+ */
 import {
   basename,
   dirname,
@@ -10,6 +20,7 @@ import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
 import { wasmPath } from "./install_util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
+import { compile as compileSass } from "./sass_util.ts";
 import type { File } from "./types.ts";
 
 /**
@@ -176,28 +187,41 @@ class CssAsset implements Asset {
   static create(link: Element): CssAsset | null {
     const href = link.getAttribute("href");
     if (link.getAttribute("rel") === "stylesheet" && href) {
+      if (href.endsWith(".scss")) {
+        return new ScssAsset(href, link);
+      }
       return new CssAsset(href, link);
     }
     return null;
   }
 
-  #el: Element;
-  #href: string;
-  #dest?: string;
+  _el: Element;
+  _href: string;
+  _dest?: string;
   constructor(href: string, link: Element) {
-    this.#el = link;
-    this.#href = href;
+    this._el = link;
+    this._href = href;
   }
 
   getWatchPaths(base: string): Promise<string[]> {
-    return Promise.resolve([join(base, this.#href)]);
+    return Promise.resolve([join(base, this._href)]);
   }
 
   async createFileObject(pageName: string, base: string): Promise<File> {
-    const data = await Deno.readFile(join(base, this.#href));
-    this.#dest = `${pageName}.${md5(data)}.css`;
-    this.#el.setAttribute("href", this.#dest);
-    return Object.assign(new Blob([data]), { name: this.#dest });
+    const data = await Deno.readFile(join(base, this._href));
+    this._dest = `${pageName}.${md5(data)}.css`;
+    this._el.setAttribute("href", this._dest);
+    return Object.assign(new Blob([data]), { name: this._dest });
+  }
+}
+
+class ScssAsset extends CssAsset {
+  // TODO(kt3k): implement getWatchPaths correctly
+  async createFileObject(pageName: string, base: string): Promise<File> {
+    const scss = await Deno.readFile(join(base, this._href));
+    this._dest = `${pageName}.${md5(scss)}.css`;
+    this._el.setAttribute("href", this._dest);
+    return Object.assign(new Blob([await compileSass(decoder.decode(scss))]), { name: this._dest });
   }
 }
 

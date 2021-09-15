@@ -90,13 +90,9 @@ deno cache --config tsconfig.json <script>
 See [the example repository](https://github.com/kt3k/packup_example) for more
 details.
 
-# 0.1 roadmap
-
-- [ ] twind example
-- [ ] dom manipulation example
-
 # 0.2.0 roadmap
 
+- [ ] twind example
 - [ ] Make esbuild.wasm path configurable
 - [ ] --public-url
 - [ ] optimize (minify) option
@@ -107,36 +103,6 @@ details.
 
 - [ ] import map support
 - [ ] sourcemap support
-- [ ] scss support
-
-## Done items
-
-- [x] windows CI
-- [x] give the example of typings of the react + react-router +
-  styled-components example
-- [x] styled-components example
-- [x] react router example
-- [x] react example
-- [x] --open support
-- [x] Assets in `static/` dir are served/copied as is. (Use this for images and
-  other assets.)
-  - Something like https://github.com/elwin013/parcel-plugin-static-files-copy
-- [x] livereload
-- [x] optimize esbuild loading
-- [x] --port support (serve)
-- [x] --dist-dir support (build)
-- [ ] Runs parcels original examples (with Deno specific stuff modification).
-  - Doesn't work because it includes commonjs references which I don't want to
-    support.
-- [x] List asset sizes
-- [x] Bundle javascript using esbuild
-- [x] Bundle javascript using swc
-- [x] `deno run cli.ts [serve] index.html` starts server at localhost port 1234,
-  watch all dependencies, rebuild all assets when changed.
-- [x] `deno run cli.ts build index.html` builds static assets to 'dist'
-  directory.
-- [x] Referenced scripts from `<script>` tags are bundled and served/built.
-- [x] Stylesheets referenced from `<link />` tags are just served/copied as is.
 
 ## Prior art
 
