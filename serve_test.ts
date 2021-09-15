@@ -16,7 +16,7 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
       "34567",
     ],
   });
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   let res = await fetch("http://localhost:4567/index.html");
   assertEquals(
     await res.text(),
