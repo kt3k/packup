@@ -221,7 +221,9 @@ class ScssAsset extends CssAsset {
     const scss = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(scss)}.css`;
     this._el.setAttribute("href", this._dest);
-    return Object.assign(new Blob([await compileSass(decoder.decode(scss))]), { name: this._dest });
+    return Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
+      name: this._dest,
+    });
   }
 }
 
