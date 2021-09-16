@@ -105,6 +105,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       o: "open",
       s: "static-dir",
       L: "log-level",
+      p: "port",
     },
   }) as CliArgs;
 
