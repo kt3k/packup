@@ -96,7 +96,7 @@ If you want to use packup without installing globally, you can use the following
 command.
 
 ```
-deno run --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.1/ensure_esbuild_wasm.ts
+deno run --allow-env --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.1/ensure_esbuild_wasm.ts
 deno run -A https://deno.land/x/packup@v0.1.1/cli.ts <your parameters>
 ```
 
