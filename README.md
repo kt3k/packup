@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo-v2.svg" width="400" />
 
-# packup v0.1.1
+# packup v0.1.2
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
 
@@ -20,7 +20,7 @@
 Install via deno.land/x:
 
 ```shell
-deno run -A https://deno.land/x/packup@v0.1.1/install.ts
+deno run -A https://deno.land/x/packup@v0.1.2/install.ts
 ```
 
 Write HTML and JavaScript:
@@ -96,8 +96,8 @@ If you want to use packup without installing globally, you can use the following
 command.
 
 ```
-deno run --allow-env --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.1/ensure_esbuild_wasm.ts
-deno run -A https://deno.land/x/packup@v0.1.1/cli.ts <your parameters>
+deno run --allow-env --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.2/ensure_esbuild_wasm.ts
+deno run -A https://deno.land/x/packup@v0.1.2/cli.ts <your parameters>
 ```
 
 The first command ensures the esbuild wasm installed on your machine. The second
