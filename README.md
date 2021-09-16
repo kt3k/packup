@@ -125,6 +125,7 @@ command is the actual entrypoint of the packup program.
 
 # History
 
+- 2021-09-17 v0.1.2 Fix -p option.
 - 2021-09-16 v0.1.1 Add `ensure_esbuild_wasm.ts` entrypoint.
 - 2021-09-15 v0.1.0 Add basic support of scss #18
 - 2021-09-08 v0.0.17 Support multiple entrypoints #14
