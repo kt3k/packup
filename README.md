@@ -92,14 +92,16 @@ details.
 
 # Advanced usages
 
-If you want to use packup without installing globally, you can use the following command.
+If you want to use packup without installing globally, you can use the following
+command.
 
 ```
 deno run --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.0/ensure_esbuild_wasm.ts
 deno run -A https://deno.land/x/packup@v0.1.0/cli.ts <your parameters>
 ```
 
-The first command ensures the esbuild wasm installed on your machine. The second command is the actual entrypoint of the packup program.
+The first command ensures the esbuild wasm installed on your machine. The second
+command is the actual entrypoint of the packup program.
 
 # 0.2.0 roadmap
 
