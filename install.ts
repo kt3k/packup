@@ -11,6 +11,7 @@ const p = Deno.run({
     Deno.execPath(),
     "install",
     "--unstable",
+    "--no-check",
     "-qAf",
     `https://deno.land/x/${NAME}@${VERSION}/cli.ts`,
   ],
