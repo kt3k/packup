@@ -127,9 +127,7 @@ type Asset = {
   ): Promise<File>;
 };
 
-/**
- * Build asset which represents the entrypoint html file.
- */
+/** HtmlAsset represents the html file */
 class HtmlAsset implements Asset {
   static async create(path: string): Promise<HtmlAsset> {
     logger.debug("Reading", path);
@@ -183,16 +181,29 @@ class HtmlAsset implements Asset {
   }
 }
 
+/** ScssAsset represents a <link rel="stylesheet"> tag in the html */
 class CssAsset implements Asset {
   static create(link: Element): CssAsset | null {
     const href = link.getAttribute("href");
-    if (link.getAttribute("rel") === "stylesheet" && href) {
-      if (href.endsWith(".scss")) {
-        return new ScssAsset(href, link);
-      }
-      return new CssAsset(href, link);
+    const rel = link.getAttribute("rel");
+    if (rel !== "stylesheet") {
+      return null;
     }
-    return null;
+    if (!href) {
+      logger.warn(
+        "<link> tag has rel=stylesheet attribute, but doesn't have href attribute",
+      );
+      return null;
+    }
+    if (href.startsWith("https://") || href.startsWith("http://")) {
+      // If href starts with http(s):// schemes, we consider these as
+      // external reference. So skip handling these
+      return null;
+    }
+    if (href.endsWith(".scss")) {
+      return new ScssAsset(href, link);
+    }
+    return new CssAsset(href, link);
   }
 
   _el: Element;
@@ -215,6 +226,8 @@ class CssAsset implements Asset {
   }
 }
 
+/** ScssAsset represents a <link rel="stylesheet"> tag
+ * with href having .scss extension in the html */
 class ScssAsset extends CssAsset {
   // TODO(kt3k): implement getWatchPaths correctly
   async createFileObject(pageName: string, base: string): Promise<File> {
@@ -227,13 +240,20 @@ class ScssAsset extends CssAsset {
   }
 }
 
+/** ScriptAsset represents a <script> tag in the html */
 class ScriptAsset implements Asset {
   static create(script: Element): ScriptAsset | null {
     const src = script.getAttribute("src");
-    if (src) {
-      return new ScriptAsset(src, script);
+    if (!src) {
+      // this <script> should contain inline scripts.
+      return null;
     }
-    return null;
+    if (src.startsWith("http://") || src.startsWith("https://")) {
+      // If "src" starts with http(s):// schemes, we consider these as
+      // external reference. So skip handling these
+      return null;
+    }
+    return new ScriptAsset(src, script);
   }
 
   #src: string;
