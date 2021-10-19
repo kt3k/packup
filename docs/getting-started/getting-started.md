@@ -14,14 +14,14 @@ You need [Deno](https://deno.land/) (>=1.10.3) installed.
 You can install `packup` with the following command.
 
 ```sh
-deno run -A https://deno.land/x/packup@v0.1.3/install.ts
+deno run -A https://deno.land/x/packup@v0.1.4/install.ts
 ```
 
 Then you'll have `packup` installed.
 
 ```sh
 $ packup -v
-packup v0.1.3
+packup v0.1.4
 ```
 
 ## Basic Usage
