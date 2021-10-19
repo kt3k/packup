@@ -12,7 +12,7 @@ export function wasmCacheDir(os = Deno.build.os, getHomeDir = homedir): string {
 }
 
 export function wasmPath(): string {
-  return join(wasmCacheDir(), "esbuild.wasm");
+  return join(wasmCacheDir(), "esbuild-0.12.8.wasm");
 }
 
 export async function installWasm() {
