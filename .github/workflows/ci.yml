@@ -12,6 +12,7 @@ jobs:
           - ubuntu-latest
           - windows-latest
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v2
       - uses: denoland/setup-deno@v1.0.0
