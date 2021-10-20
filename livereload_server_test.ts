@@ -24,7 +24,10 @@ Deno.test("livereloadServer", async () => {
     const ws = new WebSocket(`${wsURL}/livereload`);
     // Livereload server automatically closes a websocket connection when 'built' event is dispatched
     ws.onclose = () => done.resolve();
-    ws.onopen = () => eventtarget.dispatchEvent(new Event("built"));
+    ws.onopen = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      eventtarget.dispatchEvent(new Event("built"));
+    };
     ws.onmessage = (ev: MessageEvent<string>) => {
       receivedMessage = ev.data;
     };
