@@ -6,7 +6,6 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
       Deno.execPath(),
       "run",
       "-A",
-      "--unstable",
       "cli.ts",
       "serve",
       "examples/simple/index.html",

@@ -5,9 +5,9 @@ import {
   opn,
   parseFlags,
   red,
+  serveIterable,
   VERSION,
 } from "./deps.ts";
-import { serveIterable } from "./unstable_deps.ts";
 import { generateAssets, watchAndGenAssets } from "./generate_assets.ts";
 import {
   generateStaticAssets,
