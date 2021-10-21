@@ -125,6 +125,7 @@ command is the actual entrypoint of the packup program.
 
 # History
 
+- 2021-10-21 v0.1.6 CLI start up time improvement
 - 2021-10-20 v0.1.5 Remove the use of unstable flag #28
 - 2021-10-19 v0.1.4 Change esbuild wasm file name.
 - 2021-09-19 v0.1.3 Skip processing http(s):// url references in html #22.
