@@ -35,6 +35,7 @@ type GenerateAssetsOptions = {
   insertLivereloadScript?: boolean;
   livereloadPort?: number;
   mainAs404?: boolean;
+  publicUrl: string;
 };
 
 /**
@@ -45,10 +46,13 @@ type GenerateAssetsOptions = {
  */
 export async function generateAssets(
   path: string,
-  opts: GenerateAssetsOptions = {},
+  opts: GenerateAssetsOptions,
 ): Promise<[AsyncGenerator<File, void, void>, string[]]> {
   const buildStarted = Date.now();
   const htmlAsset = await HtmlAsset.create(path);
+  const { pageName, base } = htmlAsset;
+  const pathPrefix = opts.publicUrl || ".";
+  console.log("pathPrefix", pathPrefix);
 
   const assets = [...htmlAsset.extractReferencedAssets()];
 
@@ -61,14 +65,14 @@ export async function generateAssets(
   const generator = (async function* () {
     for (const a of assets) {
       // TODO(kt3k): These can be concurrent
-      yield await a.createFileObject(htmlAsset.pageName, htmlAsset.base);
+      yield await a.createFileObject({ pageName, base, pathPrefix });
     }
 
     // This needs to be the last.
-    yield htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base);
+    yield htmlAsset.createFileObject({ pageName, base, pathPrefix });
     if (opts.mainAs404) {
       yield Object.assign(
-        await htmlAsset.createFileObject(htmlAsset.pageName, htmlAsset.base),
+        await htmlAsset.createFileObject({ pageName, base, pathPrefix }),
         { name: "404" },
       );
     }
@@ -94,7 +98,7 @@ export async function generateAssets(
  */
 export async function* watchAndGenAssets(
   path: string,
-  opts: GenerateAssetsOptions = {},
+  opts: GenerateAssetsOptions,
 ): AsyncGenerator<File, void, void> {
   opts = {
     ...opts,
@@ -119,12 +123,15 @@ export async function* watchAndGenAssets(
   }
 }
 
+type CreateFileObjectParams = {
+  pageName: string,
+  base: string,
+  pathPrefix: string,
+}
+
 type Asset = {
   getWatchPaths(base: string): Promise<string[]>;
-  createFileObject(
-    pageName: string,
-    base: string,
-  ): Promise<File>;
+  createFileObject(params: CreateFileObjectParams): Promise<File>;
 };
 
 /** HtmlAsset represents the html file */
@@ -160,10 +167,7 @@ class HtmlAsset implements Asset {
     return extractReferencedAssets(this.#doc);
   }
 
-  createFileObject(
-    _pageName: string,
-    _base: string,
-  ) {
+  createFileObject(_params: CreateFileObjectParams) {
     return Promise.resolve(Object.assign(
       new Blob([encoder.encode(this.#doc.body.parentElement!.outerHTML)]),
       { name: this.#filename },
@@ -218,10 +222,10 @@ class CssAsset implements Asset {
     return Promise.resolve([join(base, this._href)]);
   }
 
-  async createFileObject(pageName: string, base: string): Promise<File> {
+  async createFileObject({ pageName, base, pathPrefix }: CreateFileObjectParams): Promise<File> {
     const data = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(data)}.css`;
-    this._el.setAttribute("href", this._dest);
+    this._el.setAttribute("href", join(pathPrefix, this._dest));
     return Object.assign(new Blob([data]), { name: this._dest });
   }
 }
@@ -230,10 +234,10 @@ class CssAsset implements Asset {
  * with href having .scss extension in the html */
 class ScssAsset extends CssAsset {
   // TODO(kt3k): implement getWatchPaths correctly
-  async createFileObject(pageName: string, base: string): Promise<File> {
+  async createFileObject({ pageName, base, pathPrefix }: CreateFileObjectParams): Promise<File> {
     const scss = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(scss)}.css`;
-    this._el.setAttribute("href", this._dest);
+    this._el.setAttribute("href", join(pathPrefix, this._dest));
     return Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
       name: this._dest,
     });
@@ -269,16 +273,15 @@ class ScriptAsset implements Asset {
     return await getLocalDependencyPaths(join(base, this.#src));
   }
 
-  async createFileObject(
-    pageName: string,
-    base: string,
-  ): Promise<File> {
+  async createFileObject({
+    pageName,
+    base,
+    pathPrefix,
+  }: CreateFileObjectParams): Promise<File> {
     const path = join(base, this.#src);
     const data = await bundleByEsbuild(path, wasmPath());
-    // TODO(kt3k): Maybe align this asset naming to parcel.
-    // Note: parcel uses a shorter name.
     this.#dest = `${pageName}.${md5(data)}.js`;
-    this.#el.setAttribute("src", this.#dest);
+    this.#el.setAttribute("src", join(pathPrefix, this.#dest));
     return Object.assign(new Blob([data]), { name: this.#dest });
   }
 }

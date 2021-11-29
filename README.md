@@ -6,8 +6,6 @@
 
 > Zero-config web application packager in [Deno][Deno].
 
-⚠️ This tool is still in its early development stage.
-
 # Features
 
 - 📦 Bundle web application like [Parcel][Parcel].
@@ -29,10 +27,10 @@ index.html
 
 ```html
 <html>
-<body>
-  <script src="./main.ts"></script>
-  <h1>Hi from packup!</h1>
-</body>
+  <body>
+    <script src="./main.ts"></script>
+    <h1>Hi from packup!</h1>
+  </body>
 </html>
 ```
 
@@ -105,9 +103,9 @@ command is the actual entrypoint of the packup program.
 
 # 0.2.0 roadmap
 
+- [x] --public-url
 - [ ] twind example
 - [ ] Make esbuild.wasm path configurable
-- [ ] --public-url
 - [ ] optimize (minify) option
 - [ ] css import support
 - [ ] image import support
