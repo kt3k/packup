@@ -1,6 +1,6 @@
 import { DOMParser } from "./deps.ts";
-import { assertEquals } from "./test_deps.ts";
-import { extractReferencedAssets } from "./generate_assets.ts";
+import { assert, assertEquals } from "./test_deps.ts";
+import { extractReferencedAssets, generateAssets } from "./generate_assets.ts";
 
 Deno.test("extractReferencedAssets - extracts referenced assets in the html document", () => {
   const assets = [...extractReferencedAssets(
@@ -45,4 +45,37 @@ Deno.test("extractReferencedAssets - references to http(s):// schemes are treate
     )!,
   )];
   assertEquals(assets.length, 0);
+});
+
+Deno.test("generateAssets", async () => {
+  const [gen] = await generateAssets("examples/with-imports/index.html", {
+    publicUrl: ".",
+  });
+  const assets = [];
+  for await (const asset of gen) {
+    assets.push(asset);
+  }
+  assertEquals(assets.length, 3);
+
+  const [js, css, html] = assets;
+  assert(js.name.endsWith(".js"));
+  assert(css.name.endsWith(".css"));
+  assertEquals(html.name, "index.html");
+
+  const htmlText = await html.text();
+  assert(htmlText.includes(`"${js.name}"`));
+  assert(htmlText.includes(`"${css.name}"`));
+});
+Deno.test("generateAssets - publicUrl=/", async () => {
+  const [gen] = await generateAssets("examples/with-imports/index.html", {
+    publicUrl: "/",
+  });
+  const assets = [];
+  for await (const asset of gen) {
+    assets.push(asset);
+  }
+  const [js, css, html] = assets;
+  const htmlText = await html.text();
+  assert(htmlText.includes(`"/${js.name}"`));
+  assert(htmlText.includes(`"/${css.name}"`));
 });
