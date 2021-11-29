@@ -45,8 +45,9 @@ Options:
   -p, --port <port>               Sets the port to serve on. Default is 1234.
   --livereload-port               Sets the port for live reloading. Default is 35729.
   -s, --static-dir <dir>          The directory for static files. The files here are served as is.
-  -o, --open                      Automatically opens in specified browser.
+  --static-dist-prefix <prefix>   The prefix for static files in the destination.
   --public-url <prefix>           The path prefix for urls. Default is ".".
+  -o, --open                      Automatically opens in specified browser.
   TODO --https                    Serves files over HTTPS.
   TODO --cert <path>              The path to certificate to use with HTTPS.
   TODO --key <path>               The path to private key to use with HTTPS.
@@ -64,6 +65,7 @@ bundles for production
 Options:
   --dist-dir <dir>                Output directory to write to when unspecified by targets
   -s, --static-dir <dir>          The directory for static files. The files here are copied to dist as is.
+  --static-dist-prefix <prefix>   The prefix for static files in the destination.
   --public-url <prefix>           The path prefix for urls. Default is ".".
   -L, --log-level <level>         Set the log level (choices: "none", "error", "warn", "info", "verbose")
   -h, --help                      Display help for command
@@ -81,6 +83,7 @@ type CliArgs = {
   port: string;
   "public-url": string;
   "static-dir": string;
+  "static-dist-prefix": string;
 };
 
 /**
@@ -93,6 +96,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     help,
     "dist-dir": distDir = "dist",
     "static-dir": staticDir = "static",
+    "static-dist-prefix": staticDistPrefix = "",
     "log-level": logLevel = "info",
     open = false,
     port = "1234",
@@ -169,7 +173,12 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageBuild();
       return 1;
     }
-    await build(entrypoints, { distDir, staticDir, publicUrl });
+    await build(entrypoints, {
+      distDir,
+      staticDir,
+      publicUrl,
+      staticDistPrefix,
+    });
     return 0;
   }
 
@@ -194,12 +203,14 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     livereloadPort: +livereloadPort,
     staticDir,
     publicUrl,
+    staticDistPrefix,
   });
   return 0;
 }
 
 type BuildAndServeCommonOptions = {
   staticDir: string;
+  staticDistPrefix: string;
   publicUrl: string;
 };
 
@@ -212,14 +223,18 @@ type BuildOptions = {
  */
 async function build(
   paths: string[],
-  { distDir, staticDir, publicUrl }: BuildOptions & BuildAndServeCommonOptions,
+  { distDir, staticDir, publicUrl, staticDistPrefix }:
+    & BuildOptions
+    & BuildAndServeCommonOptions,
 ) {
   checkUniqueEntrypoints(paths);
 
   logger.log(`Writing the assets to ${distDir}`);
   await ensureDir(distDir);
 
-  const staticAssets = generateStaticAssets(staticDir);
+  const staticAssets = generateStaticAssets(staticDir, {
+    distPrefix: staticDistPrefix,
+  });
   const allAssets: AsyncGenerator<File, void, void>[] = [];
   for (const path of paths) {
     const [assets] = await generateAssets(path, { publicUrl });
@@ -247,7 +262,7 @@ type ServeOptions = {
  */
 async function serve(
   paths: string[],
-  { open, port, livereloadPort, staticDir, publicUrl }:
+  { open, port, livereloadPort, staticDir, publicUrl, staticDistPrefix }:
     & ServeOptions
     & BuildAndServeCommonOptions,
 ) {
@@ -274,7 +289,9 @@ async function serve(
     });
     allAssets.push(assets);
   }
-  const staticAssets = watchAndGenStaticAssets(staticDir);
+  const staticAssets = watchAndGenStaticAssets(staticDir, {
+    distPrefix: staticDistPrefix,
+  });
 
   const { addr } = serveIterable(mux(...allAssets, staticAssets), { port });
   if (addr.transport === "tcp") {

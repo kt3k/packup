@@ -29,8 +29,9 @@ Options:
   -p, --port <port>               Sets the port to serve on. Default is 1234.
   --livereload-port               Sets the port for live reloading. Default is 35729.
   -s, --static-dir <dir>          The directory for static files. The files here are served as is.
-  -o, --open                      Automatically opens in specified browser.
+  --static-dist-prefix <prefix>   The prefix for static files in the destination.
   --public-url <prefix>           The path prefix for urls. Default is ".".
+  -o, --open                      Automatically opens in specified browser.
   --log-level <level>             Sets the log level. "error", "warn", "info", "debug" or "trace". Default is "info".
   -h, --help                      Displays help for command.
 ```
@@ -62,6 +63,7 @@ bundles for production
 Options:
   --dist-dir <dir>                Output directory to write to when unspecified by targets
   -s, --static-dir <dir>          The directory for static files. The files here are copied to dist as is.
+  --static-dist-prefix <prefix>   The prefix for static files in the destination.
   --public-url <prefix>           The path prefix for urls. Default is ".".
   -L, --log-level <level>         Set the log level (choices: "none", "error", "warn", "info", "verbose")
   -h, --help                      Display help for command

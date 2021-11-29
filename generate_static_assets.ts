@@ -1,4 +1,4 @@
-import { relative, walk } from "./deps.ts";
+import { join, relative, walk } from "./deps.ts";
 import { logger } from "./logger_util.ts";
 
 type File = Blob & { name: string };
@@ -23,20 +23,13 @@ export async function checkStaticDir(dir: string): Promise<boolean> {
   }
 }
 
-export async function* generateStaticAssets(dir: string): AsyncIterable<File> {
-  if (!await checkStaticDir(dir)) {
-    return;
-  }
+type GenerateStaticAssetsOptions = {
+  distPrefix: string;
+};
 
-  for await (const entry of walk(dir)) {
-    if (!entry.isDirectory) {
-      yield createStaticAssetFromPath(entry.path, dir);
-    }
-  }
-}
-
-export async function* watchAndGenStaticAssets(
+export async function* generateStaticAssets(
   dir: string,
+  opts: GenerateStaticAssetsOptions,
 ): AsyncIterable<File> {
   if (!await checkStaticDir(dir)) {
     return;
@@ -44,7 +37,22 @@ export async function* watchAndGenStaticAssets(
 
   for await (const entry of walk(dir)) {
     if (!entry.isDirectory) {
-      yield createStaticAssetFromPath(entry.path, dir);
+      yield createStaticAssetFromPath(entry.path, dir, opts.distPrefix);
+    }
+  }
+}
+
+export async function* watchAndGenStaticAssets(
+  dir: string,
+  opts: GenerateStaticAssetsOptions,
+): AsyncIterable<File> {
+  if (!await checkStaticDir(dir)) {
+    return;
+  }
+
+  for await (const entry of walk(dir)) {
+    if (!entry.isDirectory) {
+      yield createStaticAssetFromPath(entry.path, dir, opts.distPrefix);
     }
   }
 
@@ -56,7 +64,7 @@ export async function* watchAndGenStaticAssets(
         if (stat.isDirectory) {
           continue;
         }
-        yield await createStaticAssetFromPath(path, dir);
+        yield await createStaticAssetFromPath(path, dir, opts.distPrefix);
       } catch (e) {
         logger.error(e);
       }
@@ -67,8 +75,11 @@ export async function* watchAndGenStaticAssets(
 async function createStaticAssetFromPath(
   path: string,
   root: string,
+  distPrefix: string,
 ): Promise<File> {
   logger.debug("Reading", path);
   const bytes = await Deno.readFile(path);
-  return Object.assign(new Blob([bytes]), { name: relative(root, path) });
+  return Object.assign(new Blob([bytes]), {
+    name: join(distPrefix, relative(root, path)),
+  });
 }
