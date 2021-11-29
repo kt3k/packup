@@ -123,10 +123,10 @@ export async function* watchAndGenAssets(
 }
 
 type CreateFileObjectParams = {
-  pageName: string,
-  base: string,
-  pathPrefix: string,
-}
+  pageName: string;
+  base: string;
+  pathPrefix: string;
+};
 
 type Asset = {
   getWatchPaths(base: string): Promise<string[]>;
@@ -221,7 +221,9 @@ class CssAsset implements Asset {
     return Promise.resolve([join(base, this._href)]);
   }
 
-  async createFileObject({ pageName, base, pathPrefix }: CreateFileObjectParams): Promise<File> {
+  async createFileObject(
+    { pageName, base, pathPrefix }: CreateFileObjectParams,
+  ): Promise<File> {
     const data = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(data)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
@@ -233,7 +235,9 @@ class CssAsset implements Asset {
  * with href having .scss extension in the html */
 class ScssAsset extends CssAsset {
   // TODO(kt3k): implement getWatchPaths correctly
-  async createFileObject({ pageName, base, pathPrefix }: CreateFileObjectParams): Promise<File> {
+  async createFileObject(
+    { pageName, base, pathPrefix }: CreateFileObjectParams,
+  ): Promise<File> {
     const scss = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(scss)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
