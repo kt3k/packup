@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo-v2.svg" width="400" />
 
-# packup v0.1.7
+# packup v0.1.8
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
 
@@ -18,7 +18,7 @@
 Install via deno.land/x:
 
 ```shell
-deno run -A https://deno.land/x/packup@v0.1.7/install.ts
+deno run -A https://deno.land/x/packup@v0.1.8/install.ts
 ```
 
 Write HTML and JavaScript:
@@ -94,8 +94,8 @@ If you want to use packup without installing globally, you can use the following
 command.
 
 ```
-deno run --allow-env --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.7/ensure_esbuild_wasm.ts
-deno run -A https://deno.land/x/packup@v0.1.7/cli.ts <your parameters>
+deno run --allow-env --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.8/ensure_esbuild_wasm.ts
+deno run -A https://deno.land/x/packup@v0.1.8/cli.ts <your parameters>
 ```
 
 The first command ensures the esbuild wasm installed on your machine. The second
@@ -123,7 +123,8 @@ command is the actual entrypoint of the packup program.
 
 # History
 
-- 2021-11-29 v0.1.7 `--public-url` option support #29
+- 2021-11-29 v0.1.8 Add `--static-dist-prefix` option #30
+- 2021-11-29 v0.1.7 Add `--public-url` option #29
 - 2021-10-21 v0.1.6 CLI start up time improvement
 - 2021-10-20 v0.1.5 Remove the use of unstable flag #28
 - 2021-10-19 v0.1.4 Change esbuild wasm file name.
