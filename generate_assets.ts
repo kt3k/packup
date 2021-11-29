@@ -52,7 +52,6 @@ export async function generateAssets(
   const htmlAsset = await HtmlAsset.create(path);
   const { pageName, base } = htmlAsset;
   const pathPrefix = opts.publicUrl || ".";
-  console.log("pathPrefix", pathPrefix);
 
   const assets = [...htmlAsset.extractReferencedAssets()];
 
