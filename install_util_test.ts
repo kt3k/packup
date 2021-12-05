@@ -31,6 +31,5 @@ Deno.test({
   },
   permissions: {
     read: ["."],
-    env: ["DENO_DIR"],
   },
 });
