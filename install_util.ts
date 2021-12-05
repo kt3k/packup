@@ -7,8 +7,14 @@ function homedir(os: typeof Deno.build.os): string {
   return Deno.env.get("HOME")!;
 }
 
-export function wasmCacheDir(os = Deno.build.os, getHomeDir = homedir): string {
-  return join(getHomeDir(os), ".deno", NAME);
+export function wasmCacheDir(
+  os = Deno.build.os,
+  getHomeDir = homedir,
+  maybeDenoDir = Deno.env.get("DENO_DIR"),
+): string {
+  return maybeDenoDir
+    ? join(maybeDenoDir, NAME)
+    : join(getHomeDir(os), ".deno", NAME);
 }
 
 export function wasmPath(): string {
