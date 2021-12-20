@@ -290,7 +290,7 @@ class ScriptAsset implements Asset {
   }
 }
 
-/** ScriptAsset represents a <img> tag in the html */
+/** ImageAsset represents a <img> tag in the html */
 class ImageAsset implements Asset {
   static create(img: Element): ImageAsset | null {
     const src = img.getAttribute("src");
