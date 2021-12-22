@@ -2,11 +2,12 @@
  * This file contains the functions which create assets from the given paths.
  * An asset is the unit of build target.
  *
- * There are 4 types of assets
+ * There are 5 types of assets
  * - HtmlAsset
  * - CssAsset
  * - ScssAsset
  * - ScriptAsset - represents javascript or typescript
+ * - ImageAsset
  */
 import {
   basename,
@@ -289,11 +290,55 @@ class ScriptAsset implements Asset {
   }
 }
 
+/** ImageAsset represents a <img> tag in the html */
+class ImageAsset implements Asset {
+  static create(img: Element): ImageAsset | null {
+    const src = img.getAttribute("src");
+    if (!src) {
+      logger.warn(
+        "<img> tag doesn't have src attribute",
+      );
+      return null;
+    }
+    if (!src || src.startsWith("http://") || src.startsWith("https://")) {
+      // If "src" starts with http(s):// schemes, we consider these as
+      // external reference. So skip handling these
+      return null;
+    }
+    return new ImageAsset(src, img);
+  }
+
+  #src: string;
+  #dest?: string;
+  #el: Element;
+  #extension: string;
+
+  constructor(src: string, image: Element) {
+    this.#src = src;
+    this.#el = image;
+    [, this.#extension] = src.match(/\.([\w]+)$/) ?? [];
+  }
+
+  async getWatchPaths(base: string): Promise<string[]> {
+    return await getLocalDependencyPaths(join(base, this.#src));
+  }
+
+  async createFileObject(
+    { pageName, base, pathPrefix }: CreateFileObjectParams,
+  ): Promise<File> {
+    const data = await Deno.readFile(join(base, this.#src));
+    this.#dest = `${pageName}.${md5(data)}.${this.#extension}`;
+    this.#el.setAttribute("src", join(pathPrefix, this.#dest));
+    return Object.assign(new Blob([data]), { name: this.#dest });
+  }
+}
+
 export function* extractReferencedAssets(
   doc: Document,
 ): Generator<Asset, void, void> {
   yield* extractReferencedScripts(doc);
   yield* extractReferencedStyleSheets(doc);
+  yield* extractReferencedImages(doc);
 }
 
 function* extractReferencedScripts(
@@ -310,6 +355,15 @@ function* extractReferencedStyleSheets(
 ): Generator<Asset, void, void> {
   for (const link of qs(doc, "link")) {
     const asset = CssAsset.create(link);
+    if (asset) yield asset;
+  }
+}
+
+function* extractReferencedImages(
+  doc: Document,
+): Generator<Asset, void, void> {
+  for (const img of qs(doc, "img")) {
+    const asset = ImageAsset.create(img);
     if (asset) yield asset;
   }
 }

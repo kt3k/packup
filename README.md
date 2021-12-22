@@ -108,7 +108,7 @@ command is the actual entrypoint of the packup program.
 - [ ] Make esbuild.wasm path configurable
 - [ ] optimize (minify) option
 - [ ] css import support
-- [ ] image import support
+- [x] image import support
 - [ ] scss `@import` support
 
 # 1.0 roadmap
