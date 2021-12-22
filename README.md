@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo-v2.svg" width="400" />
 
-# packup v0.1.10
+# packup v0.1.11
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
 
@@ -18,7 +18,7 @@
 Install via deno.land/x:
 
 ```shell
-deno run -A https://deno.land/x/packup@v0.1.10/install.ts
+deno run -A https://deno.land/x/packup@v0.1.11/install.ts
 ```
 
 Write HTML and JavaScript:
@@ -94,8 +94,8 @@ If you want to use packup without installing globally, you can use the following
 command.
 
 ```
-deno run --allow-env --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.10/ensure_esbuild_wasm.ts
-deno run -A https://deno.land/x/packup@v0.1.10/cli.ts <your parameters>
+deno run --allow-env --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.11/ensure_esbuild_wasm.ts
+deno run -A https://deno.land/x/packup@v0.1.11/cli.ts <your parameters>
 ```
 
 The first command ensures the esbuild wasm installed on your machine. The second
@@ -123,6 +123,7 @@ command is the actual entrypoint of the packup program.
 
 # History
 
+- 2021-12-22 v0.1.11 Add support of image imports (in html). #33
 - 2021-12-05 v0.1.10 Install wasm under `DENO_DIR` when it's specified. #31
 - 2021-12-05 v0.1.9 Add logging related to sass.
 - 2021-11-29 v0.1.8 Add `--static-dist-prefix` option #30
