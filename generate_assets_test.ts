@@ -63,7 +63,7 @@ Deno.test("generateAssets", async () => {
   const [js, css, img, html] = assets;
   assert(js.name.endsWith(".js"));
   assert(css.name.endsWith(".css"));
-  assert(img.name.endsWith(".png"));
+  assert(img.name.endsWith(".svg"));
   assertEquals(html.name, "index.html");
 
   const htmlText = await html.text();
