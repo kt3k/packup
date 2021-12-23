@@ -123,3 +123,11 @@ export function checkUniqueEntrypoints(paths: string[]): void {
     throw new Error("Duplicate basenames");
   }
 }
+
+/**
+ * Returns `true` if the URL refers to a local file,
+ * else retuns `false` if the URL is for an external resource.
+ */
+export function isLocalUrl(url: string): boolean {
+  return !(url.startsWith("http://") || url.startsWith("https://"));
+}

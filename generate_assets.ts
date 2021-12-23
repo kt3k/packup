@@ -17,7 +17,7 @@ import {
   Element,
   join,
 } from "./deps.ts";
-import { decoder, encoder, getLocalDependencyPaths, md5, qs } from "./util.ts";
+import { decoder, encoder, getLocalDependencyPaths, md5, qs, isLocalUrl } from "./util.ts";
 import { wasmPath } from "./install_util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
@@ -65,16 +65,19 @@ export async function generateAssets(
   const generator = (async function* () {
     for (const a of assets) {
       // TODO(kt3k): These can be concurrent
-      yield await a.createFileObject({ pageName, base, pathPrefix });
+      const files = await a.createFileObject({ pageName, base, pathPrefix });
+      for (const file of files) yield file;
     }
 
     // This needs to be the last.
-    yield htmlAsset.createFileObject({ pageName, base, pathPrefix });
+    const files = await htmlAsset.createFileObject({ pageName, base, pathPrefix });
+    for (const file of files) yield file;
     if (opts.mainAs404) {
-      yield Object.assign(
+      const files = Object.assign(
         await htmlAsset.createFileObject({ pageName, base, pathPrefix }),
         { name: "404" },
       );
+      for (const file of files) yield file;
     }
     logger.log(`${path} bundled in ${Date.now() - buildStarted}ms`);
 
@@ -131,7 +134,7 @@ type CreateFileObjectParams = {
 
 type Asset = {
   getWatchPaths(base: string): Promise<string[]>;
-  createFileObject(params: CreateFileObjectParams): Promise<File>;
+  createFileObject(params: CreateFileObjectParams): Promise<File[]>;
 };
 
 /** HtmlAsset represents the html file */
@@ -168,10 +171,10 @@ class HtmlAsset implements Asset {
   }
 
   createFileObject(_params: CreateFileObjectParams) {
-    return Promise.resolve(Object.assign(
+    return Promise.resolve([Object.assign(
       new Blob([encoder.encode(this.#doc.body.parentElement!.outerHTML)]),
       { name: this.#filename },
-    ));
+    )]);
   }
 
   getWatchPaths() {
@@ -224,11 +227,11 @@ class CssAsset implements Asset {
 
   async createFileObject(
     { pageName, base, pathPrefix }: CreateFileObjectParams,
-  ): Promise<File> {
+  ): Promise<File[]> {
     const data = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(data)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
-    return Object.assign(new Blob([data]), { name: this._dest });
+    return [Object.assign(new Blob([data]), { name: this._dest })];
   }
 }
 
@@ -238,13 +241,13 @@ class ScssAsset extends CssAsset {
   // TODO(kt3k): implement getWatchPaths correctly
   async createFileObject(
     { pageName, base, pathPrefix }: CreateFileObjectParams,
-  ): Promise<File> {
+  ): Promise<File[]> {
     const scss = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(scss)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
-    return Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
+    return [Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
       name: this._dest,
-    });
+    })];
   }
 }
 
@@ -281,55 +284,91 @@ class ScriptAsset implements Asset {
     pageName,
     base,
     pathPrefix,
-  }: CreateFileObjectParams): Promise<File> {
+  }: CreateFileObjectParams): Promise<File[]> {
     const path = join(base, this.#src);
     const data = await bundleByEsbuild(path, wasmPath());
     this.#dest = `${pageName}.${md5(data)}.js`;
     this.#el.setAttribute("src", join(pathPrefix, this.#dest));
-    return Object.assign(new Blob([data]), { name: this.#dest });
+    return [Object.assign(new Blob([data]), { name: this.#dest })];
   }
 }
 
-/** ImageAsset represents a <img> tag in the html */
+/** ImageAsset represents a `<img>` tag in the html */
 class ImageAsset implements Asset {
   static create(img: Element): ImageAsset | null {
+    let sources: string[] = [];
+
     const src = img.getAttribute("src");
-    if (!src) {
-      logger.warn(
-        "<img> tag doesn't have src attribute",
-      );
+    const srcset = img.getAttribute("srcset");
+
+    if (img.tagName === "IMG" && !src) {
+      logger.warn("<img> tag doesn't have src attribute");
       return null;
     }
-    if (!src || src.startsWith("http://") || src.startsWith("https://")) {
-      // If "src" starts with http(s):// schemes, we consider these as
-      // external reference. So skip handling these
-      return null;
-    }
-    return new ImageAsset(src, img);
+
+    if (src && isLocalUrl(src)) sources.push(src);
+    if (srcset) sources.push(
+      ...srcset
+        .split(",") // Separate the different srcset
+        .filter(Boolean) // Remove empty strings
+        .map(src => src.trim()) // Remove white spaces
+        .map(src => src.split(" ")[0]) // Separate the source from the size
+        .filter(isLocalUrl) // Remove external references
+    );
+
+    // Remove duplicates
+    sources = [...new Set(sources)];
+
+    // If "src" or "srcset" only have external references, skip handling
+    if (sources.length === 0) return null;
+
+    return new ImageAsset(sources, img);
   }
 
-  #src: string;
-  #dest?: string;
+  #sources: string[];
   #el: Element;
-  #extension: string;
 
-  constructor(src: string, image: Element) {
-    this.#src = src;
+  constructor(sources: string[], image: Element) {
+    this.#sources = sources;
     this.#el = image;
-    [, this.#extension] = src.match(/\.([\w]+)$/) ?? [];
   }
 
   async getWatchPaths(base: string): Promise<string[]> {
-    return await getLocalDependencyPaths(join(base, this.#src));
+    const localDependencyPaths: Promise<string[]>[] = [];
+    for (const src of this.#sources) {
+      localDependencyPaths.push(getLocalDependencyPaths(join(base, src)));
+    }
+    return (await Promise.all(localDependencyPaths))
+      .flatMap(path => path); // Flatten result
   }
 
   async createFileObject(
     { pageName, base, pathPrefix }: CreateFileObjectParams,
-  ): Promise<File> {
-    const data = await Deno.readFile(join(base, this.#src));
-    this.#dest = `${pageName}.${md5(data)}.${this.#extension}`;
-    this.#el.setAttribute("src", join(pathPrefix, this.#dest));
-    return Object.assign(new Blob([data]), { name: this.#dest });
+  ): Promise<File[]> {
+    // TODO(tjosepo): Find a way to avoid creating copies of the same image
+    // when creating a bundle
+    const files: File[] = []
+
+    for (const src of this.#sources) {
+      const data = await Deno.readFile(join(base, src));
+      const [, extension] = src.match(/\.([\w]+)$/) ?? [];
+      const dest = `${pageName}.${md5(data)}.${extension}`;
+
+      if (this.#el.getAttribute("src")?.match(src)) {
+        this.#el.setAttribute("src", join(pathPrefix, dest));
+      }
+
+      const srcset = this.#el.getAttribute("srcset");
+      if (srcset?.includes(src)) {
+        // TODO(tjosepo): Find a better way to replace the old src with the new
+        // dest without only using `string.replace()`
+        this.#el.setAttribute("srcset", srcset.replace(src, join(pathPrefix, dest)));
+      }
+
+      files.push(Object.assign(new Blob([data]), { name: dest }));
+    }
+
+    return files;
   }
 }
 
@@ -362,7 +401,7 @@ function* extractReferencedStyleSheets(
 function* extractReferencedImages(
   doc: Document,
 ): Generator<Asset, void, void> {
-  for (const img of qs(doc, "img")) {
+  for (const img of [...qs(doc, "img"), ...qs(doc, "source")]) {
     const asset = ImageAsset.create(img);
     if (asset) yield asset;
   }
