@@ -84,11 +84,10 @@ export async function generateAssets(
     });
     for (const file of files) yield file;
     if (opts.mainAs404) {
-      const files = Object.assign(
-        await htmlAsset.createFileObject({ pageName, base, pathPrefix }),
+      yield Object.assign(
+        (await htmlAsset.createFileObject({ pageName, base, pathPrefix }))[0],
         { name: "404" },
       );
-      for (const file of files) yield file;
     }
     logger.log(`${path} bundled in ${Date.now() - buildStarted}ms`);
 
