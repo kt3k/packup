@@ -17,7 +17,14 @@ import {
   Element,
   join,
 } from "./deps.ts";
-import { decoder, encoder, getLocalDependencyPaths, md5, qs, isLocalUrl } from "./util.ts";
+import {
+  decoder,
+  encoder,
+  getLocalDependencyPaths,
+  isLocalUrl,
+  md5,
+  qs,
+} from "./util.ts";
 import { wasmPath } from "./install_util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
@@ -70,7 +77,11 @@ export async function generateAssets(
     }
 
     // This needs to be the last.
-    const files = await htmlAsset.createFileObject({ pageName, base, pathPrefix });
+    const files = await htmlAsset.createFileObject({
+      pageName,
+      base,
+      pathPrefix,
+    });
     for (const file of files) yield file;
     if (opts.mainAs404) {
       const files = Object.assign(
@@ -307,14 +318,16 @@ class ImageAsset implements Asset {
     }
 
     if (src && isLocalUrl(src)) sources.push(src);
-    if (srcset) sources.push(
-      ...srcset
-        .split(",") // Separate the different srcset
-        .filter(Boolean) // Remove empty strings
-        .map(src => src.trim()) // Remove white spaces
-        .map(src => src.split(" ")[0]) // Separate the source from the size
-        .filter(isLocalUrl) // Remove external references
-    );
+    if (srcset) {
+      sources.push(
+        ...srcset
+          .split(",") // Separate the different srcset
+          .filter(Boolean) // Remove empty strings
+          .map((src) => src.trim()) // Remove white spaces
+          .map((src) => src.split(" ")[0]) // Separate the source from the size
+          .filter(isLocalUrl), // Remove external references
+      );
+    }
 
     // Remove duplicates
     sources = [...new Set(sources)];
@@ -339,7 +352,7 @@ class ImageAsset implements Asset {
       localDependencyPaths.push(getLocalDependencyPaths(join(base, src)));
     }
     return (await Promise.all(localDependencyPaths))
-      .flatMap(path => path); // Flatten result
+      .flatMap((path) => path); // Flatten result
   }
 
   async createFileObject(
@@ -347,7 +360,7 @@ class ImageAsset implements Asset {
   ): Promise<File[]> {
     // TODO(tjosepo): Find a way to avoid creating copies of the same image
     // when creating a bundle
-    const files: File[] = []
+    const files: File[] = [];
 
     for (const src of this.#sources) {
       const data = await Deno.readFile(join(base, src));
@@ -362,7 +375,10 @@ class ImageAsset implements Asset {
       if (srcset?.includes(src)) {
         // TODO(tjosepo): Find a better way to replace the old src with the new
         // dest without only using `string.replace()`
-        this.#el.setAttribute("srcset", srcset.replace(src, join(pathPrefix, dest)));
+        this.#el.setAttribute(
+          "srcset",
+          srcset.replace(src, join(pathPrefix, dest)),
+        );
       }
 
       files.push(Object.assign(new Blob([data]), { name: dest }));
