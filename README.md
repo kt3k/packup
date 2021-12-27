@@ -123,7 +123,8 @@ command is the actual entrypoint of the packup program.
 
 # History
 
-- 2021-12-27 v0.1.11 Add support of `<img>` `srcset` attribute and `<source>` tag. #39
+- 2021-12-27 v0.1.11 Add support of `<img>` `srcset` attribute and `<source>`
+  tag. #39
 - 2021-12-22 v0.1.11 Add support of image imports (in html). #33
 - 2021-12-05 v0.1.10 Install wasm under `DENO_DIR` when it's specified. #31
 - 2021-12-05 v0.1.9 Add logging related to sass.
