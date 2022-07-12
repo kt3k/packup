@@ -1,0 +1,25 @@
+{
+  "fmt": {
+    "files": {
+      "exclude": [
+        "docs",
+        "dist",
+        "vendor",
+        "coverage",
+        ".git"
+      ]
+    }
+  },
+  "lint": {
+    "files": {
+      "exclude": [
+        "examples",
+        "docs",
+        "dist",
+        "vendor",
+        "coverage",
+        ".git"
+      ]
+    }
+  }
+}

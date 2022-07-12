@@ -9,15 +9,6 @@ cov:
 	deno coverage coverage --lcov > coverage/lcov.info
 	genhtml -o coverage/html coverage/lcov.info
 
-fmt:
-	deno fmt *.ts *.md examples docs/twd.ts
-
-fmt-check:
-	deno fmt --check *.ts *.md examples
-
-lint:
-	deno lint *.ts
-
 ex-build:
 	deno run -A cli.ts build examples/simple/index.html
 
