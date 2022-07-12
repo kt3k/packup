@@ -123,8 +123,7 @@ command is the actual entrypoint of the packup program.
 
 # History
 
-- 2022-07-12 v0.1.13 Add `<DOCTYPE html>` to html by default. #44
-  tag. #39
+- 2022-07-12 v0.1.13 Add `<DOCTYPE html>` to html by default. #44 tag. #39
 - 2021-12-27 v0.1.11 Add support of `<img>` `srcset` attribute and `<source>`
   tag. #39
 - 2021-12-22 v0.1.11 Add support of image imports (in html). #33
