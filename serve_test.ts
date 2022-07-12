@@ -19,7 +19,7 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
   let res = await fetch("http://localhost:4567/index.html");
   assertEquals(
     await res.text(),
-    `<html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
+    `<!DOCTYPE html><html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
   );
 
   // Non existent path returns the same response as the main html.
@@ -27,7 +27,7 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
   res = await fetch("http://localhost:4567/asdf");
   assertEquals(
     await res.text(),
-    `<html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
+    `<!DOCTYPE html><html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
   );
   p.close();
 });
