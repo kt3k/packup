@@ -147,6 +147,8 @@ type Asset = {
   createFileObject(params: CreateFileObjectParams): Promise<File[]>;
 };
 
+const docType = encoder.encode("<!DOCTYPE html>");
+
 /** HtmlAsset represents the html file */
 class HtmlAsset implements Asset {
   static async create(path: string): Promise<HtmlAsset> {
@@ -182,7 +184,7 @@ class HtmlAsset implements Asset {
 
   createFileObject(_params: CreateFileObjectParams) {
     return Promise.resolve([Object.assign(
-      new Blob([encoder.encode(this.#doc.body.parentElement!.outerHTML)]),
+      new Blob([docType, encoder.encode(this.#doc.documentElement!.outerHTML)]),
       { name: this.#filename },
     )]);
   }

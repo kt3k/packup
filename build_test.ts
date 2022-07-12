@@ -10,6 +10,6 @@ Deno.test("cli.ts build <entrypoint> --dist-dir <path> -- builds the site into g
   );
   assertEquals(
     await Deno.readTextFile(join(tempdir, "index.html")),
-    "<html><head></head><body><div>aaa</div>\n</body></html>",
+    "<!DOCTYPE html><html><head></head><body><div>aaa</div>\n</body></html>",
   );
 });
