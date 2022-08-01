@@ -1,9 +1,4 @@
-import { ensureDir, NAME, VERSION } from "./deps.ts";
-import { installWasm, wasmCacheDir } from "./install_util.ts";
-
-await ensureDir(wasmCacheDir());
-
-await installWasm();
+import { NAME, VERSION } from "./deps.ts";
 
 console.log(`Installing ${NAME} command`);
 const p = Deno.run({

@@ -237,7 +237,7 @@ async function build(
   });
   const allAssets: AsyncGenerator<File, void, void>[] = [];
   for (const path of paths) {
-    const [assets] = await generateAssets(path, { publicUrl });
+    const [assets] = await generateAssets(path, { publicUrl, distDir });
     allAssets.push(assets);
   }
 
