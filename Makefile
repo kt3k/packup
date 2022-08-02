@@ -1,5 +1,4 @@
 test:
-	deno run -A ensure_esbuild_wasm.ts
 	deno test -A --coverage=coverage *_test.ts
 
 test-esbuild-deno-loader:

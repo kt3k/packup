@@ -1,31 +1,24 @@
 import { resolve, toFileUrl } from "./deps.ts";
-import { logger } from "./logger_util.ts";
-import { build, load } from "https://deno.land/x/esbuild_loader@v0.12.8/mod.ts";
+import * as esbuild from 'https://deno.land/x/esbuild@v0.14.50/mod.js'
 import { denoPlugin } from "./vendor/esbuild_deno_loader/mod.ts";
 
-type Builder = typeof build;
-let b: Builder | null = null;
-async function loadBuilder(wasmPath: string): Promise<Builder> {
-  if (b) {
-    return b;
-  }
-  const start = Date.now();
-  const { build } = await load(wasmPath);
-  logger.debug(`Esbuild loaded in ${Date.now() - start}ms`);
-  b = build;
-  return b;
-}
 export async function bundleByEsbuild(
   path: string,
-  wasmPath: string,
+  options?: any,
+  plugins?: esbuild.Plugin[],
 ): Promise<string> {
-  const build = await loadBuilder(wasmPath);
-
-  const bundle = await build({
+  if (!plugins) plugins = [];
+  plugins.push(denoPlugin());
+  const opts = Object.assign({
     entryPoints: [toFileUrl(resolve(path)).href],
-    plugins: [denoPlugin()],
+    plugins,
+    minify: true,
     bundle: true,
-  });
+    write: false,
+    format: 'esm',
+    platform: 'browser',
+  }, options || {});
 
-  return bundle.outputFiles![0].text;
-}
+  const result = await esbuild.build(opts);
+  return result.outputFiles![0].text;
+};

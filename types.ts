@@ -1,1 +1,1 @@
-export type File = Blob & { name: string };
+export type File = Blob & { name: string, lastModified: number };

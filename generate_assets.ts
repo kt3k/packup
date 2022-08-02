@@ -25,12 +25,11 @@ import {
   md5,
   qs,
 } from "./util.ts";
-import { wasmPath } from "./install_util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
 import { compile as compileSass } from "./sass_util.ts";
 import type { File } from "./types.ts";
-
+import { bundlet } from "./bundlet.ts";
 /**
  * Options for asset generation.
  *
@@ -44,6 +43,7 @@ type GenerateAssetsOptions = {
   livereloadPort?: number;
   mainAs404?: boolean;
   publicUrl: string;
+  distDir?: string;
 };
 
 /**
@@ -60,6 +60,7 @@ export async function generateAssets(
   const htmlAsset = await HtmlAsset.create(path);
   const { pageName, base } = htmlAsset;
   const pathPrefix = opts.publicUrl || ".";
+  const { distDir } = opts;
 
   const assets = [...htmlAsset.extractReferencedAssets()];
 
@@ -72,7 +73,7 @@ export async function generateAssets(
   const generator = (async function* () {
     for (const a of assets) {
       // TODO(kt3k): These can be concurrent
-      const files = await a.createFileObject({ pageName, base, pathPrefix });
+      const files = await a.createFileObject({ pageName, base, pathPrefix, distDir });
       for (const file of files) yield file;
     }
 
@@ -140,6 +141,8 @@ type CreateFileObjectParams = {
   pageName: string;
   base: string;
   pathPrefix: string;
+  distDir?: string;
+  options?: Object;
 };
 
 type Asset = {
@@ -185,7 +188,7 @@ class HtmlAsset implements Asset {
   createFileObject(_params: CreateFileObjectParams) {
     return Promise.resolve([Object.assign(
       new Blob([docType, encoder.encode(this.#doc.documentElement!.outerHTML)]),
-      { name: this.#filename },
+      { name: this.#filename, lastModified: (Deno.statSync(this.#path).mtime?.getTime() ?? 0) / 1000 },
     )]);
   }
 
@@ -240,10 +243,13 @@ class CssAsset implements Asset {
   async createFileObject(
     { pageName, base, pathPrefix }: CreateFileObjectParams,
   ): Promise<File[]> {
-    const data = await Deno.readFile(join(base, this._href));
-    this._dest = `${pageName}.${md5(data)}.css`;
+    const flpath = join(base, this._href);
+    const data = await Deno.readFile(flpath);
+    const info = await Deno.stat(flpath);
+    const [, name] = this._href.match(/([^/]+)[.]\w+$/) || [];
+    this._dest = `${name}.${md5(data)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
-    return [Object.assign(new Blob([data]), { name: this._dest })];
+    return [Object.assign(new Blob([data]), { name: this._dest, lastModified: (info.mtime?.getTime() ?? 0) / 1000 })];
   }
 }
 
@@ -254,11 +260,15 @@ class ScssAsset extends CssAsset {
   async createFileObject(
     { pageName, base, pathPrefix }: CreateFileObjectParams,
   ): Promise<File[]> {
-    const scss = await Deno.readFile(join(base, this._href));
-    this._dest = `${pageName}.${md5(scss)}.css`;
+    const flpath = join(base, this._href);
+    const scss = await Deno.readFile(flpath);
+    const info = await Deno.stat(flpath);
+    const [, name] = this._href.match(/([^/]+)[.]\w+$/) || [];
+    this._dest = `${name}.${md5(scss)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
     return [Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
       name: this._dest,
+      lastModified: (info.mtime?.getTime() ?? 0) / 1000,
     })];
   }
 }
@@ -296,12 +306,17 @@ class ScriptAsset implements Asset {
     pageName,
     base,
     pathPrefix,
+    distDir,
   }: CreateFileObjectParams): Promise<File[]> {
-    const path = join(base, this.#src);
-    const data = await bundleByEsbuild(path, wasmPath());
-    this.#dest = `${pageName}.${md5(data)}.js`;
+    const flpath = join(base, this.#src);
+    const info = await Deno.stat(flpath);
+
+    const { options, plugins } = await bundlet(flpath, pathPrefix, distDir);
+    const data = await bundleByEsbuild(flpath, options, plugins);
+    const [, name] = flpath.match(/([^/]+)([.]\w+)$/) || [];
+    this.#dest = `${name}.${md5(data)}.js`;
     this.#el.setAttribute("src", join(pathPrefix, this.#dest));
-    return [Object.assign(new Blob([data]), { name: this.#dest })];
+    return [Object.assign(new Blob([data]), { name: this.#dest, lastModified: (info.mtime?.getTime() ?? 0) / 1000 })];
   }
 }
 
@@ -364,9 +379,11 @@ class ImageAsset implements Asset {
     const files: File[] = [];
 
     for (const src of this.#sources) {
-      const data = await Deno.readFile(join(base, src));
-      const [, extension] = src.match(/\.([\w]+)$/) ?? [];
-      const dest = `${pageName}.${md5(data)}.${extension}`;
+      const flpath = join(base, src);
+      const data = await Deno.readFile(flpath);
+
+      const [, name, extension] = src.match(/([^/]+)\.([\w]+)$/) ?? [];
+      const dest = `${name}.${md5(data)}.${extension}`;
 
       if (this.#el.getAttribute("src")?.match(src)) {
         this.#el.setAttribute("src", join(pathPrefix, dest));
@@ -382,7 +399,8 @@ class ImageAsset implements Asset {
         );
       }
 
-      files.push(Object.assign(new Blob([data]), { name: dest }));
+      const info = await Deno.stat(flpath);
+      files.push(Object.assign(new Blob([data]), { name: dest, lastModified: (info.mtime?.getTime() ?? 0) / 1000 }));
     }
 
     return files;
