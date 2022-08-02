@@ -54,29 +54,34 @@ Deno.test("extractReferencedAssets - references to http(s):// schemes are treate
   assertEquals(assets.length, 0);
 });
 
-Deno.test("generateAssets", async () => {
-  const [gen] = await generateAssets("examples/with-imports/index.html", {
-    publicUrl: ".",
-  });
-  const assets = [];
-  for await (const asset of gen) {
-    assets.push(asset);
-  }
-  assertEquals(assets.length, 5);
+Deno.test({
+  name: "generateAssets", 
+  fn: async () => {
+    const [gen] = await generateAssets("examples/with-imports/index.html", {
+      publicUrl: ".",
+    });
+    const assets = [];
+    for await (const asset of gen) {
+      assets.push(asset);
+    }
+    assertEquals(assets.length, 5);
 
-  const [js, css, imgSrc, imgSrcset, html] = assets;
-  assert(js.name.endsWith(".js"));
-  assert(css.name.endsWith(".css"));
-  assert(imgSrc.name.endsWith(".svg"));
-  assert(imgSrcset.name.endsWith(".webp"));
+    const [js, css, imgSrc, imgSrcset, html] = assets;
+    assert(js.name.endsWith(".js"));
+    assert(css.name.endsWith(".css"));
+    assert(imgSrc.name.endsWith(".svg"));
+    assert(imgSrcset.name.endsWith(".webp"));
 
-  assertEquals(html.name, "index.html");
+    assertEquals(html.name, "index.html");
 
-  const htmlText = await html.text();
-  assert(htmlText.includes(`"${js.name}"`));
-  assert(htmlText.includes(`"${css.name}"`));
-  assert(htmlText.includes(`"${imgSrc.name}"`));
-  assert(htmlText.includes(`"${imgSrcset.name} 2x,`));
+    const htmlText = await html.text();
+    assert(htmlText.includes(`"${js.name}"`));
+    assert(htmlText.includes(`"${css.name}"`));
+    assert(htmlText.includes(`"${imgSrc.name}"`));
+    assert(htmlText.includes(`"${imgSrcset.name} 2x,`));
+  },
+  sanitizeResources: false,
+  sanitizeOps: false,
 });
 Deno.test("generateAssets - publicUrl=/", async () => {
   const [gen] = await generateAssets("examples/with-imports/index.html", {
