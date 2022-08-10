@@ -1,5 +1,6 @@
 import {
   ensureDir,
+  dirname,
   join,
   NAME,
   opn,
@@ -261,6 +262,7 @@ async function build(
     const bytes = new Uint8Array(await asset.arrayBuffer());
     // TODO(kt3k): Print more structured report
     logger.log("Writing", filename, byteSize(bytes.byteLength));
+    await ensureDir(dirname(filename));
     await Deno.writeFile(filename, bytes);
   }
 }
