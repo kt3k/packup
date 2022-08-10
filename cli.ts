@@ -17,6 +17,7 @@ import { livereloadServer } from "./livereload_server.ts";
 import { byteSize, checkUniqueEntrypoints, mux } from "./util.ts";
 import { logger, setLogLevel } from "./logger_util.ts";
 import { File } from "./types.ts";
+import { modules  } from "./modules_serve.ts";
 
 function usage() {
   logger.log(`
@@ -84,6 +85,7 @@ type CliArgs = {
   "public-url": string;
   "static-dir": string;
   "static-dist-prefix": string;
+  "allow-net": string;
 };
 
 /**
@@ -102,8 +104,9 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     port = "1234",
     "public-url": publicUrl = ".",
     "livereload-port": livereloadPort = 35729,
+    "allow-net": allowNet = "-",
   } = parseFlags(cliArgs, {
-    string: ["log-level", "out-dir", "port", "static-dir", "public-url"],
+    string: ["log-level", "out-dir", "port", "static-dir", "public-url", "allow-net"],
     boolean: ["help", "version", "open"],
     alias: {
       h: "help",
@@ -173,12 +176,14 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageBuild();
       return 1;
     }
+    modules.serve(allowNet);
     await build(entrypoints, {
       distDir,
       staticDir,
       publicUrl,
       staticDistPrefix,
     });
+    modules.close();
     return 0;
   }
 
@@ -197,6 +202,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     return 1;
   }
 
+  modules.serve(allowNet);
   await serve(entrypoints, {
     open,
     port: +port,
@@ -205,6 +211,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     publicUrl,
     staticDistPrefix,
   });
+  modules.close();
   return 0;
 }
 
