@@ -85,7 +85,7 @@ type CliArgs = {
   "public-url": string;
   "static-dir": string;
   "static-dist-prefix": string;
-  "allow-net": string;
+  "modules-host": string;
 };
 
 /**
@@ -104,9 +104,9 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     port = "1234",
     "public-url": publicUrl = ".",
     "livereload-port": livereloadPort = 35729,
-    "allow-net": allowNet = "-",
+    "modules-host": modulesHost = "-",
   } = parseFlags(cliArgs, {
-    string: ["log-level", "out-dir", "port", "static-dir", "public-url", "allow-net"],
+    string: ["log-level", "out-dir", "port", "static-dir", "public-url", "modules-host"],
     boolean: ["help", "version", "open"],
     alias: {
       h: "help",
@@ -176,7 +176,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageBuild();
       return 1;
     }
-    modules.serve(allowNet);
+    modules.serve(modulesHost);
     await build(entrypoints, {
       distDir,
       staticDir,
@@ -202,7 +202,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     return 1;
   }
 
-  modules.serve(allowNet);
+  modules.serve(modulesHost);
   await serve(entrypoints, {
     open,
     port: +port,
