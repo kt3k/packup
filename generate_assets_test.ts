@@ -55,7 +55,7 @@ Deno.test("extractReferencedAssets - references to http(s):// schemes are treate
 });
 
 Deno.test({
-  name: "generateAssets", 
+  name: "generateAssets",
   fn: async () => {
     const [gen] = await generateAssets("examples/with-imports/index.html", {
       publicUrl: ".",

@@ -73,7 +73,12 @@ export async function generateAssets(
   const generator = (async function* () {
     for (const a of assets) {
       // TODO(kt3k): These can be concurrent
-      const files = await a.createFileObject({ pageName, base, pathPrefix, distDir });
+      const files = await a.createFileObject({
+        pageName,
+        base,
+        pathPrefix,
+        distDir,
+      });
       for (const file of files) yield file;
     }
 
@@ -188,7 +193,10 @@ class HtmlAsset implements Asset {
   createFileObject(_params: CreateFileObjectParams) {
     return Promise.resolve([Object.assign(
       new Blob([docType, encoder.encode(this.#doc.documentElement!.outerHTML)]),
-      { name: this.#filename, lastModified: (Deno.statSync(this.#path).mtime?.getTime() ?? 0) / 1000 },
+      {
+        name: this.#filename,
+        lastModified: (Deno.statSync(this.#path).mtime?.getTime() ?? 0) / 1000,
+      },
     )]);
   }
 
@@ -249,7 +257,12 @@ class CssAsset implements Asset {
     const [, name] = this._href.match(/([^/]+)[.]\w+$/) || [];
     this._dest = `${name}.${md5(data)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
-    return [Object.assign(new Blob([data]), { name: this._dest, lastModified: (info.mtime?.getTime() ?? 0) / 1000 })];
+    return [
+      Object.assign(new Blob([data]), {
+        name: this._dest,
+        lastModified: (info.mtime?.getTime() ?? 0) / 1000,
+      }),
+    ];
   }
 }
 
@@ -316,7 +329,12 @@ class ScriptAsset implements Asset {
     const [, name] = flpath.match(/([^/]+)([.]\w+)$/) || [];
     this.#dest = `${name}.${md5(data)}.js`;
     this.#el.setAttribute("src", join(pathPrefix, this.#dest));
-    return [Object.assign(new Blob([data]), { name: this.#dest, lastModified: (info.mtime?.getTime() ?? 0) / 1000 })];
+    return [
+      Object.assign(new Blob([data]), {
+        name: this.#dest,
+        lastModified: (info.mtime?.getTime() ?? 0) / 1000,
+      }),
+    ];
   }
 }
 
@@ -400,7 +418,12 @@ class ImageAsset implements Asset {
       }
 
       const info = await Deno.stat(flpath);
-      files.push(Object.assign(new Blob([data]), { name: dest, lastModified: (info.mtime?.getTime() ?? 0) / 1000 }));
+      files.push(
+        Object.assign(new Blob([data]), {
+          name: dest,
+          lastModified: (info.mtime?.getTime() ?? 0) / 1000,
+        }),
+      );
     }
 
     return files;

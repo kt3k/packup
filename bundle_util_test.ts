@@ -2,10 +2,11 @@ import { assertStringIncludes } from "./test_deps.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 
 Deno.test({
-  name: "bundleByEsbuild - bundles the script by esbuild", fn: async () => {
-  const bundle = await bundleByEsbuild("testdata/foo.js", {minify: false});
-  assertStringIncludes(bundle, `console.log("hi");`);
-},
-sanitizeResources: false,
-sanitizeOps: false,
+  name: "bundleByEsbuild - bundles the script by esbuild",
+  fn: async () => {
+    const bundle = await bundleByEsbuild("testdata/foo.js", { minify: false });
+    assertStringIncludes(bundle, `console.log("hi");`);
+  },
+  sanitizeResources: false,
+  sanitizeOps: false,
 });

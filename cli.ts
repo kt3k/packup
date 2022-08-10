@@ -17,7 +17,7 @@ import { livereloadServer } from "./livereload_server.ts";
 import { byteSize, checkUniqueEntrypoints, mux } from "./util.ts";
 import { logger, setLogLevel } from "./logger_util.ts";
 import { File } from "./types.ts";
-import { modules  } from "./modules_serve.ts";
+import { modules } from "./modules_serve.ts";
 
 function usage() {
   logger.log(`
@@ -106,7 +106,14 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     "livereload-port": livereloadPort = 35729,
     "modules-host": modulesHost = "-",
   } = parseFlags(cliArgs, {
-    string: ["log-level", "out-dir", "port", "static-dir", "public-url", "modules-host"],
+    string: [
+      "log-level",
+      "out-dir",
+      "port",
+      "static-dir",
+      "public-url",
+      "modules-host",
+    ],
     boolean: ["help", "version", "open"],
     alias: {
       h: "help",
