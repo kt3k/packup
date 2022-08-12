@@ -5,6 +5,8 @@ import { byteSize } from "./util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import * as esbuild from "https://deno.land/x/esbuild@v0.14.50/mod.js";
 
+const bx = /\/\/[ \t]*!bundle=([^\s]+)\s*[\r\n]+[^;]+['"]([^'"]+)['"];[\r\n]+/g;
+
 export const bundlet = async function (
   flpath: string,
   pathPrefix: string,
@@ -14,9 +16,7 @@ export const bundlet = async function (
     return {};
   }
   const body = await Deno.readTextFile(flpath);
-  const bx =
-    /\/\/[ \t]*!bundle=([^\s]+)\s*[\r\n]+[^;]+['"]([^'"]+)['"];[\r\n]+/;
-  const bm = body.matchAll(new RegExp(bx.source, "g"));
+  const bm = body.matchAll(bx);
   const from = dirname(flpath);
   const x: any = {};
   const dirs: any = {};
