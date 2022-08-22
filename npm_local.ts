@@ -16,24 +16,6 @@ async function modulesServe(port = 0, root?: string) {
   }
 }
 
-export const modules = {
-  serve: (host = "") => {
-    if (host === "-") return;
-    const i = host.indexOf(":");
-    let root = "";
-    if (i > -1) {
-      port = parseInt(host.substring(i + 1), 10);
-      root = host.substring(0, i);
-    } else {
-      root = host;
-    }
-    modulesServe(port, root);
-  },
-  close: () => {
-    server?.close();
-  },
-};
-
 function found(flpath: string, base: string): string {
   let info;
   try {
@@ -104,7 +86,24 @@ async function serveHttp(conn: Deno.Conn) {
   }
 }
 
-export const npmLocal = ({
+export function serve(host = "") {
+  if (host === "-") return;
+  const i = host.indexOf(":");
+  let root = "";
+  if (i > -1) {
+    port = parseInt(host.substring(i + 1), 10);
+    root = host.substring(0, i);
+  } else {
+    root = host;
+  }
+  modulesServe(port, root);
+}
+
+export function close() {
+  server?.close();
+}
+
+export const resolve = ({
   name: "npm-local-modules",
   setup(build: any) {
     build.onResolve({ filter: /^npm:/ }, (args: any) => {

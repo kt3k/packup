@@ -1,6 +1,7 @@
 import { resolve, toFileUrl } from "./deps.ts";
 import * as esbuild from "https://deno.land/x/esbuild@v0.14.50/mod.js";
 import { denoPlugin } from "./vendor/esbuild_deno_loader/mod.ts";
+import * as npmLocal from "./npm_local.ts";
 
 export async function bundleByEsbuild(
   path: string,
@@ -8,6 +9,7 @@ export async function bundleByEsbuild(
   plugins?: esbuild.Plugin[],
 ): Promise<string> {
   if (!plugins) plugins = [];
+  plugins.push(npmLocal.resolve);
   plugins.push(denoPlugin());
   const opts = Object.assign({
     entryPoints: [toFileUrl(resolve(path)).href],

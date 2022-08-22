@@ -18,7 +18,7 @@ import { livereloadServer } from "./livereload_server.ts";
 import { byteSize, checkUniqueEntrypoints, mux } from "./util.ts";
 import { logger, setLogLevel } from "./logger_util.ts";
 import { File } from "./types.ts";
-import { modules } from "./npm_local.ts";
+import * as npmLocal from "./npm_local.ts";
 
 function usage() {
   logger.log(`
@@ -86,7 +86,7 @@ type CliArgs = {
   "public-url": string;
   "static-dir": string;
   "static-dist-prefix": string;
-  "modules-host": string;
+  "npm-local": string;
 };
 
 /**
@@ -105,7 +105,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     port = "1234",
     "public-url": publicUrl = ".",
     "livereload-port": livereloadPort = 35729,
-    "modules-host": modulesHost = "-",
+    "npm-local": modulesDirPort = "-",
   } = parseFlags(cliArgs, {
     string: [
       "log-level",
@@ -113,7 +113,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       "port",
       "static-dir",
       "public-url",
-      "modules-host",
+      "npm-local",
     ],
     boolean: ["help", "version", "open"],
     alias: {
@@ -184,14 +184,14 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageBuild();
       return 1;
     }
-    modules.serve(modulesHost);
+    npmLocal.serve(modulesDirPort);
     await build(entrypoints, {
       distDir,
       staticDir,
       publicUrl,
       staticDistPrefix,
     });
-    modules.close();
+    npmLocal.close();
     return 0;
   }
 
@@ -210,7 +210,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     return 1;
   }
 
-  modules.serve(modulesHost);
+  npmLocal.serve(modulesDirPort);
   await serve(entrypoints, {
     open,
     port: +port,
@@ -219,7 +219,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     publicUrl,
     staticDistPrefix,
   });
-  modules.close();
+  npmLocal.close();
   return 0;
 }
 
