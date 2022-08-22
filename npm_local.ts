@@ -6,8 +6,6 @@ let rootDir = "./node_modules";
 let server: Deno.Listener;
 let port = 12345;
 
-const xnpm = /((?:import|from)\s+['"])(npm:[^'"]+)(['"])/g;
-
 async function modulesServe(port = 0, root?: string) {
   server = Deno.listen({ hostname: "localhost", port: port || 12345 });
   if (root) {
