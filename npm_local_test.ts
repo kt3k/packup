@@ -5,7 +5,7 @@ import * as npmLocal from "./npm_local.ts";
 Deno.test({
   name: "npmLocal - serve local npm modules and load with npm: prefix",
   fn: async () => {
-    npmLocal.serve("./testdata:12345");
+    npmLocal.serve("./testdata:12348");
     const flpath = "./testdata/npm.js";
     const bundle = await bundleByEsbuild(flpath, {
       minify: false,
@@ -13,6 +13,7 @@ Deno.test({
       format: "esm",
     });
     assertStringIncludes(bundle, `console.log("hi");`);
+    npmLocal.close();
   },
   sanitizeResources: false,
   sanitizeOps: false,

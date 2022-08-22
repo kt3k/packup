@@ -30,6 +30,7 @@ import { logger } from "./logger_util.ts";
 import { compile as compileSass } from "./sass_util.ts";
 import type { File } from "./types.ts";
 import { bundlet } from "./bundlet.ts";
+import { esbuild } from "./vendor/esbuild_deno_loader/deps.ts";
 /**
  * Options for asset generation.
  *
@@ -147,7 +148,7 @@ type CreateFileObjectParams = {
   base: string;
   pathPrefix: string;
   distDir?: string;
-  options?: Object;
+  options?: esbuild.BuildOptions;
 };
 
 type Asset = {
@@ -249,7 +250,7 @@ class CssAsset implements Asset {
   }
 
   async createFileObject(
-    { pageName, base, pathPrefix }: CreateFileObjectParams,
+    { base, pathPrefix }: CreateFileObjectParams,
   ): Promise<File[]> {
     const flpath = join(base, this._href);
     const data = await Deno.readFile(flpath);
@@ -271,7 +272,7 @@ class CssAsset implements Asset {
 class ScssAsset extends CssAsset {
   // TODO(kt3k): implement getWatchPaths correctly
   async createFileObject(
-    { pageName, base, pathPrefix }: CreateFileObjectParams,
+    { base, pathPrefix }: CreateFileObjectParams,
   ): Promise<File[]> {
     const flpath = join(base, this._href);
     const scss = await Deno.readFile(flpath);
@@ -316,7 +317,6 @@ class ScriptAsset implements Asset {
   }
 
   async createFileObject({
-    pageName,
     base,
     pathPrefix,
     distDir,
@@ -390,7 +390,7 @@ class ImageAsset implements Asset {
   }
 
   async createFileObject(
-    { pageName, base, pathPrefix }: CreateFileObjectParams,
+    { base, pathPrefix }: CreateFileObjectParams,
   ): Promise<File[]> {
     // TODO(tjosepo): Find a way to avoid creating copies of the same image
     // when creating a bundle

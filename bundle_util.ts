@@ -5,7 +5,7 @@ import * as npmLocal from "./npm_local.ts";
 
 export async function bundleByEsbuild(
   path: string,
-  options?: any,
+  options?: esbuild.BuildOptions,
   plugins?: esbuild.Plugin[],
 ): Promise<string> {
   if (!plugins) plugins = [];

@@ -1,4 +1,4 @@
-import { dirname, join } from "./deps.ts";
+import { join } from "./deps.ts";
 import * as path from "https://deno.land/std/path/mod.ts";
 import * as esbuild from "https://deno.land/x/esbuild@v0.14.50/mod.js";
 
@@ -109,8 +109,8 @@ export function close() {
 
 export const resolve = ({
   name: "npm-local-modules",
-  setup(build: any) {
-    build.onResolve({ filter: /^npm:/ }, (args: any) => {
+  setup(build: esbuild.PluginBuild) {
+    build.onResolve({ filter: /^npm:/ }, (args: esbuild.OnResolveArgs) => {
       if (!server) {
         return { path: args.path };
       }

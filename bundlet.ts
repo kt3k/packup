@@ -11,15 +11,15 @@ export const bundlet = async function (
   flpath: string,
   pathPrefix: string,
   distDir?: string,
-): Promise<{ options?: any; plugins?: esbuild.Plugin[] }> {
+): Promise<{ options?: esbuild.BuildOptions; plugins?: esbuild.Plugin[] }> {
   if (!distDir) {
     return {};
   }
   const body = await Deno.readTextFile(flpath);
   const bm = body.matchAll(bx);
   const from = dirname(flpath);
-  const x: any = {};
-  const dirs: any = {};
+  const x: { [name: string]: string } = {};
+  const dirs: { [name: string]: string } = {};
   const names: string[] = [];
   const urlpath = /^https?:\/\//;
 
@@ -82,13 +82,13 @@ export const bundlet = async function (
   }
   const ignores = (): esbuild.Plugin => ({
     name: "bundlet-keep-imports",
-    setup(build: any) {
+    setup(build: esbuild.PluginBuild) {
       // console.debug(x);
       build.onResolve({
         filter: new RegExp(
           names.join("|").replace(/\./g, "[.]").replace(/\//g, "[/]"),
         ),
-      }, (args: any) => {
+      }, (args: esbuild.OnResolveArgs) => {
         let target = args.path;
         if (urlpath.test(target) && x[target] === "off") {
           return { path: target, external: true };
