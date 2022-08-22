@@ -7,10 +7,19 @@ let server: Deno.Listener;
 let port = 12345;
 
 async function modulesServe(port = 0, root?: string) {
-  server = Deno.listen({ hostname: "localhost", port: port || 12345 });
   if (root) {
     rootDir = root;
   }
+  try {
+    const info = Deno.statSync(rootDir);
+    if (info?.isFile) {
+      return;
+    }
+  } catch {
+    return;
+  }
+
+  server = Deno.listen({ hostname: "localhost", port: port || 12345 });
   for await (const conn of server) {
     serveHttp(conn);
   }
@@ -18,38 +27,33 @@ async function modulesServe(port = 0, root?: string) {
 
 function found(flpath: string, base: string): string {
   let info;
+  flpath = join(base, flpath);
   try {
-    flpath = join(base, flpath);
-    try {
-      info = Deno.statSync(flpath);
-    } catch {
-      // skip
-    }
-    if (!info?.isFile && !info?.isDirectory && !info?.isSymlink) {
-      const exts = ["ts", "js", "mjs"];
-      for (let i = 0; i < exts.length; i++) {
-        try {
-          info = Deno.statSync(`${flpath}.${exts[i]}`);
-          if (info.isFile || info.isSymlink) {
-            flpath = `${flpath}.${exts[i]}`;
-            break;
-          }
-          if (info.isDirectory) {
-            continue;
-          }
-        } catch {
-          // skip
+    info = Deno.statSync(flpath);
+  } catch {
+    // skip
+  }
+  if (!info?.isFile && !info?.isDirectory && !info?.isSymlink) {
+    const exts = ["ts", "js", "mjs"];
+    for (let i = 0; i < exts.length; i++) {
+      try {
+        info = Deno.statSync(`${flpath}.${exts[i]}`);
+        if (info.isFile || info.isSymlink) {
+          flpath = `${flpath}.${exts[i]}`;
+          break;
         }
+        if (info.isDirectory) {
+          continue;
+        }
+      } catch {
+        // skip
       }
     }
-    if (!info?.isFile) {
-      return "";
-    }
-    return flpath;
-  } catch {
-    //
   }
-  return "";
+  if (!info?.isFile) {
+    return "";
+  }
+  return flpath;
 }
 
 const ext = /\.(m?js|ts)$/i;
@@ -86,17 +90,17 @@ async function serveHttp(conn: Deno.Conn) {
   }
 }
 
-export function serve(host = "") {
-  if (host === "-") return;
-  const i = host.indexOf(":");
+export function serve(dirPort = "") {
+  if (/^(no|off|false|-)$/i.test(dirPort)) return;
+  const i = dirPort.indexOf(":");
   let root = "";
   if (i > -1) {
-    port = parseInt(host.substring(i + 1), 10);
-    root = host.substring(0, i);
+    port = parseInt(dirPort.substring(i + 1), 10);
+    root = dirPort.substring(0, i);
   } else {
-    root = host;
+    root = dirPort;
   }
-  modulesServe(port, root);
+  modulesServe(port > 0 ? port : 0, root);
 }
 
 export function close() {

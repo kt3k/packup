@@ -21,12 +21,17 @@ export const bundlet = async function (
   const x: any = {};
   const dirs: any = {};
   const names: string[] = [];
+  const urlpath = /^https?:\/\//;
 
   for (const bi of bm) {
+    const isURL = urlpath.test(bi[2]);
+    if (isURL && bi[1] === "module") {
+      bi[1] = "off";
+    }
     if (bi[1] === "off") {
-      const flname = basename(bi[2]);
+      const flname = isURL ? bi[2] : basename(bi[2]);
       if (!x[flname] && !flname.match(/\.ts$/)) {
-        x[flname] = flname;
+        x[flname] = "off";
         names.push(flname);
       }
       continue;
@@ -34,7 +39,7 @@ export const bundlet = async function (
     if (!bi[1]) {
       continue;
     }
-    const src = join(from, bi[2]);
+    const src = isURL ? bi[2] : join(from, bi[2]);
     let [, name] = bi[2].match(/([^/]+)([.]\w+)$/) || [];
     const data = await bundleByEsbuild(src, {
       platform: "browser",
@@ -47,7 +52,7 @@ export const bundlet = async function (
     }
     const customizedDir = bi[1].startsWith("/");
     if (customizedDir) {
-      base = join(distDir, bi[1].substr(1));
+      base = join(distDir, bi[1].substring(1));
     }
     const jsname = `${name}.${md5(data)}.js`;
     const flpath = join(base, jsname);
@@ -62,12 +67,12 @@ export const bundlet = async function (
       logger.log("Writing", flpath, byteSize(data.length));
       await Deno.writeTextFile(flpath, data);
     }
-    const flname = basename(bi[2]);
+    const flname = urlpath.test(bi[2]) ? bi[2] : basename(bi[2]);
     if (!x[flname]) {
       x[flname] = jsname;
       names.push(flname);
       if (customizedDir) {
-        dirs[flname] = bi[1].substr(1) || "./";
+        dirs[flname] = bi[1].substring(1) || "./";
       }
       // console.log(bi.index, bi[0], bi[1], bi[2]);
     }
@@ -80,11 +85,17 @@ export const bundlet = async function (
     setup(build: any) {
       // console.debug(x);
       build.onResolve({
-        filter: new RegExp(names.join("|").replace(/\./g, "[.]")),
+        filter: new RegExp(
+          names.join("|").replace(/\./g, "[.]").replace(/\//g, "[/]"),
+        ),
       }, (args: any) => {
-        const base = dirname(args.path);
-        const name = basename(args.path);
-        let target = join(args.resolveDir, dirs[name] || base, x[name] || name);
+        let target = args.path;
+        if (urlpath.test(target) && x[target] === "off") {
+          return { path: target, external: true };
+        }
+        const name = urlpath.test(target) ? target : basename(target);
+        const base = dirname(target);
+        target = join(args.resolveDir, dirs[name] || base, x[name] || name);
         if (!/^[\/.]/.test(target)) {
           target = `./${target}`;
         }
