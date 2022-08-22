@@ -4,6 +4,7 @@ import { logger } from "./logger_util.ts";
 import { byteSize } from "./util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import * as esbuild from "https://deno.land/x/esbuild@v0.14.50/mod.js";
+import { npmLocal } from "./npm_local.ts";
 
 const bx = /\/\/[ \t]*!bundle=([^\s]+)\s*[\r\n]+[^;]+['"]([^'"]+)['"];[\r\n]+/g;
 
@@ -13,7 +14,7 @@ export const bundlet = async function (
   distDir?: string,
 ): Promise<{ options?: any; plugins?: esbuild.Plugin[] }> {
   if (!distDir) {
-    return {};
+    return { plugins: [npmLocal] };
   }
   const body = await Deno.readTextFile(flpath);
   const bm = body.matchAll(bx);
@@ -73,7 +74,7 @@ export const bundlet = async function (
     }
   }
   if (names.length === 0) {
-    return {};
+    return { plugins: [npmLocal] };
   }
   const ignores = (): esbuild.Plugin => ({
     name: "bundlet-keep-imports",
@@ -94,7 +95,7 @@ export const bundlet = async function (
   });
 
   return {
-    plugins: [ignores()],
+    plugins: [npmLocal, ignores()],
     options: { platform: "browser", format: "esm" },
   };
 };
