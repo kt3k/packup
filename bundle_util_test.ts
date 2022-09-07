@@ -1,5 +1,5 @@
 import { assertEquals, assertStringIncludes } from "./test_deps.ts";
-import { bundleByEsbuild, setImportMap, getImportMap } from "./bundle_util.ts";
+import { bundleByEsbuild, getImportMap, setImportMap } from "./bundle_util.ts";
 import { wasmPath } from "./install_util.ts";
 
 Deno.test("bundleByEsbuild - bundles the script by esbuild", async () => {
@@ -15,5 +15,5 @@ Deno.test(
     assertEquals(getImportMap(), undefined);
     setImportMap(importMapFile);
     assertEquals(getImportMap(), importMapFile);
-  }
+  },
 );

@@ -245,7 +245,7 @@ async function build(
     publicUrl,
     staticDistPrefix,
     importMap,
-  }: BuildOptions & BuildAndServeCommonOptions
+  }: BuildOptions & BuildAndServeCommonOptions,
 ) {
   checkUniqueEntrypoints(paths);
   setImportMap(importMap);
@@ -291,7 +291,7 @@ async function serve(
     publicUrl,
     staticDistPrefix,
     importMap,
-  }: ServeOptions & BuildAndServeCommonOptions
+  }: ServeOptions & BuildAndServeCommonOptions,
 ) {
   checkUniqueEntrypoints(paths);
   setImportMap(importMap);
