@@ -106,7 +106,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     port = "1234",
     "public-url": publicUrl = ".",
     "livereload-port": livereloadPort = 35729,
-    "import-map": importMap = "",
+    "import-map": importMap,
   } = parseFlags(cliArgs, {
     string: [
       "log-level",
