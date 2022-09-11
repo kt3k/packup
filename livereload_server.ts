@@ -56,6 +56,11 @@ async function serve(
             headers: { connection: "close" },
           }),
         );
+        const nr = await httpConn.nextRequest();
+        if (nr !== null) {
+          logger.error("Error: something's wrong with livereload server.");
+        }
+        httpConn.close();
       } catch (e) {
         httpConn.close();
         logger.error(e);
