@@ -16,7 +16,6 @@ import {
 import { livereloadServer } from "./livereload_server.ts";
 import { byteSize, checkUniqueEntrypoints, mux } from "./util.ts";
 import { logger, setLogLevel } from "./logger_util.ts";
-import { File } from "./types.ts";
 import { setImportMap } from "./bundle_util.ts";
 
 function usage() {
