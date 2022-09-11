@@ -1,5 +1,11 @@
 import { logger } from "./logger_util.ts";
 
+function livereloadScript(port: number) {
+  return `window.onload = () => {
+  new WebSocket("ws://localhost:${port}/livereload").onmessage = () => location.reload();
+};`;
+}
+
 function handleWs(sock: WebSocket, eventtarget: EventTarget): void {
   logger.debug("socket connected!");
   sock.onmessage = (ev) => {
@@ -44,16 +50,16 @@ async function serve(
   const url = new URL(request.url);
   switch (url.pathname) {
     case "/livereload.js":
-      respondWith(
-        new Response(`
-        window.onload = () => {
-          new WebSocket("ws://localhost:${port}/livereload").onmessage = () => location.reload();
-        };
-      `),
-      ).then(
-        () => httpConn.close(),
-        logger.error,
-      );
+      try {
+        await respondWith(
+          new Response(livereloadScript(port), {
+            headers: { connection: "close" },
+          }),
+        );
+      } catch (e) {
+        httpConn.close();
+        logger.error(e);
+      }
       break;
     case "/livereload": {
       const { response, socket } = Deno.upgradeWebSocket(request);

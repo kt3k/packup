@@ -242,7 +242,9 @@ class CssAsset implements Asset {
     const data = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(data)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
-    return [Object.assign(new Blob([data]), { name: this._dest, lastModified: 0 })];
+    return [
+      Object.assign(new Blob([data]), { name: this._dest, lastModified: 0 }),
+    ];
   }
 }
 
@@ -301,7 +303,9 @@ class ScriptAsset implements Asset {
     const data = await bundleByEsbuild(path, wasmPath());
     this.#dest = `${pageName}.${md5(data)}.js`;
     this.#el.setAttribute("src", join(pathPrefix, this.#dest));
-    return [Object.assign(new Blob([data]), { name: this.#dest, lastModified: 0 })];
+    return [
+      Object.assign(new Blob([data]), { name: this.#dest, lastModified: 0 }),
+    ];
   }
 }
 
@@ -382,7 +386,9 @@ class ImageAsset implements Asset {
         );
       }
 
-      files.push(Object.assign(new Blob([data]), { name: dest, lastModified: 0 }));
+      files.push(
+        Object.assign(new Blob([data]), { name: dest, lastModified: 0 }),
+      );
     }
 
     return files;
