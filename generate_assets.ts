@@ -29,7 +29,6 @@ import { wasmPath } from "./install_util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
 import { compile as compileSass } from "./sass_util.ts";
-import type { File } from "./types.ts";
 
 /**
  * Options for asset generation.
@@ -86,7 +85,7 @@ export async function generateAssets(
     if (opts.mainAs404) {
       yield Object.assign(
         (await htmlAsset.createFileObject({ pageName, base, pathPrefix }))[0],
-        { name: "404" },
+        { name: "404", lastModified: 0 },
       );
     }
     logger.log(`${path} bundled in ${Date.now() - buildStarted}ms`);
@@ -185,7 +184,7 @@ class HtmlAsset implements Asset {
   createFileObject(_params: CreateFileObjectParams) {
     return Promise.resolve([Object.assign(
       new Blob([docType, encoder.encode(this.#doc.documentElement!.outerHTML)]),
-      { name: this.#filename },
+      { name: this.#filename, lastModified: 0 },
     )]);
   }
 
@@ -243,7 +242,9 @@ class CssAsset implements Asset {
     const data = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(data)}.css`;
     this._el.setAttribute("href", join(pathPrefix, this._dest));
-    return [Object.assign(new Blob([data]), { name: this._dest })];
+    return [
+      Object.assign(new Blob([data]), { name: this._dest, lastModified: 0 }),
+    ];
   }
 }
 
@@ -259,6 +260,7 @@ class ScssAsset extends CssAsset {
     this._el.setAttribute("href", join(pathPrefix, this._dest));
     return [Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
       name: this._dest,
+      lastModified: 0,
     })];
   }
 }
@@ -301,7 +303,9 @@ class ScriptAsset implements Asset {
     const data = await bundleByEsbuild(path, wasmPath());
     this.#dest = `${pageName}.${md5(data)}.js`;
     this.#el.setAttribute("src", join(pathPrefix, this.#dest));
-    return [Object.assign(new Blob([data]), { name: this.#dest })];
+    return [
+      Object.assign(new Blob([data]), { name: this.#dest, lastModified: 0 }),
+    ];
   }
 }
 
@@ -382,7 +386,9 @@ class ImageAsset implements Asset {
         );
       }
 
-      files.push(Object.assign(new Blob([data]), { name: dest }));
+      files.push(
+        Object.assign(new Blob([data]), { name: dest, lastModified: 0 }),
+      );
     }
 
     return files;
