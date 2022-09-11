@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "react": "https://esm.sh/react@17.0.2",
+    "react-dom": "https://esm.sh/react-dom@17.0.2",
+    "react-router-dom": "https://esm.sh/react-router-dom@5.2.0"
+  }
+}

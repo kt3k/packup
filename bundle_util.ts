@@ -23,9 +23,23 @@ export async function bundleByEsbuild(
 
   const bundle = await build({
     entryPoints: [toFileUrl(resolve(path)).href],
-    plugins: [denoPlugin()],
+    plugins: [
+      denoPlugin({
+        importMapFile: getImportMap(),
+      }),
+    ],
     bundle: true,
   });
 
   return bundle.outputFiles![0].text;
+}
+
+let _importMap: string | undefined;
+
+export function setImportMap(importMap: string) {
+  _importMap = importMap;
+}
+
+export function getImportMap() {
+  return _importMap;
 }
