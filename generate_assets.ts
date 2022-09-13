@@ -25,7 +25,6 @@ import {
   md5,
   qs,
 } from "./util.ts";
-import { wasmPath } from "./install_util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
 import { compile as compileSass } from "./sass_util.ts";
@@ -300,7 +299,7 @@ class ScriptAsset implements Asset {
     pathPrefix,
   }: CreateFileObjectParams): Promise<File[]> {
     const path = join(base, this.#src);
-    const data = await bundleByEsbuild(path, wasmPath());
+    const data = await bundleByEsbuild(path);
     this.#dest = `${pageName}.${md5(data)}.js`;
     this.#el.setAttribute("src", join(pathPrefix, this.#dest));
     return [
