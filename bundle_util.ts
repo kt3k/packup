@@ -1,5 +1,5 @@
 import { resolve, toFileUrl } from "./deps.ts";
-import { build, stop } from "https://deno.land/x/esbuild@v0.14.51/wasm.js";
+import { build, stop } from "https://deno.land/x/esbuild@v0.14.51/mod.js";
 import { denoPlugin } from "https://deno.land/x/esbuild_deno_loader@0.5.2/mod.ts";
 
 export async function bundleByEsbuild(
