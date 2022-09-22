@@ -1,5 +1,5 @@
-LUME=deno run --unstable --allow-read --allow-write --allow-net https://deno.land/x/lume@v0.22.5/cli.js
-TWD=deno run -A https://deno.land/x/twd@v0.3.1/cli.ts
+LUME=deno run --unstable --allow-read --allow-write --allow-net https://deno.land/x/lume@v1.11.1/cli.js
+TWD=deno run -A https://deno.land/x/twd@v0.4.8/cli.ts
 DEPLOY_DIR=deno run -A https://deno.land/x/deploy_dir@v0.3.2/cli.ts
 dev:
 	$(LUME) -s

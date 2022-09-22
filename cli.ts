@@ -1,4 +1,5 @@
 import {
+  dirname,
   ensureDir,
   join,
   NAME,
@@ -14,9 +15,10 @@ import {
   watchAndGenStaticAssets,
 } from "./generate_static_assets.ts";
 import { livereloadServer } from "./livereload_server.ts";
-import { byteSize, checkUniqueEntrypoints, mux } from "./util.ts";
+import { byteSize, mux } from "./util.ts"; // checkUniqueEntrypoints
 import { logger, setLogLevel } from "./logger_util.ts";
 import { setImportMap } from "./bundle_util.ts";
+import * as npmLocal from "./npm_local.ts";
 
 function usage() {
   logger.log(`
@@ -185,6 +187,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       usageBuild();
       return 1;
     }
+    npmLocal.serve("");
     await build(entrypoints, {
       distDir,
       staticDir,
@@ -192,6 +195,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       staticDistPrefix,
       importMap,
     });
+    npmLocal.close();
     return 0;
   }
 
@@ -210,6 +214,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     return 1;
   }
 
+  npmLocal.serve("");
   await serve(entrypoints, {
     open,
     port: +port,
@@ -219,6 +224,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     staticDistPrefix,
     importMap,
   });
+  npmLocal.close();
   return 0;
 }
 
@@ -246,7 +252,7 @@ async function build(
     importMap,
   }: BuildOptions & BuildAndServeCommonOptions,
 ) {
-  checkUniqueEntrypoints(paths);
+  // checkUniqueEntrypoints(paths);
   setImportMap(importMap);
 
   logger.log(`Writing the assets to ${distDir}`);
@@ -257,7 +263,7 @@ async function build(
   });
   const allAssets: AsyncGenerator<File, void, void>[] = [];
   for (const path of paths) {
-    const [assets] = await generateAssets(path, { publicUrl });
+    const [assets] = await generateAssets(path, { publicUrl, distDir });
     allAssets.push(assets);
   }
 
@@ -267,6 +273,7 @@ async function build(
     const bytes = new Uint8Array(await asset.arrayBuffer());
     // TODO(kt3k): Print more structured report
     logger.log("Writing", filename, byteSize(bytes.byteLength));
+    await ensureDir(dirname(filename));
     await Deno.writeFile(filename, bytes);
   }
 }
@@ -292,7 +299,7 @@ async function serve(
     importMap,
   }: ServeOptions & BuildAndServeCommonOptions,
 ) {
-  checkUniqueEntrypoints(paths);
+  // checkUniqueEntrypoints(paths);
   setImportMap(importMap);
 
   // This is used for propagating onBuild event to livereload server.

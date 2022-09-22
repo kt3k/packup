@@ -1,5 +1,5 @@
-import { apply, css } from "https://esm.sh/twind@0.16.13/css";
-import { Config } from "https://deno.land/x/twd@v0.3.1/types.ts";
+import { apply, css } from "https://esm.sh/twind@0.16.17/css";
+import { Config } from "https://deno.land/x/twd@v0.4.8/types.ts";
 
 export const config: Config = {
   theme: {

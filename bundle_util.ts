@@ -1,9 +1,12 @@
 import { resolve, toFileUrl } from "./deps.ts";
-import { build, stop } from "https://deno.land/x/esbuild@v0.14.51/mod.js";
-import { denoPlugin } from "https://deno.land/x/esbuild_deno_loader@0.5.2/mod.ts";
+import * as esbuild from "https://deno.land/x/esbuild@v0.15.7/mod.js";
+import { denoPlugin } from "./vendor/esbuild_deno_loader/mod.ts";
+import * as npmLocal from "./npm_local.ts";
 
 export async function bundleByEsbuild(
   path: string,
+  options?: esbuild.BuildOptions,
+  plugins?: esbuild.Plugin[],
 ): Promise<string> {
   const importMapFile = getImportMap();
   let importMapURL: URL | undefined;
@@ -11,19 +14,25 @@ export async function bundleByEsbuild(
     importMapURL = toFileUrl(resolve(importMapFile));
   }
 
-  const bundle = await build({
-    entryPoints: [toFileUrl(resolve(path)).href],
-    plugins: [
-      denoPlugin({
-        importMapURL,
-      }),
-    ],
+  if (!plugins) plugins = [];
+  plugins.push(npmLocal.resolve);
+  plugins.push(denoPlugin({
+    importMapURL,
+  }));
+  const entryPoint = /^https?:\/\//.test(path)
+    ? path
+    : toFileUrl(resolve(path)).href;
+  const opts = Object.assign({
+    entryPoints: [entryPoint],
+    plugins,
+    minify: true,
     bundle: true,
     write: false,
-  });
+    format: "esm",
+    platform: "browser",
+  }, options || {});
 
-  stop();
-
+  const bundle = await esbuild.build(opts);
   return bundle.outputFiles![0].text;
 }
 

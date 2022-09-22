@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: test-${{ matrix.os }}-${{ matrix.deno }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        # Test on the latest stable, and nightly
+        deno: [v1.x, canary]
+        os: [macOS-latest, windows-latest, ubuntu-latest]
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v2
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: ${{ matrix.deno }}
+
+      - run: deno --version
+
+      - name: Format
+        if: runner.os == 'Linux'
+        run: make fmt/check
+
+      - name: Lint
+        if: runner.os == 'Linux'
+        run: make lint
+
+      - name: Run tests
+        run: make test
