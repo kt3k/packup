@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo-v2.svg" width="400" />
 
-# packup v0.1.14
+# packup v0.2.0
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
 
@@ -11,14 +11,14 @@
 - 📦 Bundle web application like [Parcel][Parcel].
 - ✨ Support TypeScript out of the box.
 - 🦕 Deno-compatible ES Modules resolution.
-- 💨 Fast build with [esbuild][esbuild]-wasm bundler.
+- 💨 Fast build with [esbuild][esbuild] bundler.
 
 # Usage
 
 Install via deno.land/x:
 
 ```shell
-deno run -A https://deno.land/x/packup@v0.1.14/install.ts
+deno install -qAf https://deno.land/x/packup@v0.2.0/cli.ts
 ```
 
 Write HTML and JavaScript:
@@ -88,32 +88,15 @@ deno cache --config tsconfig.json <script>
 See [the example repository](https://github.com/kt3k/packup_example) for more
 details.
 
-# Advanced usages
-
-If you want to use packup without installing globally, you can use the following
-command.
-
-```
-deno run --allow-env --allow-read --allow-write --allow-net=deno.land https://deno.land/x/packup@v0.1.14/ensure_esbuild_wasm.ts
-deno run -A https://deno.land/x/packup@v0.1.14/cli.ts <your parameters>
-```
-
-The first command ensures the esbuild wasm installed on your machine. The second
-command is the actual entrypoint of the packup program.
-
-# 0.2.0 roadmap
-
-- [x] --public-url
-- [ ] twind example
-- [ ] Make esbuild.wasm path configurable
-- [ ] optimize (minify) option
-- [ ] css import support
-- [x] image import support
-- [ ] scss `@import` support
-
 # 1.0 roadmap
 
-- [ ] import map support
+- [x] --public-url
+- [x] image import support
+- [x] import map support
+- [ ] twind example
+- [ ] optimize (minify) option
+- [ ] css import support
+- [ ] scss `@import` support
 - [ ] sourcemap support
 
 ## Prior art
@@ -123,6 +106,7 @@ command is the actual entrypoint of the packup program.
 
 # History
 
+- 2022-09-22 v0.2.0 Update esbuild. #49
 - 2022-09-11 v0.1.14 Add import map support. #47
 - 2022-07-12 v0.1.13 Add `<DOCTYPE html>` to html by default. #44 tag. #39
 - 2021-12-27 v0.1.11 Add support of `<img>` `srcset` attribute and `<source>`
