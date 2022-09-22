@@ -16,6 +16,7 @@ import {
   DOMParser,
   Element,
   join,
+  posixPathJoin,
 } from "./deps.ts";
 import {
   decoder,
@@ -240,7 +241,7 @@ class CssAsset implements Asset {
   ): Promise<File[]> {
     const data = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(data)}.css`;
-    this._el.setAttribute("href", join(pathPrefix, this._dest));
+    this._el.setAttribute("href", posixPathJoin(pathPrefix, this._dest));
     return [
       Object.assign(new Blob([data]), { name: this._dest, lastModified: 0 }),
     ];
@@ -256,7 +257,7 @@ class ScssAsset extends CssAsset {
   ): Promise<File[]> {
     const scss = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(scss)}.css`;
-    this._el.setAttribute("href", join(pathPrefix, this._dest));
+    this._el.setAttribute("href", posixPathJoin(pathPrefix, this._dest));
     return [Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
       name: this._dest,
       lastModified: 0,
