@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo-v2.svg" width="400" />
 
-# packup v0.2.0
+# packup v0.2.1
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
 
@@ -18,7 +18,7 @@
 Install via deno.land/x:
 
 ```shell
-deno install -qAf https://deno.land/x/packup@v0.2.0/cli.ts
+deno install -qAf https://deno.land/x/packup@v0.2.1/cli.ts
 ```
 
 Write HTML and JavaScript:
@@ -106,6 +106,7 @@ details.
 
 # History
 
+- 2022-09-22 v0.2.1 Fix path issues on windows. #50
 - 2022-09-22 v0.2.0 Update esbuild. #49
 - 2022-09-11 v0.1.14 Add import map support. #47
 - 2022-07-12 v0.1.13 Add `<DOCTYPE html>` to html by default. #44 tag. #39
