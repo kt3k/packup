@@ -302,7 +302,7 @@ class ScriptAsset implements Asset {
     const path = join(base, this.#src);
     const data = await bundleByEsbuild(path);
     this.#dest = `${pageName}.${md5(data)}.js`;
-    this.#el.setAttribute("src", join(pathPrefix, this.#dest));
+    this.#el.setAttribute("src", posixPathJoin(pathPrefix, this.#dest));
     return [
       Object.assign(new Blob([data]), { name: this.#dest, lastModified: 0 }),
     ];
@@ -373,7 +373,7 @@ class ImageAsset implements Asset {
       const dest = `${pageName}.${md5(data)}.${extension}`;
 
       if (this.#el.getAttribute("src")?.match(src)) {
-        this.#el.setAttribute("src", join(pathPrefix, dest));
+        this.#el.setAttribute("src", posixPathJoin(pathPrefix, dest));
       }
 
       const srcset = this.#el.getAttribute("srcset");
@@ -382,7 +382,7 @@ class ImageAsset implements Asset {
         // dest without only using `string.replace()`
         this.#el.setAttribute(
           "srcset",
-          srcset.replace(src, join(pathPrefix, dest)),
+          srcset.replace(src, posixPathJoin(pathPrefix, dest)),
         );
       }
 
