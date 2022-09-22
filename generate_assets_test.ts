@@ -88,6 +88,7 @@ Deno.test("generateAssets - publicUrl=/", async () => {
   }
   const [js, css, imgSrc, imgSrcset, html] = assets;
   const htmlText = await html.text();
+  console.log(htmlText);
   assert(htmlText.includes(`"/${js.name}"`));
   assert(htmlText.includes(`"/${css.name}"`));
   assert(htmlText.includes(`"/${imgSrc.name}"`));
