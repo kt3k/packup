@@ -1,9 +1,6 @@
 test:
 	deno test -A --coverage=coverage
 
-test-esbuild-deno-loader:
-	$(MAKE) -C vendor/esbuild_deno_loader test
-
 cov:
 	deno coverage coverage --lcov > coverage/lcov.info
 	genhtml -o coverage/html coverage/lcov.info

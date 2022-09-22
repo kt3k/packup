@@ -24,4 +24,3 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - run: |
           make test
-          make test-esbuild-deno-loader
