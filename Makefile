@@ -1,6 +1,5 @@
 test:
-	deno run -A ensure_esbuild_wasm.ts
-	deno test -A --coverage=coverage *_test.ts
+	deno test -A --coverage=coverage
 
 test-esbuild-deno-loader:
 	$(MAKE) -C vendor/esbuild_deno_loader test
