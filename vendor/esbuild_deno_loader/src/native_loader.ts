@@ -49,11 +49,11 @@ async function loadFromCLI(
 
   const module = infoCache.get(specifierRaw);
   if (!module) {
-    throw new TypeError("Unreachable.");
+    throw new TypeError(`${specifierRaw} Unreachable.`);
   }
 
-  if (module.error) throw new Error(module.error);
-  if (!module.local) throw new Error("Module not downloaded yet.");
+  if (module.error) throw new Error(`${specifierRaw} ${module.error}`);
+  if (!module.local) throw new Error(`${specifierRaw} Module not downloaded yet.`);
   const mediaType = module.mediaType ?? "Unknown";
 
   const loader = mediaTypeToLoader(mediaType);

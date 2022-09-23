@@ -1,8 +1,10 @@
 import { denoPlugin } from "./mod.ts";
 import { esbuild } from "./test_deps.ts";
-import { assert, assertEquals } from "./test_deps.ts";
+import { assert, assertEquals, path } from "./test_deps.ts";
 
 const ALL = ["native", "portable"] as const;
+
+const testdata = `${path.resolve(path.dirname(path.fromFileUrl(import.meta.url)))}/testdata`;
 
 function test(
   name: string,
@@ -43,7 +45,7 @@ test("local ts", ALL, async (loader) => {
   const res = await esbuild.build({
     plugins: [denoPlugin({ loader })],
     write: false,
-    entryPoints: ["./testdata/mod.ts"],
+    entryPoints: [`${testdata}/mod.ts`],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -75,7 +77,7 @@ test("local mts", ALL, async (loader) => {
   const res = await esbuild.build({
     plugins: [denoPlugin({ loader })],
     write: false,
-    entryPoints: ["./testdata/mod.mts"],
+    entryPoints: [`${testdata}/mod.mts`],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -105,7 +107,7 @@ test("local js", ALL, async (loader) => {
   const res = await esbuild.build({
     plugins: [denoPlugin({ loader })],
     write: false,
-    entryPoints: ["./testdata/mod.js"],
+    entryPoints: [`${testdata}/mod.js`],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -137,7 +139,7 @@ test("local mjs", ALL, async (loader) => {
   const res = await esbuild.build({
     plugins: [denoPlugin({ loader })],
     write: false,
-    entryPoints: ["./testdata/mod.mjs"],
+    entryPoints: [`${testdata}/mod.mjs`],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -167,7 +169,7 @@ test("local jsx", ALL, async (loader) => {
   const res = await esbuild.build({
     plugins: [denoPlugin({ loader })],
     write: false,
-    entryPoints: ["./testdata/mod.jsx"],
+    entryPoints: [`${testdata}/mod.jsx`],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -197,7 +199,7 @@ test("local tsx", ALL, async (loader) => {
   const res = await esbuild.build({
     plugins: [denoPlugin({ loader })],
     write: false,
-    entryPoints: ["./testdata/mod.tsx"],
+    entryPoints: [`${testdata}/mod.tsx`],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -214,7 +216,7 @@ test("bundle remote imports", ALL, async (loader) => {
     write: false,
     bundle: true,
     platform: "neutral",
-    entryPoints: ["https://deno.land/std@0.150.0/uuid/mod.ts"],
+    entryPoints: ["https://deno.land/std@0.155.0/uuid/mod.ts"],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -225,7 +227,7 @@ test("bundle remote imports", ALL, async (loader) => {
   assert(v4.validate(v4.generate()));
 });
 
-const importMapURL = new URL("./testdata/importmap.json", import.meta.url);
+const importMapURL = new URL(`${testdata}/importmap.json`, import.meta.url);
 
 test("bundle import map", ALL, async (loader) => {
   const res = await esbuild.build({
@@ -235,7 +237,7 @@ test("bundle import map", ALL, async (loader) => {
     write: false,
     bundle: true,
     platform: "neutral",
-    entryPoints: ["./testdata/importmap.js"],
+    entryPoints: [`${testdata}/importmap.js`],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -251,7 +253,7 @@ test("local json", ALL, async (loader) => {
     plugins: [denoPlugin({ loader })],
     write: false,
     format: "esm",
-    entryPoints: ["./testdata/data.json"],
+    entryPoints: [`${testdata}/data.json`],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
