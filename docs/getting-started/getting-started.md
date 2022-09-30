@@ -14,7 +14,7 @@ You need [Deno](https://deno.land/) (>=1.10.3) installed.
 You can install `packup` with the following command.
 
 ```sh
-deno run -A https://deno.land/x/packup@v0.2.1/install.ts
+deno install -qAf https://deno.land/x/packup@v0.2.1/cli.ts
 ```
 
 Then you'll have `packup` installed.
