@@ -1,4 +1,4 @@
-version: 0.2.1
+version: 0.2.2
 commit: 'chore: bump to %.%.%'
 files:
   README.md:
@@ -9,5 +9,5 @@ files:
     - 'https://deno.land/x/packup@v%.%.%'
     - <strong>v%.%.%</strong>
   docs/getting-started/getting-started.md:
-    - 'https://deno.land/x/packup@v%.%.%/install.ts'
+    - 'https://deno.land/x/packup@v%.%.%/cli.ts'
     - packup v%.%.%
