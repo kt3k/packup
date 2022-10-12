@@ -8,7 +8,7 @@ import * as esbuild from "https://deno.land/x/esbuild@v0.15.7/mod.js";
 import * as npmLocal from "./npm_local.ts";
 
 const bx =
-  /\/\/[ \t]*!bundle=([^\n]+)\s*[\r\n]+\s*(?:export|import)[^;]+['"]([^'"]+)['"]\s*;\s*/g;
+  /\/\/[ \t]*!bundle=([^\r\n]+)\s*[\r\n]+\s*(?:export|import)[^;]+['"]([^'"]+)['"]\s*;\s*/g;
 const urlpath = /^https?:\/\//;
 export const fm: { [key: string]: string } = {};
 
