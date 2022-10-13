@@ -102,7 +102,11 @@ export async function confRules(
     let base = join(
       distDir,
       pathPrefix,
-      dirname(flpath.startsWith("src") ? relative("src", flpath) : flpath),
+      dirname(
+        /^(\.\/)?src\//.test(flpath) && flpath != "."
+          ? relative("src", flpath)
+          : flpath,
+      ),
       dirname(bi[2]),
     );
     if (bi[1] !== "module" && !bi[1].endsWith("/")) {
@@ -204,6 +208,7 @@ export const bundlet = async function (
           fm[key] = t;
           return { path: t, external: true };
         }
+
         const isURL = urlpath.test(target);
         if (isURL && x[isURL ? target : name] === "off") {
           fm[key] = target;
