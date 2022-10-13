@@ -103,9 +103,7 @@ export async function confRules(
       distDir,
       pathPrefix,
       dirname(
-        /^(\.\/)?src\//.test(flpath) && flpath != "."
-          ? relative("src", flpath)
-          : flpath,
+        /(^|\/)src\//.test(flpath) ? relative("src", flpath) : flpath,
       ),
       dirname(bi[2]),
     );

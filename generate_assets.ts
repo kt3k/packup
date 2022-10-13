@@ -39,12 +39,12 @@ function namePrefix(
   flpath: string,
 ): { name: string; prefix?: string } {
   let name = basename(flpath).replace(/[.](ts|js|mjs)$/i, "");
-  const hasSrc = /^(\.\/)?src\//.test(flpath);
+  const hasSrc = /(^|\/)src\//.test(flpath);
   const dir = dirname(hasSrc ? relative("src", flpath) : flpath);
   let prefix = "";
   if (dir !== ".") {
     name = join(dir, name);
-    prefix = relative(base, hasSrc && base != "." ? "src" : ".");
+    prefix = relative(base, ".");
   }
   return { name, prefix };
 }
