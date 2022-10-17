@@ -1,5 +1,5 @@
 import { resolve, toFileUrl } from "./deps.ts";
-import * as esbuild from "https://deno.land/x/esbuild@v0.15.7/mod.js";
+import * as esbuild from "https://deno.land/x/esbuild@v0.15.11/mod.js";
 import { denoPlugin } from "./vendor/esbuild_deno_loader/mod.ts";
 import * as npmLocal from "./npm_local.ts";
 

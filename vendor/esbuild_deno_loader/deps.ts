@@ -1,11 +1,11 @@
-import * as esbuild from "https://deno.land/x/esbuild@v0.15.7/mod.js";
+import * as esbuild from "https://deno.land/x/esbuild@v0.15.11/mod.js";
 export type { esbuild };
 export {
   fromFileUrl,
   resolve,
   toFileUrl,
-} from "https://deno.land/std@0.155.0/path/mod.ts";
-export { basename, extname } from "https://deno.land/std@0.155.0/path/mod.ts";
+} from "https://deno.land/std/path/mod.ts";
+export { basename, extname } from "https://deno.land/std/path/mod.ts";
 export {
   resolveImportMap,
   resolveModuleSpecifier,

@@ -4,7 +4,7 @@ import { logger } from "./logger_util.ts";
 import { byteSize } from "./util.ts";
 import { bundleByEsbuild } from "./bundle_util.ts";
 import { denoPlugin } from "./vendor/esbuild_deno_loader/mod.ts";
-import * as esbuild from "https://deno.land/x/esbuild@v0.15.7/mod.js";
+import * as esbuild from "https://deno.land/x/esbuild@v0.15.11/mod.js";
 import * as npmLocal from "./npm_local.ts";
 
 const bx =
@@ -189,6 +189,20 @@ export const bundlet = async function (
       options,
     };
   }
+
+  const rel = (t: string, flpath: string): string => {
+    if (!urlpath.test(t)) {
+      t = relative(
+        relative("src", dirname(flpath)),
+        t.replace(/^\//, ""),
+      );
+    }
+    if (t.indexOf("/") < 0) {
+      t = `./${t}`;
+    }
+    return t;
+  };
+
   const ignores = (): esbuild.Plugin => ({
     name: "bundlet-keep-imports",
     setup(build: esbuild.PluginBuild) {
@@ -204,7 +218,7 @@ export const bundlet = async function (
         const t = mappings?.[name] || fm[key];
         if (t) {
           fm[key] = t;
-          return { path: t, external: true };
+          return { path: rel(t, flpath), external: true };
         }
 
         const isURL = urlpath.test(target);
@@ -217,11 +231,8 @@ export const bundlet = async function (
         if (!isURL) {
           target = join(args.resolveDir, dirs[src] || dir, x[src] || src);
         }
-        if (!urlpath.test(target) && !/^[\/.]/.test(target)) {
-          target = `/${target}`;
-        }
         fm[key] = target;
-        return { path: target, external: true };
+        return { path: rel(target, flpath), external: true };
       });
     },
   });

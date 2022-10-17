@@ -31,7 +31,7 @@ import { bundleByEsbuild } from "./bundle_util.ts";
 import { logger } from "./logger_util.ts";
 import { compile as compileSass } from "./sass_util.ts";
 import { bundlet } from "./bundlet.ts";
-import * as esbuild from "https://deno.land/x/esbuild@v0.15.7/mod.js";
+import * as esbuild from "https://deno.land/x/esbuild@v0.15.11/mod.js";
 
 // get name and prefix from src
 function namePrefix(

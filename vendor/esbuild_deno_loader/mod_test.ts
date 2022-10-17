@@ -27,7 +27,7 @@ test("remote ts", ALL, async (loader) => {
   const res = await esbuild.build({
     plugins: [denoPlugin({ loader })],
     write: false,
-    entryPoints: ["https://deno.land/std@0.155.0/hash/sha1.ts"],
+    entryPoints: ["https://deno.land/std/hash/sha1.ts"],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
@@ -216,15 +216,17 @@ test("bundle remote imports", ALL, async (loader) => {
     write: false,
     bundle: true,
     platform: "neutral",
-    entryPoints: ["https://deno.land/std@0.155.0/uuid/mod.ts"],
+    entryPoints: ["https://deno.land/std/uuid/mod.ts"],
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
   const output = res.outputFiles[0];
   assertEquals(output.path, "<stdout>");
   const dataURL = `data:application/javascript;base64,${btoa(output.text)}`;
-  const { v4 } = await import(dataURL);
-  assert(v4.validate(v4.generate()));
+  const { v5 } = await import(dataURL);
+  const data = new TextEncoder().encode("Hello World!");
+ const demoUUID = await v5.generate("6ba7b810-9dad-11d1-80b4-00c04fd430c8", data);
+  assert(v5.validate(demoUUID));
 });
 
 const importMapURL = new URL(`${testdata}/importmap.json`, import.meta.url);
