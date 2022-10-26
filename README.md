@@ -4,7 +4,7 @@
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
 
-> Zero-config web application packager in [Deno][Deno].
+> Zero-config web application packager for [Deno][Deno].
 
 # Features
 
