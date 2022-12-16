@@ -340,14 +340,24 @@ class ScriptAsset implements Asset {
     pathPrefix,
     distDir,
   }: CreateFileObjectParams): Promise<File[]> {
-    const flpath = join(base, this.#src);
+    let src = this.#src;
+    const i = src.indexOf("?");
+    const search = i > -1 ? src.substring(i) : "";
+    if (i > -1) {
+      src = src.substring(0, i);
+    }
+
+    const flpath = join(base, src);
     const info = await Deno.stat(flpath);
 
     const { options, plugins } = await bundlet(flpath, pathPrefix, distDir);
     const data = await bundleByEsbuild(flpath, options, plugins);
     const { name, prefix } = namePrefix(base, flpath);
     this.#dest = `${name}.${md5(data)}.js`;
-    this.#el.setAttribute("src", join(prefix || pathPrefix, this.#dest));
+    this.#el.setAttribute(
+      "src",
+      join(prefix || pathPrefix, this.#dest) + search,
+    );
     return [
       Object.assign(new Blob([data]), {
         name: this.#dest,
