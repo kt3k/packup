@@ -219,6 +219,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     open,
     port: +port,
     livereloadPort: +livereloadPort,
+    distDir,
     staticDir,
     publicUrl,
     staticDistPrefix,
@@ -295,9 +296,10 @@ async function serve(
     livereloadPort,
     staticDir,
     publicUrl,
+    distDir,
     staticDistPrefix,
     importMap,
-  }: ServeOptions & BuildAndServeCommonOptions,
+  }: ServeOptions & BuildAndServeCommonOptions & BuildOptions,
 ) {
   // checkUniqueEntrypoints(paths);
   setImportMap(importMap);
@@ -320,6 +322,7 @@ async function serve(
       onBuild,
       mainAs404: index === 0,
       publicUrl,
+      distDir,
     });
     allAssets.push(assets);
   }

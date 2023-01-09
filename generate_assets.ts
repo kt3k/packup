@@ -38,13 +38,19 @@ function namePrefix(
   base: string,
   flpath: string,
 ): { name: string; prefix?: string } {
-  let name = basename(flpath).replace(/[.](ts|js|mjs|css)$/i, "");
-  const hasSrc = /(^|\/)src\//.test(flpath);
+  let name = basename(flpath).replace(
+    /[.](ts|js|mjs|css|jpg|jpeg|png|gif|svg|webp)$/i,
+    "",
+  );
+  const hasSrc = /\bsrc\b/.test(flpath);
   const dir = dirname(hasSrc ? relative("src", flpath) : flpath);
   let prefix = "";
   if (dir !== ".") {
     name = join(dir, name);
-    prefix = relative(base, ".");
+    prefix = relative(
+      /\bsrc\b/.test(base) ? relative("src", base) : base,
+      ".",
+    );
   }
   return { name, prefix };
 }
@@ -347,6 +353,15 @@ class ScriptAsset implements Asset {
     distDir,
   }: CreateFileObjectParams): Promise<File[]> {
     let src = this.#src;
+    const staticTag = "../static/";
+    const j = src.indexOf(staticTag);
+    if (j > -1) {
+      if (this.#el.getAttribute("src")?.match(src)) {
+        this.#el.setAttribute("src", src.substring(j + staticTag.length));
+        return [];
+      }
+    }
+
     const i = src.indexOf("?");
     const search = i > -1 ? src.substring(i) : "";
     if (i > -1) {
@@ -460,12 +475,12 @@ class ImageAsset implements Asset {
 
       const flpath = join(base, src);
       const data = await Deno.readFile(flpath);
-
-      const [, name, extension] = src.match(/([^/]+)\.([\w]+)$/) ?? [];
+      const { name, prefix } = namePrefix(base, flpath);
+      const [, _, extension] = src.match(/([^/]+)\.([\w]+)$/) ?? [];
       const dest = `${name}.${md5(data)}.${extension}`;
 
       if (this.#el.getAttribute("src")?.match(src)) {
-        this.#el.setAttribute("src", join(pathPrefix, dest));
+        this.#el.setAttribute("src", join(prefix || pathPrefix, dest));
       }
 
       if (srcset?.includes(src)) {
@@ -473,7 +488,7 @@ class ImageAsset implements Asset {
         // dest without only using `string.replace()`
         this.#el.setAttribute(
           "srcset",
-          srcset.replace(src, posixPathJoin(pathPrefix, dest)),
+          srcset.replace(src, posixPathJoin(prefix || pathPrefix, dest)),
         );
       }
 
