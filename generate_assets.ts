@@ -357,7 +357,7 @@ class ScriptAsset implements Asset {
     const j = src.indexOf(staticTag);
     if (j > -1) {
       if (this.#el.getAttribute("src")?.match(src)) {
-        this.#el.setAttribute("src", src.substring(j + staticTag.length));
+        this.#el.setAttribute("src", src.substring(j + staticTag.length -1));
         return [];
       }
     }
