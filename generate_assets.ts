@@ -332,7 +332,13 @@ class ScriptAsset implements Asset {
   }
 
   async getWatchPaths(base: string): Promise<string[]> {
-    return await getLocalDependencyPaths(join(base, this.#src));
+    let src = this.#src;
+    const i = src.indexOf("?");
+    const search = i > -1 ? src.substring(i) : "";
+    if (i > -1) {
+      src = src.substring(0, i);
+    }
+    return await getLocalDependencyPaths(join(base, src));
   }
 
   async createFileObject({
