@@ -95,15 +95,17 @@ export async function generateAssets(
     );
   }
 
+  const flopts = {
+    pageName,
+    base,
+    pathPrefix,
+    distDir,
+  };
+
   const generator = (async function* () {
     for (const a of assets) {
       // TODO(kt3k): These can be concurrent
-      const files = await a.createFileObject({
-        pageName,
-        base,
-        pathPrefix,
-        distDir,
-      });
+      const files = await a.createFileObject(flopts);
       for (const file of files) yield file;
     }
 
@@ -112,6 +114,7 @@ export async function generateAssets(
       pageName,
       base,
       pathPrefix,
+      distDir,
     });
     for (const file of files) yield file;
     if (opts.mainAs404) {
@@ -150,18 +153,37 @@ export async function* watchAndGenAssets(
     insertLivereloadScript: true,
   };
   let [assets, watchPaths] = await generateAssets(path, opts);
-
+  const jsopts = { pageName: "", base: "src", pathPrefix: "." };
+  const pure = /.*\/([^/]+)\.[a-z\d]{32}(\.[a-z\d]{2,})$/;
+  const jsext = /\.js$/i;
   while (true) {
+    const c = {};
     for await (const file of assets) {
+      c[file.name.replace(pure, "$1$2")] = true;
       yield file;
     }
+    // generate inner modules without bundled
+    for (const name of watchPaths) {
+      const i = name.lastIndexOf("/");
+      if (!jsext.test(name) || c[name.substring(i < 0 ? 0 : i + 1)]) {
+        continue;
+      }
+      const files = await new ScriptAsset(relative("src", name), null)
+        .createFileObject(jsopts);
+      for (let i = 0, imax = files.length; i < imax; i++) {
+        if (files[i]?.name) {
+          yield files[i];
+        }
+      }
+    }
+
     const watcher = Deno.watchFs(watchPaths);
     for await (const e of watcher) {
       logger.log("Changed: " + e.paths.join(""));
       break;
       // watcher.close();
     }
-    logger.log("Rebuilding");
+    logger.log("Rebuilding", path);
     await new Promise<void>((resolve) => setTimeout(() => resolve(), 100));
     [assets, watchPaths] = await generateAssets(path, opts);
   }
@@ -356,8 +378,8 @@ class ScriptAsset implements Asset {
     const staticTag = "../static/";
     const j = src.indexOf(staticTag);
     if (j > -1) {
-      if (this.#el.getAttribute("src")?.match(src)) {
-        this.#el.setAttribute("src", src.substring(j + staticTag.length -1));
+      if (this.#el?.getAttribute("src")?.match(src)) {
+        this.#el.setAttribute("src", src.substring(j + staticTag.length - 1));
         return [];
       }
     }
@@ -375,7 +397,7 @@ class ScriptAsset implements Asset {
     const data = await bundleByEsbuild(flpath, options, plugins);
     const { name, prefix } = namePrefix(base, flpath);
     this.#dest = `${name}.${md5(data)}.js`;
-    this.#el.setAttribute(
+    this.#el?.setAttribute(
       "src",
       join(prefix || pathPrefix, this.#dest) + search,
     );

@@ -320,7 +320,7 @@ async function serve(
     const assets = watchAndGenAssets(path, {
       livereloadPort,
       onBuild,
-      mainAs404: index === 0,
+      mainAs404: false,
       publicUrl,
       distDir,
     });
