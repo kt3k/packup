@@ -32,8 +32,12 @@ export async function bundleByEsbuild(
     platform: "browser",
   }, options || {});
 
-  const bundle = await esbuild.build(opts);
-  return bundle.outputFiles![0].text;
+  try {
+    const bundle = await esbuild.build(opts);
+    return bundle.outputFiles![0].text;
+  } catch (err) {
+    return err.Error();
+  }
 }
 
 let _importMap: string | undefined;
