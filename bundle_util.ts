@@ -36,7 +36,7 @@ export async function bundleByEsbuild(
     const bundle = await esbuild.build(opts);
     return bundle.outputFiles![0].text;
   } catch (err) {
-    return err.Error();
+    return err?.toString?.() || "";
   }
 }
 
