@@ -423,10 +423,10 @@ class ImageAsset implements Asset {
       return null;
     }
 
-    if (src && isLocalUrl(src)) sources.push(src);
+    if (src && isLocalUrl(src) && !src.startsWith("data:")) sources.push(src);
     if (srcset) {
       sources.push(
-        ...srcset
+        ...srcset.filter((src) => !src.startsWith("data:"))
           .split(",") // Separate the different srcset
           .filter(Boolean) // Remove empty strings
           .map((src) => src.trim()) // Remove white spaces
