@@ -35,12 +35,9 @@ ex-rr:
 ex-sc:
 	deno run -A cli.ts serve -L debug examples/styled-components/index.html
 
-d:
+publish-doc:
 	$(MAKE) -C docs d
-
-deploy:
-	$(MAKE) -C docs d
-	git add docs/deploy.js
-	git commit -m "chore: update deploy.js"
+	git add docs/_site
+	git commit -m "chore: update doc site"
 
 .PHONY: test test-esbuild-deno-loader
