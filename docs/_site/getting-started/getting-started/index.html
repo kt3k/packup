@@ -1,0 +1,190 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/markdown.css">
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="/monaco-editor/min/vs/editor/editor.main.css" />
+    <link href="/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32">
+    <meta name="description" content="">
+  </head>
+
+  <body class="grid grid-cols-1 sm:grid-cols-6">
+    <nav class="col-span-1 p-4 border border-r sm:min-h-screen bg-blue-50">
+      <a href="/">
+        <img src="/logo-v2.svg" width="160" height="36.5" alt="Packup">
+      </a>
+
+      <p class="mt-2 text-gray-800">
+        <a href="https://deno.land/x/packup@v0.2.2" class="hover:underline" target="_blank">Latest version <strong>v0.2.2</strong></a>
+      </p>
+
+      <ul class="mt-6 text-gray-800">
+        
+        <li class="mt-4">
+          <strong class="font-thin">GETTING STARTED</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 rounded bg-blue-100 hover:underline" href="/getting-started/getting-started/" aria-current="page" title="">Getting Started</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/getting-started/cli-command/" title="">CLI Command</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/getting-started/type-checking/" title="">Type Checking</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">GUIDES</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/guides/registry-cdn/" title="">Registries &amp; CDNs</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/guides/static-dir/" title="">Static files</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">EXAMPLES</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/simple/" title="">Simple Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/react/" title="">React Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/preact/" title="">Preact Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/styled-components/" title="">Styled Components</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">LINKS</strong>
+          <ul>
+            <li class="mt-1">
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="https://github.com/kt3k/packup" target="_blank">GitHub 🔗</a>
+            </li>
+            <li class="mt-1">
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="https://deno.land/x/packup" target="_blank">/x/packup 🔗</a>
+            </li>
+          </ul>
+        <li>
+      </ul>
+    </nav>
+
+    <main class="col-span-5 py-12 px-4 sm:px-20">
+      <div class="markdown-body">
+        <h1>Getting started</h1>
+<p>Let's get started with <code>packup</code>!</p>
+<h2>Install</h2>
+<p>You need <a href="https://deno.land/">Deno</a> (&gt;=1.10.3) installed.</p>
+<p>You can install <code>packup</code> with the following command.</p>
+<pre><code class="language-sh">deno install -qAf https://deno.land/x/packup@v0.2.2/cli.ts
+</code></pre>
+<p>Then you'll have <code>packup</code> installed.</p>
+<pre><code class="language-sh">$ packup -v
+packup v0.2.2
+</code></pre>
+<h2>Basic Usage</h2>
+<p>Let's start making your first web page with packup.</p>
+<p>First create an html file. This will be the entrypoint of your site.</p>
+<pre><code class="language-html">&lt;html&gt;
+  &lt;body&gt;
+    &lt;script src=&quot;./main.ts&quot;&gt;&lt;/script&gt;
+    &lt;h1&gt;Hi from packup!&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>And create <code>main.ts</code>.</p>
+<pre><code class="language-ts">const name: string = &quot;packup&quot;;
+console.log(`hello ${name}`);
+</code></pre>
+<p>This is TypeScript. Packup automatically compile this into JavaScript for you!</p>
+<p>Then execute the command:</p>
+<pre><code class="language-sh">packup index.html
+</code></pre>
+<p>This starts the development server at http://localhost:1234, and you'll see the above html, and compiled javascript loaded into it. This server automatically reloads the page as you modify the contents of the page.</p>
+<p>When finished editing of the web site, you hit the command:</p>
+<pre><code class="language-sh">packup build index.html
+</code></pre>
+<p>This command bundles the assets and copies the results into <code>dist/</code> directory (The output directory can be configured by <code>--dist-dir</code> option). The contents of this directory works as a static web site. You can deploy them into any static file hosting service.</p>
+
+      </div>
+      <hr class="mt-5" />
+      <div class="mt-10 text-blue-700">
+        <a href="https://github.com/kt3k/packup/edit/main/docs/getting-started/getting-started.md">Edit this page in GitHub</a>
+      </div>
+      <div></div>
+    </main>
+    <script>
+    var require = { paths: { vs: '/monaco-editor/min/vs' } };
+    window.addEventListener("DOMContentLoaded", () => {
+      require(['vs/editor/editor.main'], () => {
+        document.querySelectorAll(".markdown-body pre code").forEach(async (el) => {
+          let mimeType = '';
+          const cl = el.classList;
+          if (cl.contains('language-ts')) {
+            mimeType = 'text/typescript';
+          } else if (cl.contains('language-js')) {
+            mimeType = 'text/javascript';
+          } else if (cl.contains('language-json')) {
+            mimeType = 'application/json';
+          } else if (cl.contains('language-html')) {
+            mimeType = 'text/html';
+          } else if (cl.contains('language-css')) {
+            mimeType = 'text/css';
+          } else if (cl.contains('language-sh')) {
+            mimeType = 'text/shell';
+          }
+          await monaco.editor.colorizeElement(el, { mimeType });
+          if (el.lastChild.tagName === "BR") {
+            el.removeChild(el.lastChild);
+          }
+        });
+      });
+    });
+    </script>
+    <script src="/monaco-editor/min/vs/loader.js" defer></script>
+  </body>
+</html>

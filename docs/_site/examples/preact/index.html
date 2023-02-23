@@ -1,0 +1,208 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preact Example</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/markdown.css">
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="/monaco-editor/min/vs/editor/editor.main.css" />
+    <link href="/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32">
+    <meta name="description" content="">
+  </head>
+
+  <body class="grid grid-cols-1 sm:grid-cols-6">
+    <nav class="col-span-1 p-4 border border-r sm:min-h-screen bg-blue-50">
+      <a href="/">
+        <img src="/logo-v2.svg" width="160" height="36.5" alt="Packup">
+      </a>
+
+      <p class="mt-2 text-gray-800">
+        <a href="https://deno.land/x/packup@v0.2.2" class="hover:underline" target="_blank">Latest version <strong>v0.2.2</strong></a>
+      </p>
+
+      <ul class="mt-6 text-gray-800">
+        
+        <li class="mt-4">
+          <strong class="font-thin">GETTING STARTED</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/getting-started/getting-started/" title="">Getting Started</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/getting-started/cli-command/" title="">CLI Command</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/getting-started/type-checking/" title="">Type Checking</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">GUIDES</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/guides/registry-cdn/" title="">Registries &amp; CDNs</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/guides/static-dir/" title="">Static files</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">EXAMPLES</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/simple/" title="">Simple Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/react/" title="">React Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 rounded bg-blue-100 hover:underline" href="/examples/preact/" aria-current="page" title="">Preact Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/styled-components/" title="">Styled Components</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">LINKS</strong>
+          <ul>
+            <li class="mt-1">
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="https://github.com/kt3k/packup" target="_blank">GitHub 🔗</a>
+            </li>
+            <li class="mt-1">
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="https://deno.land/x/packup" target="_blank">/x/packup 🔗</a>
+            </li>
+          </ul>
+        <li>
+      </ul>
+    </nav>
+
+    <main class="col-span-5 py-12 px-4 sm:px-20">
+      <div class="markdown-body">
+        <h1>Preact Example</h1>
+<p>This example shows how to use <a href="https://preactjs.com/">Preact</a> with <a href="https://github.com/preactjs/preact-router">Preact-Router</a> and <a href="https://github.com/developit/htm">HTM</a> in packup.</p>
+<p>We recommend <a href="https://esm.sh/">esm.sh</a> for loading Preact, HTM and their related modules.</p>
+<p><code>index.html</code></p>
+<pre><code class="language-html">&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;with-simple-assets document&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;css/style.css&quot; /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;main&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;js/script.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><code>js/script.js</code></p>
+<pre><code class="language-js">import { Router } from 'https://esm.sh/preact-router@3.2.1'
+import { Link } from 'https://esm.sh/preact-router@3.2.1/match'
+import { render } from 'https://esm.sh/preact@10.5.14'
+import { html } from 'https://esm.sh/htm@3.1.0/preact'
+
+function App() {
+    return html`
+        &lt;nav&gt;
+            &lt;${Link} activeClassName=active href=&quot;/&quot;&gt;Home&lt;//&gt;${&quot; &quot;}
+            &lt;${Link} activeClassName=active href=&quot;/about&quot;&gt;About&lt;//&gt;${&quot; &quot;}
+            &lt;${Link} activeClassName=active href=&quot;/users&quot;&gt;Users&lt;//&gt;
+        &lt;/nav&gt;
+
+        &lt;${Router}&gt;
+            &lt;${Home} default /&gt;
+            &lt;${About} path=&quot;/about&quot; /&gt;
+            &lt;${Users} path=&quot;/users&quot; /&gt;
+        &lt;//&gt;
+    `
+}
+
+function Home() {
+  return html`&lt;h2&gt;Home&lt;/h2&gt;`
+}
+
+function About() {
+  return html`&lt;h2&gt;About&lt;/h2&gt;`
+}
+
+function Users() {
+  return html`&lt;h2&gt;Users&lt;/h2&gt;`
+}
+
+render(html`&lt;${App} /&gt;`, document.getElementById('main'))
+</code></pre>
+<p><code>tsconfig.json</code> is not absolutely required for bundling frontend assets, and actually packup doesn't use it internally, but it's recommend for better development experience with editors.</p>
+
+      </div>
+      <hr class="mt-5" />
+      <div class="mt-10 text-blue-700">
+        <a href="https://github.com/kt3k/packup/edit/main/docs/examples/preact.md">Edit this page in GitHub</a>
+      </div>
+      <div></div>
+    </main>
+    <script>
+    var require = { paths: { vs: '/monaco-editor/min/vs' } };
+    window.addEventListener("DOMContentLoaded", () => {
+      require(['vs/editor/editor.main'], () => {
+        document.querySelectorAll(".markdown-body pre code").forEach(async (el) => {
+          let mimeType = '';
+          const cl = el.classList;
+          if (cl.contains('language-ts')) {
+            mimeType = 'text/typescript';
+          } else if (cl.contains('language-js')) {
+            mimeType = 'text/javascript';
+          } else if (cl.contains('language-json')) {
+            mimeType = 'application/json';
+          } else if (cl.contains('language-html')) {
+            mimeType = 'text/html';
+          } else if (cl.contains('language-css')) {
+            mimeType = 'text/css';
+          } else if (cl.contains('language-sh')) {
+            mimeType = 'text/shell';
+          }
+          await monaco.editor.colorizeElement(el, { mimeType });
+          if (el.lastChild.tagName === "BR") {
+            el.removeChild(el.lastChild);
+          }
+        });
+      });
+    });
+    </script>
+    <script src="/monaco-editor/min/vs/loader.js" defer></script>
+  </body>
+</html>

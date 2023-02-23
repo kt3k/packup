@@ -1,0 +1,201 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Command</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/markdown.css">
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="/monaco-editor/min/vs/editor/editor.main.css" />
+    <link href="/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32">
+    <meta name="description" content="">
+  </head>
+
+  <body class="grid grid-cols-1 sm:grid-cols-6">
+    <nav class="col-span-1 p-4 border border-r sm:min-h-screen bg-blue-50">
+      <a href="/">
+        <img src="/logo-v2.svg" width="160" height="36.5" alt="Packup">
+      </a>
+
+      <p class="mt-2 text-gray-800">
+        <a href="https://deno.land/x/packup@v0.2.2" class="hover:underline" target="_blank">Latest version <strong>v0.2.2</strong></a>
+      </p>
+
+      <ul class="mt-6 text-gray-800">
+        
+        <li class="mt-4">
+          <strong class="font-thin">GETTING STARTED</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/getting-started/getting-started/" title="">Getting Started</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 rounded bg-blue-100 hover:underline" href="/getting-started/cli-command/" aria-current="page" title="">CLI Command</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/getting-started/type-checking/" title="">Type Checking</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">GUIDES</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/guides/registry-cdn/" title="">Registries &amp; CDNs</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/guides/static-dir/" title="">Static files</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">EXAMPLES</strong>
+          <ul>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/simple/" title="">Simple Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/react/" title="">React Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/preact/" title="">Preact Example</a>
+              
+            </li>
+          
+            <li class="mt-2">
+              
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="/examples/styled-components/" title="">Styled Components</a>
+              
+            </li>
+          
+          </ul>
+        </li>
+        
+        <li class="mt-4">
+          <strong class="font-thin">LINKS</strong>
+          <ul>
+            <li class="mt-1">
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="https://github.com/kt3k/packup" target="_blank">GitHub 🔗</a>
+            </li>
+            <li class="mt-1">
+              <a class="px-2 py-1 text-blue-700 hover:underline" href="https://deno.land/x/packup" target="_blank">/x/packup 🔗</a>
+            </li>
+          </ul>
+        <li>
+      </ul>
+    </nav>
+
+    <main class="col-span-5 py-12 px-4 sm:px-20">
+      <div class="markdown-body">
+        <h1>CLI Command</h1>
+<p><code>packup</code> provides 2 subcommands <code>packup serve</code> and <code>packup build</code>. This section describes the usage of these commands.</p>
+<h2><code>packup serve</code></h2>
+<p>The basic usage is like the below.</p>
+<pre><code>packup serve index.html
+</code></pre>
+<p>Here <code>index.html</code> is the entrypoint of your website. <code>packup serve &lt;html&gt;</code> starts the server and serves all required assets for your page. This command automatically watches the dependency graph of your html, css, javascript, and typescript, and reloads the page when any of the dependency is changed.</p>
+<p>The command currently supports the following options.</p>
+<pre><code>$ packup serve -h
+Usage: packup serve [options] &lt;input...&gt;
+
+Starts a development server
+
+Options:
+  -p, --port &lt;port&gt;               Sets the port to serve on. Default is 1234.
+  --livereload-port               Sets the port for live reloading. Default is 35729.
+  -s, --static-dir &lt;dir&gt;          The directory for static files. The files here are served as is.
+  --static-dist-prefix &lt;prefix&gt;   The prefix for static files in the destination.
+  --public-url &lt;prefix&gt;           The path prefix for urls. Default is &quot;.&quot;.
+  -o, --open                      Automatically opens in specified browser.
+  --log-level &lt;level&gt;             Sets the log level. &quot;error&quot;, &quot;warn&quot;, &quot;info&quot;, &quot;debug&quot; or &quot;trace&quot;. Default is &quot;info&quot;.
+  -h, --help                      Displays help for command.
+</code></pre>
+<p>Because <code>serve</code> is the default command of <code>packup</code>, you can omit it like the below.</p>
+<pre><code>packup index.html
+</code></pre>
+<p>This is the same as <code>packup serve index.html</code>.</p>
+<h2><code>packup build</code></h2>
+<p><code>packup build</code> builds your assets into static web site. The basic usage is like the below.</p>
+<pre><code>packup build index.html
+</code></pre>
+<p>This builds your web site into <code>./dist/</code> directory. The build command currently supports the below options.</p>
+<pre><code>$ packup build -h
+Usage: packup build [options] &lt;input...&gt;
+
+bundles for production
+
+Options:
+  --dist-dir &lt;dir&gt;                Output directory to write to when unspecified by targets
+  -s, --static-dir &lt;dir&gt;          The directory for static files. The files here are copied to dist as is.
+  --static-dist-prefix &lt;prefix&gt;   The prefix for static files in the destination.
+  --public-url &lt;prefix&gt;           The path prefix for urls. Default is &quot;.&quot;.
+  -L, --log-level &lt;level&gt;         Set the log level (choices: &quot;none&quot;, &quot;error&quot;, &quot;warn&quot;, &quot;info&quot;, &quot;verbose&quot;)
+  -h, --help                      Display help for command
+</code></pre>
+
+      </div>
+      <hr class="mt-5" />
+      <div class="mt-10 text-blue-700">
+        <a href="https://github.com/kt3k/packup/edit/main/docs/getting-started/cli-command.md">Edit this page in GitHub</a>
+      </div>
+      <div></div>
+    </main>
+    <script>
+    var require = { paths: { vs: '/monaco-editor/min/vs' } };
+    window.addEventListener("DOMContentLoaded", () => {
+      require(['vs/editor/editor.main'], () => {
+        document.querySelectorAll(".markdown-body pre code").forEach(async (el) => {
+          let mimeType = '';
+          const cl = el.classList;
+          if (cl.contains('language-ts')) {
+            mimeType = 'text/typescript';
+          } else if (cl.contains('language-js')) {
+            mimeType = 'text/javascript';
+          } else if (cl.contains('language-json')) {
+            mimeType = 'application/json';
+          } else if (cl.contains('language-html')) {
+            mimeType = 'text/html';
+          } else if (cl.contains('language-css')) {
+            mimeType = 'text/css';
+          } else if (cl.contains('language-sh')) {
+            mimeType = 'text/shell';
+          }
+          await monaco.editor.colorizeElement(el, { mimeType });
+          if (el.lastChild.tagName === "BR") {
+            el.removeChild(el.lastChild);
+          }
+        });
+      });
+    });
+    </script>
+    <script src="/monaco-editor/min/vs/loader.js" defer></script>
+  </body>
+</html>
