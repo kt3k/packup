@@ -303,7 +303,7 @@ class CssAsset implements Asset {
     const data = await Deno.readFile(flpath);
     const info = await Deno.stat(flpath);
     const { name, prefix } = namePrefix(base, flpath);
-    this._dest = `${name}.${md5(data)}.css`;
+    this._dest = `${name}.${await md5(data)}.css`;
     this._el.setAttribute("href", join(prefix || pathPrefix, this._dest));
     return [
       Object.assign(new Blob([data]), {
@@ -325,7 +325,7 @@ class ScssAsset extends CssAsset {
     const scss = await Deno.readFile(flpath);
     const info = await Deno.stat(flpath);
     const { name, prefix } = namePrefix(base, flpath);
-    this._dest = `${name}.${md5(scss)}.css`;
+    this._dest = `${name}.${await md5(scss)}.css`;
     this._el.setAttribute("href", join(prefix || pathPrefix, this._dest));
     return [Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
       name: this._dest,
@@ -396,7 +396,7 @@ class ScriptAsset implements Asset {
     const { options, plugins } = await bundlet(flpath, pathPrefix, distDir);
     const data = await bundleByEsbuild(flpath, options, plugins);
     const { name, prefix } = namePrefix(base, flpath);
-    this.#dest = `${name}.${md5(data)}.js`;
+    this.#dest = `${name}.${await md5(data)}.js`;
     this.#el?.setAttribute(
       "src",
       join(prefix || pathPrefix, this.#dest) + search,
@@ -499,7 +499,7 @@ class ImageAsset implements Asset {
       const data = await Deno.readFile(flpath);
       const { name, prefix } = namePrefix(base, flpath);
       const [, _, extension] = src.match(/([^/]+)\.([\w]+)$/) ?? [];
-      const dest = `${name}.${md5(data)}.${extension}`;
+      const dest = `${name}.${await md5(data)}.${extension}`;
 
       if (this.#el.getAttribute("src")?.match(src)) {
         this.#el.setAttribute("src", join(prefix || pathPrefix, dest));

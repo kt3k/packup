@@ -1,4 +1,3 @@
-export { createHash } from "https://deno.land/std/hash/mod.ts";
 export {
   basename,
   dirname,
@@ -27,3 +26,15 @@ export { serve as serveIterable } from "https://deno.land/x/iterable_file_server
 
 export const NAME = "packup";
 export const VERSION = "v0.2.2";
+
+import { crypto } from "https://deno.land/std/crypto/mod.ts";
+import { toHashString } from "https://deno.land/std/crypto/to_hash_string.ts";
+
+export const md5sum = async function (data: string | ArrayBuffer) {
+  return toHashString(
+    await crypto.subtle.digest(
+      "MD5",
+      typeof data === "string" ? new TextEncoder().encode(data) : data,
+    ),
+  );
+};

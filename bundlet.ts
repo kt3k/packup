@@ -117,7 +117,7 @@ export async function confRules(
     }
 
     const key = name.replace(/[.](tsx?|m?js)$/, "");
-    const jsname = `${key}.${md5(data)}.js`;
+    const jsname = `${key}.${await md5(data)}.js`;
     const flSrc = join(base, jsname);
     fm[key] = `/${relative(distDir, flSrc)}`;
     if (!fileFree) {

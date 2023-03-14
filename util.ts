@@ -1,19 +1,17 @@
 import {
   basename,
-  createHash,
   Document,
   Element,
   fromFileUrl,
+  md5sum,
   MuxAsyncIterator,
 } from "./deps.ts";
 
 export const decoder = new TextDecoder();
 export const encoder = new TextEncoder();
 
-export function md5(data: string | ArrayBuffer): string {
-  const hash = createHash("md5");
-  hash.update(data);
-  return hash.toString();
+export async function md5(data: string | ArrayBuffer) {
+  return await md5sum(data);
 }
 
 export async function getDependencies(path: string): Promise<string[]> {
