@@ -197,7 +197,7 @@ export const bundlet = async function (
         t.replace(/^\//, ""),
       );
     }
-    if (t.indexOf("/") < 0) {
+    if (t.indexOf("/") < 0 || (!/^http[s]?:\/\//.test(t) && !/^[.]/.test(t))) {
       t = `./${t}`;
     }
     return t;
