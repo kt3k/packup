@@ -436,7 +436,13 @@ class ImageAsset implements Asset {
     }
 
     // Remove duplicates
-    sources = [...new Set(sources)];
+    sources = [
+      ...new Set(
+        sources.filter((d) =>
+          !src.startsWith("data:") && src.indexOf("{{") < 0
+        ),
+      ),
+    ];
 
     // If "src" or "srcset" only have external references, skip handling
     if (sources.length === 0) return null;
