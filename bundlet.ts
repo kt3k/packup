@@ -77,7 +77,7 @@ export async function confRules(
 
     const isURL = urlpath.test(bi[2]);
     if (isURL && bi[1] === "off") {
-      const flname = basename(bi[2]);
+      const flname = npmLocal.pure(bi[2]);
       fm[flname.replace(/[.]js$/, "")] = bi[2];
       if (!x[flname] && !flname.match(/\.ts$/)) {
         x[flname] = "off";
@@ -135,7 +135,7 @@ export async function confRules(
     } else {
       fileFree[key] = data;
     }
-    const flname = isURL ? bi[2] : basename(bi[2]);
+    const flname = isURL ? bi[2] : npmLocal.pure(bi[2]);
     if (!x[flname]) {
       x[flname] = jsname;
       names.push(flname);

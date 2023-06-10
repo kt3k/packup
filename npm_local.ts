@@ -6,7 +6,7 @@ import { fm } from "./bundlet.ts";
 
 let rootDir = "node_modules";
 let server: Deno.Listener;
-let port = 12345;
+let port = 12346;
 
 async function modulesServe(port = 0, root?: string) {
   if (root) {
@@ -20,7 +20,6 @@ async function modulesServe(port = 0, root?: string) {
   } catch {
     return;
   }
-
   server = Deno.listen({ hostname: "localhost", port: port || 12345 });
   for await (const conn of server) {
     serveHttp(conn);
@@ -52,7 +51,12 @@ function found(flpath: string, base: string): string {
           .flat(),
         ...(prefixes.map((
           x,
-        ) => [`/index${x}.js`, `/dist/index${x}.js`, `/build/index${x}.js`]))
+        ) => [
+          `/index${x}.js`,
+          `/dist/index${x}.js`,
+          `/dist/esm/index${x}.js`,
+          `/build/index${x}.js`,
+        ]))
           .flat(),
       ]
       : []).concat([".ts", ...(prefixes.map((x) => `${x}.js`)), ".mjs"]);
@@ -79,13 +83,13 @@ function found(flpath: string, base: string): string {
 }
 
 const ext = /\.(m?js|ts)$/i;
-const xfrom = /((?:import|from)\s*['"])([^'"]+)(['"])/g;
-const xnpm = /^(src\/)?(NPM>:|npm>:)/i;
+const xfrom = /((?:^import|\simport|\s+from)\s*['"])([^'"]+)(['"])/g;
+const xnpm = /^(src\/)?(npm>:)/i;
 
 async function serveHttp(conn: Deno.Conn) {
   const httpConn = Deno.serveHttp(conn);
   for await (const requestEvent of httpConn) {
-    const url = new URL(requestEvent.request.url);
+    const url = new URL(requestEvent.request.url.replace(/\/cjs\//g, "/esm/"));
     const flpath = found(
       decodeURIComponent(url.pathname.substring(1)),
       rootDir,
@@ -103,7 +107,10 @@ async function serveHttp(conn: Deno.Conn) {
         if (m2.startsWith(".") && ext.test(m2)) {
           return s;
         }
-        const src = found(m2, path.dirname(flpath));
+        const src = found(
+          m2,
+          m2.indexOf("://") < 0 ? "./" : path.dirname(flpath),
+        );
         const m = src.match(ext);
         if (m) {
           const target = src.startsWith(rootDir)
@@ -130,8 +137,8 @@ export function serve(dirPort = "") {
   modulesServe(port > 0 ? port : 0, root);
 }
 
-export function close() {
-  server?.close();
+export async function close() {
+  await server?.close();
 }
 
 export const resolveSrc = (src: string) => {
@@ -152,11 +159,19 @@ export const validSrc = (src: string) => {
   return xnpm.test(src);
 };
 
-export const resolve = ({
+export function pure(src: string) {
+  src = src.replace(/\b(esm|cjs|mjs|dist|build)\//g, "").replace(
+    /\/index[^/]+$/,
+    "",
+  );
+  return xnpm.test(src) ? src.substring(src.indexOf(":") + 1) : basename(src);
+}
+
+export const resolve = {
   name: "npm-local-modules",
   setup(build: esbuild.PluginBuild) {
     build.onResolve({ filter: xnpm }, (args: esbuild.OnResolveArgs) => {
-      const name = basename(args.path).replace(/\.js$/, "");
+      const name = pure(args.path).replace(/\.js$/, "");
       if (fm[name]) {
         return { path: fm[name], external: true };
       }
@@ -169,4 +184,4 @@ export const resolve = ({
       };
     });
   },
-} as esbuild.Plugin);
+} as esbuild.Plugin;
