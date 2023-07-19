@@ -17,6 +17,7 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
   });
   const p = cmd.spawn();
   const textDecoder = new TextDecoder();
+  let done = false;
 
   for await (const a of p.stdout) {
     if (textDecoder.decode(a).includes("Server running")) {
@@ -34,10 +35,14 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
         `<!DOCTYPE html><html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
       );
 
+      done = true;
+
       break;
     }
   }
 
   p.kill();
   await p.status;
+
+  assertEquals(done, true);
 });
