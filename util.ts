@@ -28,7 +28,9 @@ export async function getDependencies(path: string): Promise<string[]> {
     p.stderr,
   ]);
   if (status.code !== 0) {
-    throw new Error(decoder.decode((await stderrOutput.getReader().read()).value));
+    throw new Error(
+      decoder.decode((await stderrOutput.getReader().read()).value),
+    );
   }
   const denoInfo = JSON.parse(decoder.decode(output.stdout)) as DenoInfo;
   return denoInfo.modules.map((m) => m.specifier);

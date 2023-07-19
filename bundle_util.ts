@@ -1,5 +1,5 @@
 import { CommonOptions } from "https://deno.land/x/esbuild@v0.14.51/mod.js";
-import { resolve, toFileUrl, exists, build, stop, denoPlugin } from "./deps.ts";
+import { build, denoPlugin, exists, resolve, stop, toFileUrl } from "./deps.ts";
 
 export async function bundleByEsbuild(
   path: string,
@@ -88,7 +88,6 @@ export async function getTsconfig() {
         return "./tsconfig.json";
     }
   }
-  
 
   return _tsconfig;
 }

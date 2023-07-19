@@ -16,7 +16,7 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
     stdout: "piped",
   });
   const p = cmd.spawn();
-  const textDecoder = new TextDecoder;
+  const textDecoder = new TextDecoder();
 
   for await (const a of p.stdout) {
     if (textDecoder.decode(a).includes("Server running")) {

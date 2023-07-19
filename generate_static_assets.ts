@@ -81,6 +81,6 @@ async function createStaticAssetFromPath(
   return Object.assign(new Blob([bytes]), {
     name: join(distPrefix, webkitRelativePath),
     lastModified: 0,
-    webkitRelativePath
+    webkitRelativePath,
   });
 }

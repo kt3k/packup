@@ -90,7 +90,7 @@ type CliArgs = {
   "static-dir": string;
   "static-dist-prefix": string;
   "import-map": string;
-  "config": string
+  "config": string;
 };
 
 /**
