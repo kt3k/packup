@@ -1,5 +1,13 @@
 import { CommonOptions } from "https://deno.land/x/esbuild@v0.14.51/mod.js";
-import { build, denoPlugin, exists, resolve, stop, toFileUrl } from "./deps.ts";
+import {
+  build,
+  denoPlugin,
+  exists,
+  parseJsonC,
+  resolve,
+  stop,
+  toFileUrl,
+} from "./deps.ts";
 
 export async function bundleByEsbuild(
   path: string,
@@ -20,9 +28,21 @@ export async function bundleByEsbuild(
   const tsconfigFile = await getTsconfig();
 
   if (tsconfigFile) {
-    const config = JSON.parse(await Deno.readTextFile(tsconfigFile));
+    const config = <{
+      compilerOptions: {
+        jsx: CommonOptions["jsx"];
+        jsxFactory: CommonOptions["jsxFactory"];
+        jsxFragmentFactory: CommonOptions["jsxFragment"];
+        jsxDev: CommonOptions["jsxDev"];
+        jsxImportSource: CommonOptions["jsxImportSource"];
+      };
+    }> parseJsonC(await Deno.readTextFile(tsconfigFile));
 
-    if ("compilerOptions" in config) {
+    if (
+      config && typeof config === "object" &&
+      config.compilerOptions &&
+      typeof config.compilerOptions === "object"
+    ) {
       jsx = config.compilerOptions.jsx;
       jsxDev = config.compilerOptions.jsxDev;
       jsxFactory = config.compilerOptions.jsxFactory;
@@ -70,22 +90,29 @@ export function setTsconfig(tsconfig: string) {
 
 export async function getTsconfig() {
   if (!_tsconfig) {
-    switch (true) {
-      case await exists("./deno.json", {
+    if (
+      await exists("./deno.json", {
         isReadable: true,
         isDirectory: false,
-      }):
-        return "./deno.json";
-      case await exists("./denoc.json", {
+      })
+    ) {
+      return "./deno.json";
+    }
+    if (
+      await exists("./deno.jsonc", {
         isReadable: true,
         isDirectory: false,
-      }):
-        return "./denoc.json";
-      case await exists("./tsconfig.json", {
+      })
+    ) {
+      return "./deno.jsonc";
+    }
+    if (
+      await exists("./tsconfig.json", {
         isReadable: true,
         isDirectory: false,
-      }):
-        return "./tsconfig.json";
+      })
+    ) {
+      return "./tsconfig.json";
     }
   }
 
