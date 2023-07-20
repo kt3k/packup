@@ -17,21 +17,22 @@ export function md5(data: string | ArrayBuffer): string {
 }
 
 export async function getDependencies(path: string): Promise<string[]> {
-  const p = Deno.run({
-    cmd: [Deno.execPath(), "info", "--json", path],
+  const p = new Deno.Command(Deno.execPath(), {
+    args: ["info", "--json", path],
     stdout: "piped",
     stderr: "piped",
-  });
+  }).spawn();
   const [status, output, stderrOutput] = await Promise.all([
-    p.status(),
+    p.status,
     p.output(),
-    p.stderrOutput(),
+    p.stderr,
   ]);
   if (status.code !== 0) {
-    throw new Error(decoder.decode(stderrOutput));
+    throw new Error(
+      decoder.decode((await stderrOutput.getReader().read()).value),
+    );
   }
-  const denoInfo = JSON.parse(decoder.decode(output)) as DenoInfo;
-  p.close();
+  const denoInfo = JSON.parse(decoder.decode(output.stdout)) as DenoInfo;
   return denoInfo.modules.map((m) => m.specifier);
 }
 

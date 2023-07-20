@@ -8,8 +8,12 @@ export {
   resolve,
   toFileUrl,
 } from "https://deno.land/std@0.155.0/path/mod.ts";
+export { parse as parseJsonC } from "https://deno.land/std@0.193.0/jsonc/mod.ts";
 import { join } from "https://deno.land/std@0.155.0/path/posix.ts";
 export { join as posixPathJoin };
+export { denoPlugin } from "https://deno.land/x/esbuild_deno_loader@0.5.2/mod.ts";
+export { build, stop } from "https://deno.land/x/esbuild@v0.14.51/mod.js";
+export { exists } from "https://deno.land/std@0.194.0/fs/mod.ts";
 export { ensureDir } from "https://deno.land/std@0.155.0/fs/ensure_dir.ts";
 export { parse as parseFlags } from "https://deno.land/std@0.155.0/flags/mod.ts";
 export { red } from "https://deno.land/std@0.155.0/fmt/colors.ts";
