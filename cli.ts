@@ -17,7 +17,7 @@ import {
 import { livereloadServer } from "./livereload_server.ts";
 import { byteSize, mux } from "./util.ts"; // checkUniqueEntrypoints
 import { logger, setLogLevel } from "./logger_util.ts";
-import { setImportMap } from "./bundle_util.ts";
+import { setImportMap, setTsconfig } from "./bundle_util.ts";
 import * as npmLocal from "./npm_local.ts";
 
 function usage() {
@@ -50,6 +50,7 @@ Options:
   --static-dist-prefix <prefix>   The prefix for static files in the destination.
   --public-url <prefix>           The path prefix for urls. Default is ".".
   -i, --import-map <file>         The path to an import map file.
+  -c, --config <file>             The path to a tsconfig file.
   -o, --open                      Automatically opens in specified browser.
   TODO --https                    Serves files over HTTPS.
   TODO --cert <path>              The path to certificate to use with HTTPS.
@@ -71,6 +72,7 @@ Options:
   --static-dist-prefix <prefix>   The prefix for static files in the destination.
   --public-url <prefix>           The path prefix for urls. Default is ".".
   -i, --import-map <file>         The path to an import map file.
+  -c, --config <file>             The path to a tsconfig file.
   -L, --log-level <level>         Set the log level (choices: "none", "error", "warn", "info", "verbose")
   -h, --help                      Display help for command
 `.trim());
@@ -89,6 +91,7 @@ type CliArgs = {
   "static-dir": string;
   "static-dist-prefix": string;
   "import-map": string;
+  "config": string;
 };
 
 /**
@@ -108,6 +111,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     "public-url": publicUrl = ".",
     "livereload-port": livereloadPort = 35729,
     "import-map": importMap,
+    "config": config,
   } = parseFlags(cliArgs, {
     string: [
       "log-level",
@@ -116,6 +120,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       "static-dir",
       "public-url",
       "import-map",
+      "config",
     ],
     boolean: ["help", "version", "open"],
     alias: {
@@ -126,6 +131,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       L: "log-level",
       p: "port",
       i: "import-map",
+      c: "config",
     },
   }) as CliArgs;
 
@@ -194,6 +200,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
       publicUrl,
       staticDistPrefix,
       importMap,
+      config,
     });
     npmLocal.close();
     return 0;
@@ -224,6 +231,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     publicUrl,
     staticDistPrefix,
     importMap,
+    config,
   });
   npmLocal.close();
   return 0;
@@ -234,6 +242,7 @@ type BuildAndServeCommonOptions = {
   staticDistPrefix: string;
   publicUrl: string;
   importMap: string;
+  config: string;
 };
 
 type BuildOptions = {
@@ -251,10 +260,12 @@ async function build(
     publicUrl,
     staticDistPrefix,
     importMap,
+    config,
   }: BuildOptions & BuildAndServeCommonOptions,
 ) {
   // checkUniqueEntrypoints(paths);
   setImportMap(importMap);
+  setTsconfig(config);
 
   logger.log(`Writing the assets to ${distDir}`);
   await ensureDir(distDir);
@@ -299,10 +310,12 @@ async function serve(
     distDir,
     staticDistPrefix,
     importMap,
+    config,
   }: ServeOptions & BuildAndServeCommonOptions & BuildOptions,
 ) {
   // checkUniqueEntrypoints(paths);
   setImportMap(importMap);
+  setTsconfig(config);
 
   // This is used for propagating onBuild event to livereload server.
   const buildEventHub = new EventTarget();

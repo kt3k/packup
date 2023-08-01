@@ -10,10 +10,19 @@ export {
 import { join } from "https://deno.land/std/path/posix.ts";
 export { join as posixPathJoin };
 export { ensureDir } from "https://deno.land/std/fs/ensure_dir.ts";
+export { parse as parseJsonC } from "https://deno.land/std/jsonc/mod.ts";
 export { parse as parseFlags } from "https://deno.land/std/flags/mod.ts";
 export { red } from "https://deno.land/std/fmt/colors.ts";
 export { MuxAsyncIterator } from "https://deno.land/std/async/mux_async_iterator.ts";
 export { walk } from "https://deno.land/std/fs/walk.ts";
+export {
+  denoLoaderPlugin,
+  denoPlugins,
+  denoResolverPlugin,
+} from "https://deno.land/x/esbuild_deno_loader/mod.ts";
+export { build, stop } from "https://deno.land/x/esbuild@v0.17.19/mod.js";
+export type { BuildOptions, Plugin } from "https://deno.land/x/esbuild/mod.js";
+export { exists } from "https://deno.land/std/fs/mod.ts";
 
 export {
   Document,
@@ -25,7 +34,7 @@ export { opn } from "https://raw.githubusercontent.com/hashrock/deno-opn/b358e4c
 export { serve as serveIterable } from "https://deno.land/x/iterable_file_server@v0.2.0/mod.ts";
 
 export const NAME = "packup";
-export const VERSION = "v0.2.2";
+export const VERSION = "v0.2.3";
 
 import { crypto } from "https://deno.land/std/crypto/mod.ts";
 import { toHashString } from "https://deno.land/std/crypto/to_hash_string.ts";
