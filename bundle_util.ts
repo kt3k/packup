@@ -1,13 +1,17 @@
-import { CommonOptions } from "https://deno.land/x/esbuild@v0.14.51/mod.js";
 import {
   build,
-  denoPlugin,
+  CommonOptions,
+  denoPlugins,
+  denoResolverPlugin,
   exists,
   parseJsonC,
+  Plugin,
   resolve,
   stop,
   toFileUrl,
 } from "./deps.ts";
+import type { BuildOptions, Plugin } from "./deps.ts";
+import * as npmLocal from "./npm_local.ts";
 
 export async function bundleByEsbuild(
   path: string,
@@ -26,48 +30,6 @@ export async function bundleByEsbuild(
   let jsxFragment: CommonOptions["jsxFragment"];
   let jsxDev: CommonOptions["jsxDev"];
   let jsxImportSource: CommonOptions["jsxImportSource"];
-
-  const tsconfigFile = await getTsconfig();
-
-  if (tsconfigFile) {
-    const config = <{
-      compilerOptions: {
-        jsx: CommonOptions["jsx"];
-        jsxFactory: CommonOptions["jsxFactory"];
-        jsxFragmentFactory: CommonOptions["jsxFragment"];
-        jsxDev: CommonOptions["jsxDev"];
-        jsxImportSource: CommonOptions["jsxImportSource"];
-      };
-    }> parseJsonC(await Deno.readTextFile(tsconfigFile));
-
-    if (
-      config && typeof config === "object" &&
-      config.compilerOptions &&
-      typeof config.compilerOptions === "object"
-    ) {
-      jsx = config.compilerOptions.jsx;
-      jsxDev = config.compilerOptions.jsxDev;
-      jsxFactory = config.compilerOptions.jsxFactory;
-      jsxFragment = config.compilerOptions.jsxFragmentFactory;
-      jsxImportSource = config.compilerOptions.jsxImportSource;
-    }
-  }
-
-  const bundle = await build({
-    entryPoints: [toFileUrl(resolve(path)).href],
-    plugins: [
-      denoPlugin({
-        importMapURL,
-      }),
-    ],
-    bundle: true,
-    write: false,
-    jsx,
-    jsxFactory,
-    jsxDev,
-    jsxFragment,
-    jsxImportSource,
-  });
 
   const tsconfigFile = await getTsconfig();
 
