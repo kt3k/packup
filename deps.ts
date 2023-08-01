@@ -6,23 +6,19 @@ export {
   relative,
   resolve,
   toFileUrl,
-} from "https://deno.land/std/path/mod.ts";
-import { join } from "https://deno.land/std/path/posix.ts";
+
+} from "https://deno.land/std@0.155.0/path/mod.ts";
+export { parse as parseJsonC } from "https://deno.land/std@0.193.0/jsonc/mod.ts";
+import { join } from "https://deno.land/std@0.155.0/path/posix.ts";
 export { join as posixPathJoin };
-export { ensureDir } from "https://deno.land/std/fs/ensure_dir.ts";
-export { parse as parseJsonC } from "https://deno.land/std/jsonc/mod.ts";
-export { parse as parseFlags } from "https://deno.land/std/flags/mod.ts";
-export { red } from "https://deno.land/std/fmt/colors.ts";
-export { MuxAsyncIterator } from "https://deno.land/std/async/mux_async_iterator.ts";
-export { walk } from "https://deno.land/std/fs/walk.ts";
-export {
-  denoLoaderPlugin,
-  denoPlugins,
-  denoResolverPlugin,
-} from "https://deno.land/x/esbuild_deno_loader/mod.ts";
-export { build, stop } from "https://deno.land/x/esbuild@v0.17.19/mod.js";
-export type { BuildOptions, Plugin } from "https://deno.land/x/esbuild/mod.js";
-export { exists } from "https://deno.land/std/fs/mod.ts";
+export { denoPlugin } from "https://deno.land/x/esbuild_deno_loader@0.5.2/mod.ts";
+export { build, stop } from "https://deno.land/x/esbuild@v0.14.51/mod.js";
+export { exists } from "https://deno.land/std@0.194.0/fs/mod.ts";
+export { ensureDir } from "https://deno.land/std@0.155.0/fs/ensure_dir.ts";
+export { parse as parseFlags } from "https://deno.land/std@0.155.0/flags/mod.ts";
+export { red } from "https://deno.land/std@0.155.0/fmt/colors.ts";
+export { MuxAsyncIterator } from "https://deno.land/std@0.155.0/async/mux_async_iterator.ts";
+export { walk } from "https://deno.land/std@0.155.0/fs/walk.ts";
 
 export {
   Document,
@@ -35,6 +31,7 @@ export { serve as serveIterable } from "https://deno.land/x/iterable_file_server
 
 export const NAME = "packup";
 export const VERSION = "v0.2.3";
+<<<<<<< HEAD
 
 import { crypto } from "https://deno.land/std/crypto/mod.ts";
 import { toHashString } from "https://deno.land/std/crypto/to_hash_string.ts";
@@ -47,3 +44,5 @@ export const md5sum = async function (data: string | ArrayBuffer) {
     ),
   );
 };
+=======
+>>>>>>> 93e100f192abe12ecb128aa1ba6be80bf8efc3ca
