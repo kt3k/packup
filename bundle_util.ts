@@ -26,8 +26,6 @@ export async function bundleByEsbuild(
   let jsxFragment: CommonOptions["jsxFragment"];
   let jsxDev: CommonOptions["jsxDev"];
   let jsxImportSource: CommonOptions["jsxImportSource"];
-<<<<<<< HEAD
-=======
 
   const tsconfigFile = await getTsconfig();
 
@@ -70,7 +68,6 @@ export async function bundleByEsbuild(
     jsxFragment,
     jsxImportSource,
   });
->>>>>>> 93e100f192abe12ecb128aa1ba6be80bf8efc3ca
 
   const tsconfigFile = await getTsconfig();
 

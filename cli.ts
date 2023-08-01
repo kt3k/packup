@@ -19,9 +19,12 @@ import { byteSize, mux } from "./util.ts"; // checkUniqueEntrypoints
 import { logger, setLogLevel } from "./logger_util.ts";
 import { setImportMap, setTsconfig } from "./bundle_util.ts";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import * as npmLocal from "./npm_local.ts";
 =======
 >>>>>>> 93e100f192abe12ecb128aa1ba6be80bf8efc3ca
+=======
+>>>>>>> upstream/main
 
 function usage() {
   logger.log(`

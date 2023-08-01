@@ -31,7 +31,6 @@ export { serve as serveIterable } from "https://deno.land/x/iterable_file_server
 
 export const NAME = "packup";
 export const VERSION = "v0.2.3";
-<<<<<<< HEAD
 
 import { crypto } from "https://deno.land/std/crypto/mod.ts";
 import { toHashString } from "https://deno.land/std/crypto/to_hash_string.ts";
@@ -44,5 +43,3 @@ export const md5sum = async function (data: string | ArrayBuffer) {
     ),
   );
 };
-=======
->>>>>>> 93e100f192abe12ecb128aa1ba6be80bf8efc3ca
