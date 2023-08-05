@@ -1,5 +1,4 @@
-import { assertStringIncludes } from "https://deno.land/std@0.155.0/testing/asserts.ts";
-import { assertEquals } from "./test_deps.ts";
+import { assertEquals, assertStringIncludes } from "./test_deps.ts";
 
 Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- serves the site at the given port and livereload port", async () => {
   const cmd = new Deno.Command(Deno.execPath(), {
