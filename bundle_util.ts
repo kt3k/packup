@@ -1,7 +1,7 @@
-import { CommonOptions } from "https://deno.land/x/esbuild@v0.14.51/mod.js";
+import { CommonOptions } from "https://deno.land/x/esbuild@v0.17.19/mod.js";
 import {
   build,
-  denoPlugin,
+  denoPlugins,
   exists,
   parseJsonC,
   resolve,
@@ -54,8 +54,8 @@ export async function bundleByEsbuild(
   const bundle = await build({
     entryPoints: [toFileUrl(resolve(path)).href],
     plugins: [
-      denoPlugin({
-        importMapURL,
+      ...denoPlugins({
+        importMapURL: importMapURL?.href,
       }),
     ],
     bundle: true,
