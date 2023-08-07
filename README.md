@@ -3,6 +3,7 @@
 # packup v0.2.4
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/kt3k/packup/branch/main/graph/badge.svg?token=OjZni3m4yk)](https://codecov.io/gh/kt3k/packup)
 
 > Zero-config web application packager for [Deno][Deno].
 
