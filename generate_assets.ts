@@ -83,10 +83,12 @@ export async function generateAssets(
     });
     for (const file of files) yield file;
     if (opts.mainAs404) {
-      yield Object.assign(
-        (await htmlAsset.createFileObject({ pageName, base, pathPrefix }))[0],
-        { name: "404", lastModified: 0 },
-      );
+      const file =
+        (await htmlAsset.createFileObject({ pageName, base, pathPrefix }))[0];
+
+      yield new File([await file.arrayBuffer()], "404", {
+        lastModified: 0,
+      });
     }
     logger.log(`${path} bundled in ${Date.now() - buildStarted}ms`);
 
@@ -182,10 +184,15 @@ class HtmlAsset implements Asset {
   }
 
   createFileObject(_params: CreateFileObjectParams) {
-    return Promise.resolve([Object.assign(
-      new Blob([docType, encoder.encode(this.#doc.documentElement!.outerHTML)]),
-      { name: this.#filename, lastModified: 0 },
-    )]);
+    return Promise.resolve([
+      new File(
+        [docType, encoder.encode(this.#doc.documentElement!.outerHTML)],
+        this.#filename,
+        {
+          lastModified: 0,
+        },
+      ),
+    ]);
   }
 
   getWatchPaths() {
@@ -243,7 +250,7 @@ class CssAsset implements Asset {
     this._dest = `${pageName}.${md5(data)}.css`;
     this._el.setAttribute("href", posixPathJoin(pathPrefix, this._dest));
     return [
-      Object.assign(new Blob([data]), { name: this._dest, lastModified: 0 }),
+      new File([data], this._dest, { lastModified: 0 }),
     ];
   }
 }
@@ -258,10 +265,11 @@ class ScssAsset extends CssAsset {
     const scss = await Deno.readFile(join(base, this._href));
     this._dest = `${pageName}.${md5(scss)}.css`;
     this._el.setAttribute("href", posixPathJoin(pathPrefix, this._dest));
-    return [Object.assign(new Blob([await compileSass(decoder.decode(scss))]), {
-      name: this._dest,
-      lastModified: 0,
-    })];
+    return [
+      new File([await compileSass(decoder.decode(scss))], this._dest, {
+        lastModified: 0,
+      }),
+    ];
   }
 }
 
@@ -304,7 +312,7 @@ class ScriptAsset implements Asset {
     this.#dest = `${pageName}.${md5(data)}.js`;
     this.#el.setAttribute("src", posixPathJoin(pathPrefix, this.#dest));
     return [
-      Object.assign(new Blob([data]), { name: this.#dest, lastModified: 0 }),
+      new File([data], this.#dest, { lastModified: 0 }),
     ];
   }
 }
@@ -387,7 +395,7 @@ class ImageAsset implements Asset {
       }
 
       files.push(
-        Object.assign(new Blob([data]), { name: dest, lastModified: 0 }),
+        new File([data], dest, { lastModified: 0 }),
       );
     }
 

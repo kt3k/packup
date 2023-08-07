@@ -1,4 +1,4 @@
-import { assertEquals } from "./test_deps.ts";
+import { assertEquals, assertStringIncludes } from "./test_deps.ts";
 
 Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- serves the site at the given port and livereload port", async () => {
   const cmd = new Deno.Command(Deno.execPath(), {
@@ -14,35 +14,33 @@ Deno.test("cli.ts serve <entrypoint> --port <port> --livereload-port <port> -- s
       "34567",
     ],
     stdout: "piped",
+    stderr: "inherit",
   });
   const p = cmd.spawn();
   const textDecoder = new TextDecoder();
-  let done = false;
 
-  for await (const a of p.stdout) {
-    if (textDecoder.decode(a).includes("Server running")) {
-      let res = await fetch("http://localhost:4567/index.html");
-      assertEquals(
-        await res.text(),
-        `<!DOCTYPE html><html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
-      );
+  const r = p.stdout.getReader();
+  const log = textDecoder.decode((await r.read()).value);
 
-      // Non existent path returns the same response as the main html.
-      // This is useful for apps which use client side routing.
-      res = await fetch("http://localhost:4567/asdf");
-      assertEquals(
-        await res.text(),
-        `<!DOCTYPE html><html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
-      );
+  console.log(log);
+  assertStringIncludes(log, "Server running");
 
-      done = true;
+  let res = await fetch("http://localhost:4567/index.html");
 
-      break;
-    }
-  }
+  assertEquals(
+    await res.text(),
+    `<!DOCTYPE html><html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
+  );
+
+  // Non existent path returns the same response as the main html.
+  // This is useful for apps which use client side routing.
+  res = await fetch("http://localhost:4567/asdf");
+  assertEquals(
+    await res.text(),
+    `<!DOCTYPE html><html><head></head><body><div>aaa</div>\n<script src="http://localhost:34567/livereload.js"></script></body></html>`,
+  );
 
   p.kill();
+  await r.cancel();
   await p.status;
-
-  assertEquals(done, true);
 });
