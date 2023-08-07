@@ -1,26 +1,27 @@
 {
   "lock": false,
+  "tasks": {
+    "test": "deno test -A --coverage=coverage",
+    "cov": "deno task test && deno coverage coverage --exclude=vendor --lcov > coverage/lcov.info",
+    "cov:html": "deno task cov && genhtml -o coverage/html --ignore-errors unmapped coverage/lcov.info && open coverage/html/index.html"
+  },
   "fmt": {
-    "files": {
-      "exclude": [
-        "docs",
-        "dist",
-        "vendor",
-        "coverage",
-        ".git"
-      ]
-    }
+    "exclude": [
+      "docs",
+      "dist",
+      "vendor",
+      "coverage",
+      ".git"
+    ]
   },
   "lint": {
-    "files": {
-      "exclude": [
-        "examples",
-        "docs",
-        "dist",
-        "vendor",
-        "coverage",
-        ".git"
-      ]
-    }
+    "exclude": [
+      "examples",
+      "docs",
+      "dist",
+      "vendor",
+      "coverage",
+      ".git"
+    ]
   }
 }

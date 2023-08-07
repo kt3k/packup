@@ -1,10 +1,3 @@
-test:
-	deno test -A --coverage=coverage
-
-cov:
-	deno coverage coverage --lcov > coverage/lcov.info
-	genhtml -o coverage/html coverage/lcov.info
-
 ex-build:
 	deno run -A cli.ts build examples/simple/index.html
 
@@ -39,5 +32,3 @@ publish-doc:
 	$(MAKE) -C docs d
 	git add docs/_site
 	git commit -m "chore: update doc site"
-
-.PHONY: test test-esbuild-deno-loader
