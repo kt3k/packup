@@ -18,10 +18,7 @@ import { livereloadServer } from "./livereload_server.ts";
 import { byteSize, mux } from "./util.ts"; // checkUniqueEntrypoints
 import { logger, setLogLevel } from "./logger_util.ts";
 import { setImportMap, setTsconfig } from "./bundle_util.ts";
-<<<<<<< HEAD
 import * as npmLocal from "./npm_local.ts";
-=======
->>>>>>> 93e100f192abe12ecb128aa1ba6be80bf8efc3ca
 
 function usage() {
   logger.log(`
@@ -314,7 +311,7 @@ async function serve(
     staticDistPrefix,
     importMap,
     config,
-  }: ServeOptions & BuildAndServeCommonOptions,
+  }: ServeOptions & BuildAndServeCommonOptions & BuildOptions,
 ) {
   // checkUniqueEntrypoints(paths);
   setImportMap(importMap);

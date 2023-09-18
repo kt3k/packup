@@ -6,10 +6,8 @@ export {
   relative,
   resolve,
   toFileUrl,
-
-} from "https://deno.land/std@0.155.0/path/mod.ts";
-export { parse as parseJsonC } from "https://deno.land/std@0.193.0/jsonc/mod.ts";
-import { join } from "https://deno.land/std@0.155.0/path/posix.ts";
+} from "https://deno.land/std/path/mod.ts";
+import { join } from "https://deno.land/std/path/posix.ts";
 export { join as posixPathJoin };
 export { ensureDir } from "https://deno.land/std/fs/ensure_dir.ts";
 export { parse as parseJsonC } from "https://deno.land/std/jsonc/mod.ts";
