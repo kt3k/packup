@@ -216,7 +216,11 @@ test("bundle remote imports", ALL, async (loader) => {
     write: false,
     bundle: true,
     platform: "neutral",
+<<<<<<< HEAD
     entryPoints: ["https://deno.land/std/uuid/mod.ts"],
+=======
+    entryPoints: ["https://deno.land/std@0.155.0/uuid/mod.ts"],
+>>>>>>> 1256b84 (fix vendor testdata path issue)
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
