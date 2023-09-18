@@ -10,12 +10,11 @@ import {
   stop,
   toFileUrl,
 } from "./deps.ts";
-import type { BuildOptions, Plugin } from "./deps.ts";
 import * as npmLocal from "./npm_local.ts";
 
 export async function bundleByEsbuild(
   path: string,
-  options?: BuildOptions,
+  options?: CommonOptions,
   plugins?: Plugin[],
 ): Promise<string> {
   const importMapFile = getImportMap();

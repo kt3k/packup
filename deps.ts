@@ -1,3 +1,4 @@
+export { createHash } from "https://deno.land/std/hash/mod.ts";
 export {
   basename,
   dirname,
@@ -21,7 +22,7 @@ export {
   denoResolverPlugin,
 } from "https://deno.land/x/esbuild_deno_loader/mod.ts";
 export { build, stop } from "https://deno.land/x/esbuild@v0.17.19/mod.js";
-export type { BuildOptions, Plugin } from "https://deno.land/x/esbuild/mod.js";
+export type { CommonOptions, Plugin } from "https://deno.land/x/esbuild/mod.js";
 export { exists } from "https://deno.land/std/fs/mod.ts";
 
 export {

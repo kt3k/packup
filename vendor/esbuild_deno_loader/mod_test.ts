@@ -217,10 +217,14 @@ test("bundle remote imports", ALL, async (loader) => {
     bundle: true,
     platform: "neutral",
 <<<<<<< HEAD
+<<<<<<< HEAD
     entryPoints: ["https://deno.land/std/uuid/mod.ts"],
 =======
     entryPoints: ["https://deno.land/std@0.155.0/uuid/mod.ts"],
 >>>>>>> 1256b84 (fix vendor testdata path issue)
+=======
+    entryPoints: ["https://deno.land/std/uuid/mod.ts"],
+>>>>>>> 491f5ad (update std and esbuild version, use relative import path instead for // !bundle=module)
   });
   assertEquals(res.warnings, []);
   assertEquals(res.outputFiles.length, 1);
