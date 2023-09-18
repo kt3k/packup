@@ -1,4 +1,3 @@
-export { createHash } from "https://deno.land/std/hash/mod.ts";
 export {
   basename,
   dirname,

@@ -506,10 +506,14 @@ class ImageAsset implements Asset {
       const { name, prefix } = namePrefix(base, flpath);
       const [, _, extension] = src.match(/([^/]+)\.([\w]+)$/) ?? [];
 <<<<<<< HEAD
+<<<<<<< HEAD
       const dest = `${name}.${await md5(data)}.${extension}`;
 =======
       const dest = `${name}.${md5(data)}.${extension}`;
 >>>>>>> db21e0a (fix: serve mode issues and image asset path bug)
+=======
+      const dest = `${name}.${await md5(data)}.${extension}`;
+>>>>>>> 4d3064e (update md5 without createHash)
 
       if (this.#el.getAttribute("src")?.match(src)) {
         this.#el.setAttribute("src", join(prefix || pathPrefix, dest));
