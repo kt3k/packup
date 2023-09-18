@@ -505,7 +505,11 @@ class ImageAsset implements Asset {
       const data = await Deno.readFile(flpath);
       const { name, prefix } = namePrefix(base, flpath);
       const [, _, extension] = src.match(/([^/]+)\.([\w]+)$/) ?? [];
+<<<<<<< HEAD
       const dest = `${name}.${await md5(data)}.${extension}`;
+=======
+      const dest = `${name}.${md5(data)}.${extension}`;
+>>>>>>> db21e0a (fix: serve mode issues and image asset path bug)
 
       if (this.#el.getAttribute("src")?.match(src)) {
         this.#el.setAttribute("src", join(prefix || pathPrefix, dest));
