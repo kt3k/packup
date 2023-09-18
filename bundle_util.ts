@@ -14,7 +14,11 @@ import * as npmLocal from "./npm_local.ts";
 
 export async function bundleByEsbuild(
   path: string,
+<<<<<<< HEAD
   options?: CommonOptions,
+=======
+  options?: BuildOptions,
+>>>>>>> f9b1714 (fix merge conflicts)
   plugins?: Plugin[],
 ): Promise<string> {
   const importMapFile = getImportMap();
