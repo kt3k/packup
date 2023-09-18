@@ -6,8 +6,10 @@ export {
   relative,
   resolve,
   toFileUrl,
-} from "https://deno.land/std/path/mod.ts";
-import { join } from "https://deno.land/std/path/posix.ts";
+
+} from "https://deno.land/std@0.155.0/path/mod.ts";
+export { parse as parseJsonC } from "https://deno.land/std@0.193.0/jsonc/mod.ts";
+import { join } from "https://deno.land/std@0.155.0/path/posix.ts";
 export { join as posixPathJoin };
 export { ensureDir } from "https://deno.land/std/fs/ensure_dir.ts";
 export { parse as parseJsonC } from "https://deno.land/std/jsonc/mod.ts";
@@ -35,6 +37,7 @@ export { serve as serveIterable } from "https://deno.land/x/iterable_file_server
 
 export const NAME = "packup";
 export const VERSION = "v0.2.3";
+<<<<<<< HEAD
 
 import { crypto } from "https://deno.land/std/crypto/mod.ts";
 import { toHashString } from "https://deno.land/std/crypto/to_hash_string.ts";
@@ -47,3 +50,5 @@ export const md5sum = async function (data: string | ArrayBuffer) {
     ),
   );
 };
+=======
+>>>>>>> 93e100f192abe12ecb128aa1ba6be80bf8efc3ca
