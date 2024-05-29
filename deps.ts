@@ -1,4 +1,5 @@
 export { crypto } from "jsr:@std/crypto@0.224.0/crypto";
+export { parseArgs } from "jsr:@std/cli@0.224.4/parse-args";
 export {
   basename,
   dirname,
@@ -11,7 +12,6 @@ export {
 export { join as posixPathJoin } from "jsr:@std/path@0.225.1/posix";
 export { parse as parseJsonC } from "jsr:@std/jsonc@0.224.0";
 export { ensureDir, exists, walk } from "jsr:@std/fs@0.229.1";
-export { parse as parseFlags } from "jsr:@std/flags@0.224.0";
 export { red } from "jsr:@std/fmt@0.225.2/colors";
 export { MuxAsyncIterator } from "jsr:@std/async@0.224.1";
 
