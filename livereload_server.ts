@@ -90,6 +90,8 @@ export function livereloadServer(
   const listener = Deno.listen({ port });
   const done = (async () => {
     for await (const conn of listener) {
+      // TODO: migrate to Deno.serve
+      // deno-lint-ignore no-deprecated-deno-api
       const httpConn = Deno.serveHttp(conn);
       serve(httpConn, eventtarget, port).catch(logger.error);
     }
