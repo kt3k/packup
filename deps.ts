@@ -1,4 +1,5 @@
-export { createHash } from "https://deno.land/std@0.155.0/hash/mod.ts";
+export { crypto } from "jsr:@std/crypto@0.224.0/crypto";
+
 export {
   basename,
   dirname,
