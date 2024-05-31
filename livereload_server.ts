@@ -36,45 +36,27 @@ function canCloseSocket(socket: WebSocket): boolean {
   return socket.readyState === socket.OPEN;
 }
 
-async function serve(
-  httpConn: Deno.HttpConn,
+function handleHttp(
+  request: Request,
   eventtarget: EventTarget,
   port: number,
-): Promise<void> {
-  const requestEvent = await httpConn.nextRequest();
-  if (requestEvent == null) {
-    return;
-  }
-
-  const { request, respondWith } = requestEvent;
+): Response {
   const url = new URL(request.url);
   switch (url.pathname) {
     case "/livereload.js":
-      try {
-        await respondWith(
-          new Response(livereloadScript(port), {
-            headers: { connection: "close" },
-          }),
-        );
-        const nr = await httpConn.nextRequest();
-        if (nr !== null) {
-          logger.error("Error: something's wrong with livereload server.");
-        }
-        httpConn.close();
-      } catch (e) {
-        httpConn.close();
-        logger.error(e);
-      }
-      break;
+      return new Response(livereloadScript(port), {
+        headers: { "content-type": "text/javascript" },
+      });
     case "/livereload": {
+      if (request.headers.get("upgrade") !== "websocket") {
+        return new Response(null, { status: 404 });
+      }
       const { response, socket } = Deno.upgradeWebSocket(request);
       handleWs(socket, eventtarget);
-      respondWith(response);
-      break;
+      return response;
     }
     default:
-      httpConn.close();
-      break;
+      return new Response(null, { status: 404 });
   }
 }
 
@@ -87,20 +69,16 @@ export function livereloadServer(
   eventtarget: EventTarget,
 ): LivereloadServer {
   logger.debug(`livereload websocket server is running on port=${port}`);
-  const listener = Deno.listen({ port });
-  const done = (async () => {
-    for await (const conn of listener) {
-      // TODO: migrate to Deno.serve
-      // deno-lint-ignore no-deprecated-deno-api
-      const httpConn = Deno.serveHttp(conn);
-      serve(httpConn, eventtarget, port).catch(logger.error);
-    }
-  })();
+
+  const server = Deno.serve({
+    port,
+    // suppress unnecessary log
+    onListen: () => {},
+  }, (request) => handleHttp(request, eventtarget, port));
 
   return {
     async close() {
-      listener.close();
-      await done;
+      await server.shutdown();
     },
   };
 }
