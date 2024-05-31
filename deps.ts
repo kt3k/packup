@@ -1,4 +1,5 @@
-export { createHash } from "https://deno.land/std@0.155.0/hash/mod.ts";
+export { crypto } from "jsr:@std/crypto@0.224.0/crypto";
+export { parseArgs } from "jsr:@std/cli@0.224.4/parse-args";
 export {
   basename,
   dirname,
@@ -7,18 +8,15 @@ export {
   relative,
   resolve,
   toFileUrl,
-} from "https://deno.land/std@0.155.0/path/mod.ts";
-export { parse as parseJsonC } from "https://deno.land/std@0.193.0/jsonc/mod.ts";
-import { join } from "https://deno.land/std@0.155.0/path/posix.ts";
-export { join as posixPathJoin };
+} from "jsr:@std/path@0.225.1";
+export { join as posixPathJoin } from "jsr:@std/path@0.225.1/posix";
+export { parse as parseJsonC } from "jsr:@std/jsonc@0.224.0";
+export { ensureDir, exists, walk } from "jsr:@std/fs@0.229.1";
+export { red } from "jsr:@std/fmt@0.225.2/colors";
+export { MuxAsyncIterator } from "jsr:@std/async@0.224.1";
+
 export { denoPlugins } from "https://deno.land/x/esbuild_deno_loader@0.8.1/mod.ts";
 export { build, stop } from "https://deno.land/x/esbuild@v0.17.19/mod.js";
-export { exists } from "https://deno.land/std@0.194.0/fs/mod.ts";
-export { ensureDir } from "https://deno.land/std@0.155.0/fs/ensure_dir.ts";
-export { parse as parseFlags } from "https://deno.land/std@0.155.0/flags/mod.ts";
-export { red } from "https://deno.land/std@0.155.0/fmt/colors.ts";
-export { MuxAsyncIterator } from "https://deno.land/std@0.155.0/async/mux_async_iterator.ts";
-export { walk } from "https://deno.land/std@0.155.0/fs/walk.ts";
 
 export {
   Document,

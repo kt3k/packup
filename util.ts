@@ -1,6 +1,6 @@
 import {
   basename,
-  createHash,
+  crypto,
   Document,
   Element,
   fromFileUrl,
@@ -11,9 +11,12 @@ export const decoder = new TextDecoder();
 export const encoder = new TextEncoder();
 
 export function md5(data: string | ArrayBuffer): string {
-  const hash = createHash("md5");
-  hash.update(data);
-  return hash.toString();
+  const digest = crypto.subtle.digestSync(
+    "MD5",
+    typeof data === "string" ? new TextEncoder().encode(data) : data,
+  );
+  const byteArray = Array.from(new Uint8Array(digest));
+  return byteArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 export async function getDependencies(path: string): Promise<string[]> {

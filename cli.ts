@@ -4,7 +4,7 @@ import {
   join,
   NAME,
   opn,
-  parseFlags,
+  parseArgs,
   red,
   serveIterable,
   VERSION,
@@ -111,7 +111,7 @@ export async function main(cliArgs: string[] = Deno.args): Promise<number> {
     "livereload-port": livereloadPort = 35729,
     "import-map": importMap,
     "config": config,
-  } = parseFlags(cliArgs, {
+  } = parseArgs(cliArgs, {
     string: [
       "log-level",
       "out-dir",
