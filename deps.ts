@@ -28,4 +28,4 @@ export { opn } from "https://raw.githubusercontent.com/hashrock/deno-opn/b358e4c
 export { serve as serveIterable } from "https://deno.land/x/iterable_file_server@v0.2.0/mod.ts";
 
 export const NAME = "packup";
-export const VERSION = "v0.2.4";
+export const VERSION = "v0.2.5";
