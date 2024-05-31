@@ -5,5 +5,5 @@ Deno.test("sass_util - compile", async () => {
   const scss = ".foo { &__bar { margin: 0; } }";
   const css = await compile(scss);
 
-  assertEquals(css, ".foo__bar {\n  margin: 0; }\n");
+  assertEquals(css, ".foo__bar {\n  margin: 0;\n}");
 });

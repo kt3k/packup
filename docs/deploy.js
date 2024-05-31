@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { serveDir } from "https://raw.githubusercontent.com/denoland/deno_std/main/http/file_server.ts";
+import { serveDir } from "jsr:@std/http@^0.224.2/file-server";
 
-serve((req) => serveDir(req, { fsRoot: "docs/_site", urlRoot: "" }));
+Deno.serve((req) => serveDir(req, { fsRoot: "docs/_site", urlRoot: "" }));
