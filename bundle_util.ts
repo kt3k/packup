@@ -67,7 +67,7 @@ export async function bundleByEsbuild(
     jsxImportSource,
   });
 
-  stop();
+  await stop();
 
   return bundle.outputFiles![0].text;
 }
