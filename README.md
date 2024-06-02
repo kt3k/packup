@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/kt3k/packup/main/docs/logo-v2.svg" width="400" />
 
-# packup v0.2.5
+# packup v0.2.6
 
 [![ci](https://github.com/kt3k/packup/actions/workflows/ci.yml/badge.svg)](https://github.com/kt3k/packup/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/kt3k/packup/branch/main/graph/badge.svg?token=OjZni3m4yk)](https://codecov.io/gh/kt3k/packup)
@@ -19,7 +19,7 @@
 Install via deno.land/x:
 
 ```shell
-deno install -qAf https://deno.land/x/packup@v0.2.5/cli.ts
+deno install -qAf https://deno.land/x/packup@v0.2.6/cli.ts
 ```
 
 Write HTML and JavaScript:
