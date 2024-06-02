@@ -15,8 +15,8 @@ export { ensureDir, exists, walk } from "jsr:@std/fs@0.229.1";
 export { red } from "jsr:@std/fmt@0.225.2/colors";
 export { MuxAsyncIterator } from "jsr:@std/async@0.224.1";
 
-export { denoPlugins } from "https://deno.land/x/esbuild_deno_loader@0.8.1/mod.ts";
-export { build, stop } from "https://deno.land/x/esbuild@v0.17.19/mod.js";
+export { denoPlugins } from "jsr:@luca/esbuild-deno-loader@0.10.3";
+export { build, stop } from "https://deno.land/x/esbuild@v0.21.4/mod.js";
 
 export {
   Document,
